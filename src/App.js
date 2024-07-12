@@ -1,8 +1,20 @@
 import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register'
+
 
 function App() {
   return (
-    <div>App</div>
+    <div className="App">
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path='/signup' element={<Register/>}/>
+        </Routes>
+      </Router>
+    </div>
   )
 }
 
