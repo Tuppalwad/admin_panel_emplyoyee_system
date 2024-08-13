@@ -1,9 +1,4 @@
-import React from 'react'
+import EditEmployeePopup from "./EditEmployeePopup";
+import EmployeeAttendanceInfo from "./EmployeeAttendanceInfo";
 
-function index() {
-  return (
-    <div>index</div>
-  )
-}
-
-export default index
+export { EditEmployeePopup, EmployeeAttendanceInfo };
