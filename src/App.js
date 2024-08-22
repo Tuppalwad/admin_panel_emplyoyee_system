@@ -15,6 +15,7 @@ import { AttendanceTable,MonthtyAtteData } from './pages/attendance';
 import AllLeaveRequest from './pages/leaves/AllLeaveRequest';
 import NotFoundPage from './components/common/NotFoundPage';
 import ChangePass from './pages/auth/ChangePass';
+import LeaveStatus from './pages/leaves/LeaveStatus';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/forgot-password/:id" element={<ForgotPass />} />
           <Route path="/sendresetlink-password" element={<SendForgotEmail />} />
           <Route path="/verifyemail/:id" element={<VerifyEmail />} />
+          <Route path="/leavestatus/:id" element={<LeaveStatus />} />
           <Route path="/dashboard" element={<PrivatedRoute />}>
             <Route path="" element={<AdminLayout />}>
               <Route path="changepass" element={<ChangePass/>}/>
@@ -42,7 +44,6 @@ function App() {
             </Route>
           </Route>
           <Route path='*' element={<NotFoundPage/>} />
-
         </Routes>
       </Router>
     </div>

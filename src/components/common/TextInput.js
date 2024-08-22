@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TextInput = ({ label, name, type, value, onChange, error,style,disabled ,maxlenght,placeholder}) => {
+const TextInput = ({ label, name, type, value, onChange, error,style,disabled ,maxlength,placeholder}) => {
   return (
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
@@ -11,7 +11,7 @@ const TextInput = ({ label, name, type, value, onChange, error,style,disabled ,m
         style = {style}
         type={type}
         name={name}
-        maxLength={maxlenght}
+        maxLength={maxlength}
         value={value}
         accept="image/*"
         placeholder={placeholder}

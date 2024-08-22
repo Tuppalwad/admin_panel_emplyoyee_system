@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllEmployees, deleteEmployee, updateEmployee } from '../../redux/actions/employeeActions';
+import { getAllEmployees, deleteEmployee, updateEmployee, getAllEmployeeinfo, updateEmpStatus } from '../../redux/actions/employeeActions';
 import { EditEmployeePopup } from '../../components/popup';
 import EmployeeInfoPopup from '../../components/popup/EmployeeInfoPopup';
+import { Loading } from '../../components/common';
 
 const dummyEmployees = [
     {
@@ -66,11 +67,26 @@ function EmployeeInfo() {
 
     const [searchTerm, setSearchTerm] = useState('');
 
-    const employee = useSelector((state) => state.employee);
+    const [allEmployee, setAllEmployee] = useState(null);
+
     //   const { allEmployees = dummyEmployees } = employee;
-    const allEmployees = dummyEmployees;
+    const allEmployees = allEmployee;
+
+    const getAllEmployee = async () => {
+        try {
+            const response = await dispatch(getAllEmployeeinfo());
+            if (response.code === 200) {
+                setAllEmployee(response.data);
+            }
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
     useEffect(() => {
-        dispatch(getAllEmployees());
+        getAllEmployee();
     }, [dispatch]);
 
     const handleSearchChange = (event) => {
@@ -111,6 +127,36 @@ function EmployeeInfo() {
         setIsEditPopupOpen(true);
     };
 
+
+    if (!allEmployee) {
+        return <div>
+            <Loading />
+        </div>;
+    }
+
+
+    const handleReject = async (empId) => {
+        if (window.confirm("Are you sure you want to reject this employee?")) {
+            const res = await dispatch(updateEmpStatus({ empId, status: 'Reject' }));
+            if (res.code === 200) {
+                setIsEditPopupOpen(false);
+                getAllEmployee();
+
+            }
+        }
+    }
+
+    const handleApprove = async (empId) => {
+        if (window.confirm("Are you sure you want to approve this employee?")) {
+            const res = await dispatch(updateEmpStatus({ empId, status: 'Approve' }));
+            if (res.code === 200) {
+                setIsEditPopupOpen(false);
+                getAllEmployee();
+            }
+        }
+    }
+
+
     return (
         <div className="container p-4">
 
@@ -136,7 +182,6 @@ function EmployeeInfo() {
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date of Join</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year of Passing</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact No</th>
@@ -163,9 +208,8 @@ function EmployeeInfo() {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.Email}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.Gender}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{new Date(employee.DOB).toLocaleDateString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.status}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{new Date(employee.DateOfJoining).toLocaleDateString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.YearOfPassing}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{new Date(employee.YearOfPassing).toLocaleDateString().split("/")[2]}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.ContactNo}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.education}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.workExperience}</td>
@@ -226,8 +270,8 @@ function EmployeeInfo() {
             {isEditPopupOpen && <EmployeeInfoPopup
                 employee={selectedEmployee}
                 onClose={() => setIsEditPopupOpen(false)}
-                reject={() => dispatch(updateEmployee({ ...selectedEmployee, status: 'Reject' }))}
-                approve={() => dispatch(updateEmployee({ ...selectedEmployee, status: 'Approve' }))}
+                reject={() => handleReject(selectedEmployee.empId)}
+                approve={() => handleApprove(selectedEmployee.empId)}
             />}
         </div>
     );

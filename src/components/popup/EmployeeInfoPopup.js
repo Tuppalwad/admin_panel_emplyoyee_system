@@ -27,7 +27,9 @@ function EmployeeInfoPopup({ employee, approve, reject, onClose }) {
           </div>
           <div className="mb-1  mt-3">
             <label className="block  text-gray-700">Year of Passing</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.YearOfPassing}</p>
+            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{
+              formData.YearOfPassing ? new Date(formData.YearOfPassing).toLocaleDateString().split("/")[2] : 'N/A'
+              }</p>
           </div>
           <div className="mb-1  mt-3">
             <label className="block  text-gray-700">Contact No</label>

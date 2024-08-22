@@ -11,7 +11,8 @@ const AddEmployee = () => {
     gender: '',
     role: '',
     worktype: '',
-    mobile: ''
+    mobile: '',
+    shift : ''
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -40,6 +41,7 @@ const AddEmployee = () => {
     if (!formData.role) newErrors.role = 'Role is required';
     if (!formData.worktype) newErrors.worktype = 'Work Type is required';
     if (!formData.mobile) newErrors.mobile = 'Mobile Number is required';
+    if (!formData.shift) newErrors.shift = 'Shift is required';
     if (formData.mobile && !/^[0-9]{10}$/.test(formData.mobile)) {
       newErrors.mobile = 'Mobile Number is invalid';
     }
@@ -77,7 +79,9 @@ const AddEmployee = () => {
           gender: '',
           role: '',
           worktype: '',
-          mobile: ''
+          mobile: '',
+          shift : ''
+
         });
         setErrors({
           fullName: '',
@@ -85,7 +89,9 @@ const AddEmployee = () => {
           gender: '',
           role: '',
           worktype: '',
-          mobile: ''
+          mobile: '',
+          shift : ''
+
         });
 
       }
@@ -97,7 +103,7 @@ const AddEmployee = () => {
   return (
     <div className=" container  mx-10  p-5 ">
       <ToastContainer />
-      {loading &&<Loading  />}
+      {loading && <Loading  />}
       <h1 className="text-2xl font-bold mb-6 mt-3 text-gray-800">Add Employee</h1>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-5 shadow-md rounded-lg">
         <TextInput
@@ -140,6 +146,15 @@ const AddEmployee = () => {
           onChange={handleChange}
           error={errors.worktype}
         />
+        <DropdownBox
+          label="Shift"
+          name="shift"
+          options={['Day Shift','Evening Shift','Night Shift']}
+          value={formData.shift}
+          onChange={handleChange}
+          error={errors.shift}
+        />
+
         <TextInput
           label="Phone Number"
           name="mobile"

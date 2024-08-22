@@ -1,13 +1,8 @@
 // src/LeaveManagement.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LeaveReq from '../../components/popup/LeaveReq';
-
-const dummyData = [
-  { id: 1, name: 'John Deo', leaveType: 'Sick', leaveFrom: '2023-07-01', leaveTo: '2023-07-05', noOfDays: 5, reason: 'Flu', status: 'Approved', action: 'View' },
-  { id: 2, name: 'Sarah Smith', leaveType: 'Vacation', leaveFrom: '2023-07-10', leaveTo: '2023-07-15', noOfDays: 6, reason: 'Family Trip', status: 'Pending', action: 'View' },
-  { id: 3, name: 'Edna Gilbert', leaveType: 'Sick', leaveFrom: '2023-07-20', leaveTo: '2023-07-22', noOfDays: 3, reason: 'Fever', status: 'Rejected', action: 'View' },
-  { id: 4, name: 'Shelia Osterberg', leaveType: 'Maternity', leaveFrom: '2023-08-01', leaveTo: '2023-08-31', noOfDays: 31, reason: 'Childbirth', status: 'Approved', action: 'View' },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { getallEmpLeaves, setStatusofLeave } from '../../redux/actions/leaveAction';
 
 const AllLeaveRequest = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,6 +10,13 @@ const AllLeaveRequest = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [popupVisible, setPopupVisible] = useState(false);
+
+  const dispatch = useDispatch();
+  const   { leaves ,refresh} = useSelector(state => state.leaves);
+  
+  useEffect(() => {
+    dispatch(getallEmpLeaves());
+  }, [dispatch,refresh]);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -30,14 +32,6 @@ const AllLeaveRequest = () => {
     setCurrentPage(1); // Reset to the first page on items per page change
   };
 
-  const filteredData = dummyData.filter(employee =>
-    employee.name.toLowerCase().includes(searchTerm.toLowerCase()) || employee.id.toString().includes(searchTerm)
-  );
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredData.slice(startIdx, startIdx + itemsPerPage);
-
   const handleViewClick = (leave) => {
     setSelectedLeave(leave);
     setPopupVisible(true);
@@ -48,25 +42,29 @@ const AllLeaveRequest = () => {
     setSelectedLeave(null);
   };
 
-  const handleStatusChange = (status) => {
+  const handleStatusChange = async (status) => {
     if (selectedLeave) {
-      // Update the status of the selected leave request
-      const updatedLeave = { ...selectedLeave, status };
-      // Update the dummyData or state (in a real app, this should be done via API call)
-      console.log(`Updating leave ${selectedLeave.id} to ${status}`);
-      setSelectedLeave(updatedLeave);
+      const updatedLeave = { leaveId: selectedLeave._id, empId: selectedLeave.empId, status };
+      await dispatch(setStatusofLeave(updatedLeave));
     }
     handleClosePopup();
   };
+
+  // Filter and paginate leaves data
+  const filteredData = leaves.filter(leave =>
+    leave.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || leave.empId.includes(searchTerm)
+  );
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const paginatedData = filteredData.slice(startIdx, startIdx + itemsPerPage);
 
   return (
     <div className="p-4">
       <div className="mb-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Leave Management</h1>
-        <div
-          className="flex items-center  p-1 w-1/3"
-        >
-          <p className="text-gray-600 ">Search:</p>
+        <div className="flex items-center p-1 w-1/3">
+          <p className="text-gray-600">Search:</p>
           <input
             type="text"
             placeholder="Search employee"
@@ -92,16 +90,22 @@ const AllLeaveRequest = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {paginatedData.map((row) => (
-              <tr key={row.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{row.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{row.leaveType}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{row.leaveFrom}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{row.leaveTo}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{row.noOfDays}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{row.reason}</td>
-                <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500
-                  ${row.status === 'Approved' ? 'text-green-600 ' : row.status === 'Pending' ? 'text-yellow-600' : 'text-red-600'}
-                  `}>{row.status}</td>
+              <tr key={row._id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{row.fullName}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{row.type}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(row.startDate).toLocaleDateString()}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(row.endDate).toLocaleDateString()}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {Math.ceil((new Date(row.endDate) - new Date(row.startDate)) / (1000 * 60 * 60 * 24)) + 1}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{
+                  row.reason.length > 20 ? row.reason.substring(0, 20) + '...' : row.reason
+                }</td>
+                <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 
+                  ${row.status === 'Approved' ? 'text-green-600' : row.status === 'Pending' ? 'text-yellow-600' : 'text-red-600'}
+                `}>
+                  {row.status}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button
                     onClick={() => handleViewClick(row)}
@@ -115,9 +119,10 @@ const AllLeaveRequest = () => {
           </tbody>
         </table>
       </div>
+
       <div className="mt-4 flex justify-between items-center bg-white p-3">
         <div>
-
+          {/* Additional elements if needed */}
         </div>
         <div>
           <span className="text-gray-700">Items per page:</span>

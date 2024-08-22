@@ -1,18 +1,19 @@
     import React from 'react'
     
-    function LeaveReq(
-
-        { selectedLeave, handleClosePopup, handleStatusChange }
-    ) {
+    function LeaveReq( { selectedLeave, handleClosePopup, handleStatusChange } ) {
       return (
         <div> <div className="fixed inset-0 flex items-center justify-center bg-gray-400 bg-opacity-50">
         <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full">
           <h2 className="text-xl font-bold mb-4">Leave Request Details</h2>
-          <p><strong>Name:</strong> {selectedLeave.name}</p>
-          <p><strong>Leave Type:</strong> {selectedLeave.leaveType}</p>
-          <p><strong>Leave From:</strong> {selectedLeave.leaveFrom}</p>
-          <p><strong>Leave To:</strong> {selectedLeave.leaveTo}</p>
-          <p><strong>No. of Days:</strong> {selectedLeave.noOfDays}</p>
+          <p><strong>Name:</strong> {selectedLeave.fullName}</p>
+          <p><strong>Leave Type:</strong> {selectedLeave.type}</p>
+          <p><strong>Leave From:</strong> {new Date(selectedLeave.startDate).toLocaleDateString()}</p>
+          <p><strong>Leave To:</strong> {new Date(selectedLeave.endDate).toLocaleDateString()}</p>
+          <p><strong>No. of Days:</strong> {
+            Math.ceil(
+              (new Date(selectedLeave.endDate) - new Date(selectedLeave.startDate)) / (1000 * 60 * 60 * 24)
+            ) + 1
+          }</p>
           <p><strong>Reason:</strong> {selectedLeave.reason}</p>
           <p><strong>Status:</strong> {selectedLeave.status}</p>
           <div className="mt-4 flex justify-end">

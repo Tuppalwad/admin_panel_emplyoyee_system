@@ -13,4 +13,13 @@ export const api = {
     getEmployeeeById: "/getuser",
     setAdminInfo: "/setadmininfo",
     getAdminInfo: "/getadmin",
+    getAllEmployeeinfo :'/getallemployeeinfo',
+    updateEmpinfostatus:'/updateuserinfostatus',
+    getemployeeattendanceToday:'/getemployeeattendanceToday',
+    getemployeeattendanceInfo:'/getemployeeattendanceinfo',
+    getemployeeattendanceMonthly:'/getemployeeattendanceMonthly', 
+
+    getAllLeaves:'/getallLeave',
+    leaveStatus:'/leaveStatus',
+    
 };

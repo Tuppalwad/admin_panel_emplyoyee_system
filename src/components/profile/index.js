@@ -247,7 +247,7 @@ const Profile = () => {
                             value={formData?.mobile}
                             onChange={handleChange}
                             error={errors.mobile}
-                            maxlenght={10}
+                            maxlength={10}
                             placeholder={admin?.mobile}
                         />
                         <TextInput
@@ -387,7 +387,7 @@ const Profile = () => {
                                 value={formData.mobile}
                                 onChange={handleChange}
                                 error={errors.mobile}
-                                maxlenght={10}
+                                maxlength={10}
                             />
                             <TextInput
                                 label="Education"

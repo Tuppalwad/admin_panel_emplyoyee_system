@@ -59,3 +59,30 @@ export const updateEmployee = (data) => async (dispatch) => {
     throw error;
   }
 };
+
+export const getAllEmployeeinfo = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    const response = await makeApiRequest({ method: GET, url: api.getAllEmployeeinfo });
+    dispatch(setLoading(false));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    dispatch(setLoading(false));
+    throw error;
+  }
+}
+
+export const updateEmpStatus = (data) => async (dispatch) => {
+  console.log(data);
+  try {
+    dispatch(setLoading(true));
+    const response = await makeApiRequest({ method: POST, url: api.updateEmpinfostatus, data });
+    dispatch(setLoading(false));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    dispatch(setLoading(false));
+    throw error;
+  }
+}
