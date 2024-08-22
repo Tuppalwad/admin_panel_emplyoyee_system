@@ -16,6 +16,7 @@ import AllLeaveRequest from './pages/leaves/AllLeaveRequest';
 import NotFoundPage from './components/common/NotFoundPage';
 import ChangePass from './pages/auth/ChangePass';
 import LeaveStatus from './pages/leaves/LeaveStatus';
+import { AddProject } from './pages/project';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
               <Route path="attendance/today_attendance" element={<AttendanceTable />} />
               <Route path="attendance/monthly_attendance" element={<MonthtyAtteData />} />
               <Route path="leave/leave_request" element={<AllLeaveRequest />} />
+              <Route path="project/add" element={<AddProject />} />
               <Route path="account" element={<Profile />} />
               <Route path='*' element={<NotFoundPage/>} />
               {/* <Route path="settings" element={<Settings />} /> */}
