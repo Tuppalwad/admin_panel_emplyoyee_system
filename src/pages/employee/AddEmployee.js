@@ -4,6 +4,7 @@ import { setEmployee } from '../../redux/actions/employeeActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
+
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
     fullName: '',
