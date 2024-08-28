@@ -63,8 +63,8 @@ const AddEmployee = () => {
         // Submit form data to backend
         const res = await dispatch(setEmployee(formData));
         if (res.code === 200) {
-          e.target.reset();
           notify('Employee Added Successfully');
+          e.target.reset();
         } else {
           notify(res.message);
         }
