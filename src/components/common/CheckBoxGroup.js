@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
-const CheckboxGroup = ({ name, options, selectedValues = [], onChange, error, label, className }) => {
+const CheckboxGroup = ({ name, options, selectedValues = [], onChange, error, label }) => {
   
   selectedValues = Array.isArray(selectedValues) ? selectedValues : [];
 
@@ -23,7 +22,7 @@ const CheckboxGroup = ({ name, options, selectedValues = [], onChange, error, la
       <label className="block text-gray-700 text-sm font-bold mb-2">
         {label}
       </label>
-      <div className={classNames("flex flex-row flex-wrap", className)}>
+      <div className="flex flex-row flex-wrap">
         {options.map((option, index) => (
           <label key={`${option}-${index}`} className="flex items-center mb-2 mr-4">
             <input
@@ -32,7 +31,7 @@ const CheckboxGroup = ({ name, options, selectedValues = [], onChange, error, la
               value={option}
               checked={selectedValues.includes(option)}
               onChange={handleCheckboxChange}
-              className={classNames('mr-2', { 'border-red-500': error })}
+              className={`mr-2 ${error ? 'border-red-500' : ''}`}
             />
             {option}
           </label>
@@ -50,7 +49,6 @@ CheckboxGroup.propTypes = {
   onChange: PropTypes.func.isRequired,
   error: PropTypes.string,
   label: PropTypes.string.isRequired,
-  className: PropTypes.string,
 };
 
 export default CheckboxGroup;

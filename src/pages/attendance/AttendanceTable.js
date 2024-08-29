@@ -13,12 +13,12 @@ const AttendanceTable = () => {
     const dispatch = useDispatch();
 
     // Filter the attendance data based on the search term
-    const filteredData = attendanceData.filter(employee =>
+    const filteredData = attendanceData?.filter(employee =>
         employee.fullName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const currentData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
+    const currentData = filteredData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(Number(e.target.value));
@@ -47,7 +47,7 @@ const AttendanceTable = () => {
     }, []);
 
 
-    if (attendanceData.length === 0) {
+    if (attendanceData?.length === 0) {
         return <h1>Loading...</h1>;
     }
 
@@ -79,7 +79,7 @@ const AttendanceTable = () => {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {currentData.map(employee => (
+                        {currentData?.map(employee => (
                             <tr key={employee._id} className="border-b cursor-pointer hover:bg-gray-100" onClick={() => handleRowClick(employee)}>
                                 <td className="py-2 text-left ps-6">
                                     <img src={"https://via.placeholder.com/40"} alt="profile" className="rounded-full h-10 w-10" />
@@ -125,7 +125,7 @@ const AttendanceTable = () => {
                         <option value={20}>20</option>
                     </select>
                     <span>
-                        {`${(currentPage - 1) * itemsPerPage + 1} - ${Math.min(currentPage * itemsPerPage, filteredData.length)} of ${filteredData.length}`}
+                        {`${(currentPage - 1) * itemsPerPage + 1} - ${Math.min(currentPage * itemsPerPage, filteredData?.length)} of ${filteredData?.length}`}
                     </span>
                     <button
                         className="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed mr-2"
