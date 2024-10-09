@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../asset/logo.png';
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { capitalize } from '../../utils/utils';
 import NavItem from './NavItem';
 import { navItems } from './navdata';
@@ -15,12 +15,11 @@ function Sidebar() {
   const isSidebarOpen = useSelector((state) => !state.sidebar.isSidebarOpen);
   const [isSubNavOpen, setSubNavOpen] = useState({});
 
-  const token = localStorage.getItem('token') || "";
-  const decoded = jwtDecode(token);
+  // const token = localStorage.getItem('token') || "";
+  // const {adminInfo} = useSelector(state=> state.adminInfos)
+  const { adminInfo } = useSelector((state) => state.admininfo)
+  const decoded = jwtDecode(adminInfo.token ? adminInfo.token : "");
   const gravatarUrl = avatarUrl({ email: decoded?.email });
-
-  const location = useLocation();
-  const currentPath = location.pathname;
 
   const toggleSubNav = (key) => {
     setSubNavOpen((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -68,7 +67,7 @@ function Sidebar() {
 
       <nav className='pt-5'>
         {navItems.map((item) => (
-          <NavItem
+          item.view.includes(adminInfo.role) && <NavItem
             key={item.key}
             item={item}
             isSidebarOpen={isSidebarOpen}

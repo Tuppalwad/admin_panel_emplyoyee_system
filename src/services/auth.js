@@ -97,15 +97,29 @@ export const isLoggedinUser = () => async (dispatch) => {
   }
 }
 
-export const logout = () => async (dispatch) => {
+export const logout = (token) => async (dispatch) => {
   try {
+    // Start loading
     dispatch(setLoading(true));
-    const token = localStorage.getItem('token');
-    const res = await makeApiRequest({ method: POST, url: logoutuser, data: { token: token } });
+    
+    // Make API request for logout
+    const res = await makeApiRequest({ method: 'POST', url: logoutuser, data: { token } });
+
+    // Clear local storage
+    localStorage.clear();
+
+    // Optionally clear any Redux store state by dispatching a reset or logout action
+    dispatch({ type: 'RESET_STATE' }); // You can create a RESET_STATE action in your root reducer to clear all store data
+
+    // Stop loading
     dispatch(setLoading(false));
+    
     return res.data;
   } catch (error) {
+    // Stop loading in case of an error
     dispatch(setLoading(false));
+    
+    // Return error message
     return error.message;
   }
-}
+};

@@ -19,6 +19,7 @@ import LeaveStatus from './pages/leaves/LeaveStatus';
 import { AddProject } from './pages/project';
 import ViewProjects from './pages/project/ViewProjects';
 import ProjectDetail from './pages/project/ProjectDetail';
+import { useSelector } from 'react-redux';
 
 function App() {
   return (

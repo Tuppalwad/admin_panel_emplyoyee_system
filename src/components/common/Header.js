@@ -8,9 +8,10 @@ function Header() {
   const dispatch = useDispatch();
   const isSidebarOpen = useSelector((state) => !state.sidebar.isSidebarOpen);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const {adminInfo} = useSelector((state)=>state.admininfo)
 
   const handleLogout = async () => {
-    const res = await dispatch(auth.logout());
+    const res = await dispatch(auth.logout(adminInfo?.token));
     if (res.code === 200) {
       localStorage.removeItem('token');
       window.location.href = '/';

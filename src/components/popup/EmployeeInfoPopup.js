@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from "react-router-dom";
+import { getProjectByEmpId, getProjectById } from '../../redux/actions/projectAction';
+import { GET_PROJECTS } from '../../redux/actiontypes';
 
 function EmployeeInfoPopup({ employee, approve, reject, onClose }) {
   const [formData, setFormData] = useState({ ...employee });
+  const navigation = useNavigate();
+  const dispatch = useDispatch();
+  const handleSubmit = async () => {
+    const res = await dispatch(getProjectByEmpId({ empId: formData.empId }));
+    if (res.code == 200) {
+      dispatch({ type: GET_PROJECTS, payload: res?.data })
+      setTimeout(() => {
+        navigation('/dashboard/project/view')
+      }, 1000);
+    }
+
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
@@ -20,7 +36,7 @@ function EmployeeInfoPopup({ employee, approve, reject, onClose }) {
             <label className="block  text-gray-700">Employee ID</label>
             <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.empId}</p>
           </div>
-          
+
           <div className="mb-1  mt-3">
             <label className="block  text-gray-700">Date of Joining</label>
             <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{new Date(formData.DateOfJoining).toLocaleDateString()}</p>
@@ -29,7 +45,7 @@ function EmployeeInfoPopup({ employee, approve, reject, onClose }) {
             <label className="block  text-gray-700">Year of Passing</label>
             <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{
               formData.YearOfPassing ? new Date(formData.YearOfPassing).toLocaleDateString().split("/")[2] : 'N/A'
-              }</p>
+            }</p>
           </div>
           <div className="mb-1  mt-3">
             <label className="block  text-gray-700">Contact No</label>
@@ -55,7 +71,7 @@ function EmployeeInfoPopup({ employee, approve, reject, onClose }) {
             <label className="block  text-gray-700">Blood Group</label>
             <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.BloodGroup}</p>
           </div>
-          
+
           <div className="mb-1  mt-3">
             <label className="block  text-gray-700">PAN Card No</label>
             <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.PANcardNo}</p>
@@ -64,14 +80,14 @@ function EmployeeInfoPopup({ employee, approve, reject, onClose }) {
             <label className="block  text-gray-700">Aadhar Card No</label>
             <p className="w-full px-2 mt-1 py-2 border border-gray-300 rounded">{formData.AdharcardNo}</p>
           </div>
-        
+
           <div className="mb-1  mt-3">
             <label className="block  text-gray-700">Marital Status</label>
             <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.maritalStatus}</p>
           </div>
           <div className="mb-1  mt-3 col-span-2">
             <label className="block  text-gray-700">Physically Disabled</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.PhysicallyDisabled ? 'Yes' : 'No'}</p>
+            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.PhysicallyDisabled}</p>
           </div>
           <div className="mb-1  mt-3 col-span-2">
             <label className="block  text-gray-700">Emergency Contact No</label>
@@ -85,7 +101,23 @@ function EmployeeInfoPopup({ employee, approve, reject, onClose }) {
             <label className="block  text-gray-700 ">Present Address</label>
             <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.PresentAddress}</p>
           </div>
+          <div className="mb-1  mt-3 col-span-2" >
+            {/* <Link
+              to='/dashboard/project/view'
+              className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">
+              
+            </Link> */}
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+            >
+              View His Project
+            </button>
+          </div>
+
         </div>
+
         <div className="flex justify-end mt-4">
           <button
             type="button"
