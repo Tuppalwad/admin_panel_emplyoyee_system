@@ -1,16 +1,22 @@
 // NavItem.js
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 const NavItem = ({ item, isSidebarOpen, toggleSubNav, isActive, isSubNavOpen }) => {
   const location = useLocation();
   const currentPath = location.pathname;
-
+  const { adminInfo } = useSelector((state) => state.admininfo)
+  const navigate = useNavigate();
   const handleClick = () => {
+    if (!item.subNav) {
+      navigate(item.paths[0]);
+    }
     if (item.subNav) {
       toggleSubNav(item.key);
     }
   };
+
 
   return (
     <div className="flex flex-col">
@@ -28,17 +34,19 @@ const NavItem = ({ item, isSidebarOpen, toggleSubNav, isActive, isSubNavOpen }) 
           </div>
         )}
       </button>
-      {isSubNavOpen[item.key] && isSidebarOpen && item.subNav && (
+      {isSubNavOpen[item.key] && isSidebarOpen && (
         <div className={`pl-${isSidebarOpen ? 8 : 0}`}>
           {item.subNav.map((subItem) => (
-            <Link
-              to={subItem.path}
-              key={subItem.title}
-              className={`flex items-center p-3 text-base font-normal ${isActive(currentPath, [subItem.path]) ? 'text-blue-900' : 'text-gray-900'} hover:bg-gray-300`}
-            >
-              <i className={`fa fa-chevron-right pr-2 ${isActive(currentPath, [subItem.path]) ? 'text-blue-900' : 'text-gray-900'}`}></i>
-              {isSidebarOpen && subItem.title}
-            </Link>
+            subItem?.subView?.includes(adminInfo.role) && (
+              <Link
+                to={subItem.path}
+                key={subItem.title}
+                className={`flex items-center p-3 text-base font-normal ${isActive(currentPath, [subItem.path]) ? 'text-blue-900' : 'text-gray-900'} hover:bg-gray-300`}
+              >
+                <i className={`fa fa-chevron-right pr-2 ${isActive(currentPath, [subItem.path]) ? 'text-blue-900' : 'text-gray-900'}`}></i>
+                {isSidebarOpen && subItem.title}
+              </Link>
+            )
           ))}
         </div>
       )}

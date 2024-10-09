@@ -17,6 +17,9 @@ import NotFoundPage from './components/common/NotFoundPage';
 import ChangePass from './pages/auth/ChangePass';
 import LeaveStatus from './pages/leaves/LeaveStatus';
 import { AddProject } from './pages/project';
+import ViewProjects from './pages/project/ViewProjects';
+import ProjectDetail from './pages/project/ProjectDetail';
+import { useSelector } from 'react-redux';
 
 function App() {
   return (
@@ -40,6 +43,8 @@ function App() {
               <Route path="attendance/monthly_attendance" element={<MonthtyAtteData />} />
               <Route path="leave/leave_request" element={<AllLeaveRequest />} />
               <Route path="project/add" element={<AddProject />} />
+              <Route path="project/view" element={<ViewProjects />} />
+              <Route path="project/projectDetail/:id" element={<ProjectDetail />} />
               <Route path="account" element={<Profile />} />
               <Route path='*' element={<NotFoundPage/>} />
               {/* <Route path="settings" element={<Settings />} /> */}

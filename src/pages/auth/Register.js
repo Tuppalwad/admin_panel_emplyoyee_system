@@ -12,7 +12,7 @@ function Register() {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const {isLoading} = useSelector((state) => state.loading);
+  const { isLoading } = useSelector((state) => state.loading);
   const [error, setError] = useState({
     fullname: '',
     email: '',
@@ -44,7 +44,7 @@ function Register() {
     }
 
     try {
-      const data = await dispatch(auth.registerAdmin({ fullname, email, password, role}));
+      const data = await dispatch(auth.registerAdmin({ fullname, email, password, role }));
       console.log(data);
       if (data.code !== 200) {
         setError({ general: data.message });
@@ -67,6 +67,7 @@ function Register() {
     }
   };
 
+
   return (
     <div className="min-h-screen flex">
       <ToastContainer />
@@ -82,8 +83,9 @@ function Register() {
                 type="text"
                 placeholder="Full Name"
                 value={fullname}
-                onChange={(e) => {setName(e.target.value)
-                setError({ ...error, fullname: '' });
+                onChange={(e) => {
+                  setName(e.target.value)
+                  setError({ ...error, fullname: '' });
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -94,9 +96,10 @@ function Register() {
                 type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => {setEmail(e.target.value)
-                setError({ ...error, email: '' });
-              } }
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  setError({ ...error, email: '' });
+                }}
                 className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {error.email && <p className="text-red-500 text-sm">{error.email}</p>}
@@ -106,8 +109,9 @@ function Register() {
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => {setPassword(e.target.value)
-                setError({ ...error, password: '' });
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  setError({ ...error, password: '' });
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -118,20 +122,21 @@ function Register() {
                 type="password"
                 placeholder="Confirm Password"
                 value={confirmPassword}
-                onChange={(e) => {setConfirmPassword(e.target.value)
-                setError({ ...error, confirmPassword: '' });
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value)
+                  setError({ ...error, confirmPassword: '' });
 
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {error.confirmPassword && <p className="text-red-500 text-sm">{error.confirmPassword}</p>}
             </div>
-            <div>
+            {/* <div>
               <select
                 value={role}
-                onChange={(e) => {setRole(e.target.value)
-
-                setError({ ...error, role: '' });
+                onChange={(e) => {
+                  setRole(e.target.value)
+                  setError({ ...error, role: '' });
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
@@ -141,9 +146,10 @@ function Register() {
                 <option value="MANAGER">MANAGER</option>
                 <option value="FOUNDER">FOUNDER</option>
                 <option value="CO-FOUNDER">CO-FOUNDER</option>
+               
               </select>
               {error.role && <p className="text-red-500 text-sm">{error.role}</p>}
-            </div>
+            </div> */}
             <button
               type="submit"
               disabled={isLoading}

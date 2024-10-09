@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DropdownBox = ({ label, name, options, value, onChange, error ,placeholder}) => {
+const DropdownBox = ({ label, name, options, value, onChange, error, placeholder }) => {
   return (
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
@@ -14,7 +14,9 @@ const DropdownBox = ({ label, name, options, value, onChange, error ,placeholder
           error ? 'border-red-500' : ''
         }`}
       >
-        <option value=""> {placeholder? placeholder : `Select ${label}`} </option>
+        <option value="" disabled hidden>
+          {placeholder ? placeholder : `Select ${label}`}
+        </option>
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

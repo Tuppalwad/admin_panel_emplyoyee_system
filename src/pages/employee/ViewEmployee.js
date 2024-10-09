@@ -88,6 +88,7 @@ function ViewEmployee() {
               <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
               <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
               <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Work Type</th>
+              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">shift</th>
               <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -101,6 +102,7 @@ function ViewEmployee() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.gender}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.role}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.worktype}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.shift}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     <button
                       className="text-blue-500 hover:text-blue-700 mr-2"

@@ -18,6 +18,8 @@ const Profile = () => {
     const dispatch = useDispatch();
     const dummyimage = avatarUrl({ email: decode?.email });
     const [image, setImage] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+
     const [formData, setFormData] = useState({
         fullname: decode?.fullname,
         role: decode?.role,
@@ -44,13 +46,12 @@ const Profile = () => {
             }
         };
         fetchAdmin();
-    }, [admin?.gender, decode?.email]);
+    }, [admin?.gender, decode?.email, isEditing, dispatch]);
 
 
     console.log(formData);
 
     const [errors, setErrors] = useState({});
-    const [isEditing, setIsEditing] = useState(false);
 
     const notify = (message) => toast(message);
 
@@ -103,8 +104,6 @@ const Profile = () => {
             try {
                 setLoading(true);
                 // Submit form data to backend
-                
-
                 const check = await uploadImage(decode?.email, image);
                 console.log(check);
 
@@ -423,14 +422,22 @@ const Profile = () => {
                                 error={errors.country}
                             />
 
-                            <TextInput
+                            {/* <TextInput
                                 label="About"
                                 name="about"
                                 type="text"
                                 value={formData.about}
                                 onChange={handleChange}
                                 error={errors.about}
-                            />
+                            /> */}
+                            <textarea
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:shadow-outline"
+                                name="about"
+                                value={formData.about}
+                                onChange={handleChange}
+                                placeholder="About"
+                            ></textarea>
+
                             <TextInput
                                 label="Profile Image"
                                 name="image"
@@ -451,6 +458,7 @@ const Profile = () => {
                                 type="submit"
                                 className="col-span-1 md:col-span-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 disabled={loading}
+
                             >
                                 {loading ? 'Updating Profile...' : 'Update Profile'}
                             </button>

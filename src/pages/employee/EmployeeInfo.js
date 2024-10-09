@@ -219,7 +219,7 @@ function EmployeeInfo() {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.AdharcardNo}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.PermanetAddress}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.PresentAddress}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.PhysicallyDisabled ? 'Yes' : 'No'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.PhysicallyDisabled}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.maritalStatus}</td>
                                     <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-700
                                         ${employee.status === 'Approve' ? 'text-green-700' : 'text-red-700'}

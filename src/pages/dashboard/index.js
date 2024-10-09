@@ -4,6 +4,7 @@ import { Header } from '../../components/common';
 import Sidebar from '../../components/sidebar';
 
 function AdminLayout() {
+
   return (
       <div className="flex">
         <Sidebar />
