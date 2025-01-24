@@ -1,0 +1,9 @@
+export const TOGGLE_SIDEBAR  = 'TOGGLE_SIDEBAR ';
+export const LOADING = "LOADING";
+export const GET_ALL_EMPLOYEES = 'GET_ALL_EMPLOYEES'
+export const GET_EMPLOYEE = 'GET_EMPLOYEE'
+export const GET_EMPLOYEE_INFO = 'GET_EMPLOYEE_INFO'
+export const SET_ADMIN_INFO = 'SET_ADMIN_INFO'
+
+export const SET_LEAVES = 'SET_LEAVES'
+export const LEAVE_REFRESH = 'LEAVE_REFRESH'
