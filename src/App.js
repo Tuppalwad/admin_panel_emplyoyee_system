@@ -34,9 +34,9 @@ function App() {
           <Route path="/verifyemail/:id" element={<VerifyEmail />} />
           <Route path="/leavestatus/:id" element={<LeaveStatus />} />
           <Route path="/dashboard" element={<PrivatedRoute />}>
-            <Route path="" element={<AdminLayout />}>
+              <Route path="" element={<AdminLayout />}>
               <Route path="changepass" element={<ChangePass />} />
-              <Route path='data' element={<Dashboardbox />} />
+              {/* <Route path='data' element={<Dashboardbox />} /> */}
               <Route path="employee/add" element={<AddEmployee />} />
               <Route path="employee/view" element={<ViewEmployee />} />
               <Route path="employee/viewinfo" element={<EmployeeInfo />} />

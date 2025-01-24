@@ -23,22 +23,7 @@ function Dashboardbox() {
 
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <AttendanceGraph
-                    attendanceData={[
-                        {
-                            date: { $date: '2024-12-10T00:00:00.000Z' },
-                            status: 'Absent',
-                        },
-                        {
-                            date: { $date: '2024-12-11T00:00:00.000Z' },
-                            status: 'Absent',
-                        },
-                        {
-                            date: { $date: '2024-12-12T00:00:00.000Z' },
-                            status: 'Leave',
-                        },
-                    ]}
-                />
+                <AttendanceGraph />
                 <ProjectStatusGraph />
                 <TeamProductivityGraph />
                 <KeyMetricsGraph />

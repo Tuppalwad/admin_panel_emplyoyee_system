@@ -1,34 +1,62 @@
 import React from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 
 // Register Chart.js components
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const AttendanceGraph = ({ attendanceData }) => {
-  // Process the attendance data
-  const labels = attendanceData.map((entry) =>
+const AttendanceGraph = () => {
+  const attendanceData = [
+    {
+      inTime: { $date: '1970-01-01T00:00:00.000Z' },
+      outTime: { $date: '1970-01-01T00:00:00.000Z' },
+      date: { $date: '2024-12-10T00:00:00.000Z' },
+      status: 'Absent',
+      halfDay: false,
+      shift: 'Day Shift',
+      totalHours: 0,
+    },
+    {
+      inTime: { $date: '1970-01-01T00:00:00.000Z' },
+      outTime: { $date: '1970-01-01T00:00:00.000Z' },
+      date: { $date: '2024-12-11T00:00:00.000Z' },
+      status: 'Absent',
+      halfDay: false,
+      shift: 'Day Shift',
+      totalHours: 0,
+    },
+    {
+      inTime: { $date: '1970-01-01T00:00:00.000Z' },
+      outTime: { $date: '1970-01-01T00:00:00.000Z' },
+      date: { $date: '2024-12-12T00:00:00.000Z' },
+      status: 'Leave',
+      halfDay: false,
+      shift: 'Day Shift',
+      totalHours: 0,
+    },
+  ];
+  const lastSixData = attendanceData.slice(-6);
+
+  // Prepare data for the bar chart
+  const labels = lastSixData.map((entry) =>
     new Date(entry.date.$date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
   );
 
-  const statusValues = attendanceData.map((entry) => {
-    if (entry.status === 'Present') return 1; // Mark 1 for Present
-    if (entry.status === 'Half Day') return 0.5; // Mark 0.5 for Half Day
-    if (entry.status === 'Absent') return 0; // Mark 0 for Absent
-    if (entry.status === 'Leave') return -1; // Mark -1 for Leave
-    return 0;
-  });
+  const presentCount = lastSixData.filter((entry) => entry.status === 'Present').length;
+  const absentCount = lastSixData.filter((entry) => entry.status === 'Absent').length;
 
   const data = {
-    labels,
+    labels: ['Last 6 Days'], // Single bar group
     datasets: [
       {
-        label: 'Attendance Trends',
-        data: statusValues,
-        borderColor: '#4F46E5', // Indigo color
-        backgroundColor: 'rgba(79, 70, 229, 0.2)', // Light Indigo
-        tension: 0.4, // Smooth curves
-        fill: true,
+        label: 'Present',
+        data: [presentCount],
+        backgroundColor: '#4CAF50', // Green color
+      },
+      {
+        label: 'Absent',
+        data: [absentCount],
+        backgroundColor: '#F44336', // Red color
       },
     ],
   };
@@ -43,12 +71,7 @@ const AttendanceGraph = ({ attendanceData }) => {
       tooltip: {
         callbacks: {
           label: function (context) {
-            const value = context.raw;
-            if (value === 1) return 'Present';
-            if (value === 0.5) return 'Half Day';
-            if (value === 0) return 'Absent';
-            if (value === -1) return 'Leave';
-            return 'Unknown';
+            return `${context.dataset.label}: ${context.raw}`;
           },
         },
       },
@@ -56,21 +79,15 @@ const AttendanceGraph = ({ attendanceData }) => {
     scales: {
       y: {
         beginAtZero: true,
-        ticks: {
-          callback: (value) => {
-            if (value === 1) return 'Present';
-            if (value === 0.5) return 'Half Day';
-            if (value === 0) return 'Absent';
-            if (value === -1) return 'Leave';
-            return value;
-          },
+        title: {
+          display: true,
+          text: 'Count',
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Dates',
-          color: '#6B7280', // Gray
+          text: 'Days',
         },
       },
     },
@@ -78,8 +95,8 @@ const AttendanceGraph = ({ attendanceData }) => {
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 w-full">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Daily Attendance Trends</h2>
-      <Line data={data} options={options} />
+      <h2 className="text-xl font-bold text-gray-800 mb-4">Attendance Summary (Last 6 Days)</h2>
+      <Bar data={data} options={options} />
     </div>
   );
 };
