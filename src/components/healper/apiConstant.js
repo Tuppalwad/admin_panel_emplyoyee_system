@@ -20,6 +20,8 @@ export const api = {
     getemployeeattendanceMonthly:'/getempMonthlyAttendanceAdmin', 
     getAllLeaves:'/getallLeave',
     leaveStatus:'/leaveStatus',
-    getDashboardCount:'/getCoutData'
+    getDashboardCount:'/getCoutData',
+    getDashboardAttendancedata:'/getattendancedata',
+    getDashboardProjectData :'/getprojectdata'
     
 };

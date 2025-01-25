@@ -29,10 +29,10 @@ function Sidebar() {
   const isActive = (currentPath, paths) => paths.includes(currentPath);
 
   return (
-    <div className={`h-screen bg-white text-black ${isSidebarOpen ? 'w-64' : 'w-15'}`}
+    <div className={`h-full bg-white text-black ${isSidebarOpen ? 'w-64' : 'w-15'}`}
       style={{
         transition: 'width 0.2s',
-        height: '100vh',
+        height: 'auto',
         overflowY: 'auto',
         scrollbarWidth: 'none',
       }}
