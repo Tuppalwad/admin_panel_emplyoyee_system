@@ -20,10 +20,10 @@ const AttendanceGraph = () => {
       inTime: { $date: '1970-01-01T00:00:00.000Z' },
       outTime: { $date: '1970-01-01T00:00:00.000Z' },
       date: { $date: '2024-12-11T00:00:00.000Z' },
-      status: 'Absent',
+      status: 'Present',
       halfDay: false,
       shift: 'Day Shift',
-      totalHours: 0,
+      totalHours: 8,
     },
     {
       inTime: { $date: '1970-01-01T00:00:00.000Z' },
@@ -34,28 +34,59 @@ const AttendanceGraph = () => {
       shift: 'Day Shift',
       totalHours: 0,
     },
+    {
+      inTime: { $date: '1970-01-01T00:00:00.000Z' },
+      outTime: { $date: '1970-01-01T00:00:00.000Z' },
+      date: { $date: '2024-12-13T00:00:00.000Z' },
+      status: 'Absent',
+      halfDay: false,
+      shift: 'Day Shift',
+      totalHours: 0,
+    },
+    {
+      inTime: { $date: '1970-01-01T00:00:00.000Z' },
+      outTime: { $date: '1970-01-01T00:00:00.000Z' },
+      date: { $date: '2024-12-14T00:00:00.000Z' },
+      status: 'Present',
+      halfDay: false,
+      shift: 'Day Shift',
+      totalHours: 8,
+    },
+    {
+      inTime: { $date: '1970-01-01T00:00:00.000Z' },
+      outTime: { $date: '1970-01-01T00:00:00.000Z' },
+      date: { $date: '2024-12-15T00:00:00.000Z' },
+      status: 'Absent',
+      halfDay: false,
+      shift: 'Day Shift',
+      totalHours: 0,
+    },
   ];
+
+  // Extract the last six days of data
   const lastSixData = attendanceData.slice(-6);
 
-  // Prepare data for the bar chart
+  // Prepare labels (day names) for the x-axis
   const labels = lastSixData.map((entry) =>
-    new Date(entry.date.$date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
+    new Date(entry.date.$date).toLocaleDateString('en-US', { weekday: 'short' })
   );
 
-  const presentCount = lastSixData.filter((entry) => entry.status === 'Present').length;
-  const absentCount = lastSixData.filter((entry) => entry.status === 'Absent').length;
+  // Count Present and Absent for each day
+  const presentData = lastSixData.map((entry) => (entry.status === 'Present' ? 1 : 0));
+  const absentData = lastSixData.map((entry) => (entry.status === 'Absent' ? 1 : 0));
 
+  // Prepare data for the bar chart
   const data = {
-    labels: ['Last 6 Days'], // Single bar group
+    labels, // Days of the week
     datasets: [
       {
         label: 'Present',
-        data: [presentCount],
+        data: presentData,
         backgroundColor: '#4CAF50', // Green color
       },
       {
         label: 'Absent',
-        data: [absentCount],
+        data: absentData,
         backgroundColor: '#F44336', // Red color
       },
     ],

@@ -3,7 +3,7 @@ export const navItems = [
       key: 'dashboard',
       title: 'Dashboard',
       icon: 'fa-tachometer-alt',
-      paths: ['/dashboard/data']
+      paths: ['/dashboard']
     },
     {
       key: 'employee',

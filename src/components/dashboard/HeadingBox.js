@@ -23,7 +23,7 @@ const HeadingBox = ({ title, count }) => {
   return (
     <div className="w-full md:w-1/4 bg-white shadow-lg rounded-lg p-8 m-3 text-center">
       <h1 className="text-xl font-bold text-gray-700">{title}</h1>
-      <p className="text-4xl font-extrabold text-indigo-600">{displayCount}</p>
+      <p className="text-4xl font-extrabold text-indigo-600 pt-3">{displayCount}</p>
     </div>
   );
 };

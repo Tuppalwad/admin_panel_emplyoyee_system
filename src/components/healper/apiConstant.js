@@ -20,5 +20,6 @@ export const api = {
     getemployeeattendanceMonthly:'/getempMonthlyAttendanceAdmin', 
     getAllLeaves:'/getallLeave',
     leaveStatus:'/leaveStatus',
+    getDashboardCount:'/getCoutData'
     
 };
