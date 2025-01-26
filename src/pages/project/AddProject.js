@@ -1,37 +1,83 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DropdownBox, TextInput, Loading } from '../../components/common';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
-import { setEmployee } from '../../redux/actions/employeeActions';
+import { getAllEmployees, } from '../../redux/actions/employeeActions';
+import { validatedata } from './validate';
+import { createProject, getManagerList } from '../../redux/actions/projectAction';
+import DropdownBoxTeam from './DropdownBoxTeam';
+import { useLocation } from 'react-router-dom';
+import moment from 'moment'
 
 const AddProject = () => {
   const [isClientProject, setIsClientProject] = useState(false);
+  const location = useLocation();
+  const projectData = location.state?.info;
+
+  const formatDate = (dateString) => {
+    if (!dateString) return ''; // Return empty if no date is provided
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Ensure two-digit month
+    const day = String(date.getDate()).padStart(2, '0'); // Ensure two-digit day
+    return `${year}-${month}-${day}`; // Format as YYYY-MM-DD
+  };
+
+
   const [formData, setFormData] = useState({
-    projectId: '',
-    projectTitle: '',
-    department: '',
-    projectPriority: '',
-    clientFullName: '',
-    price: '',
-    projectStartDate: '',
-    projectEndDate: '',
-    manager: '',
-    teamMembers: [],
-    description: '',
-    workStatus: '',
-    clientNumber: '',
-    clientEmail: '',
-    clientAddress: '',
+    projectTitle: projectData?.projectTitle ? projectData?.projectTitle : '',
+    department: projectData.department ? projectData.department : '',
+    projectPriority: projectData.projectPriority ? projectData.projectPriority : '',
+    clientFullName: projectData.clientFullName ? projectData.clientFullName : '',
+    budget: projectData.budget ? projectData.budget : '',
+    projectStartDate: projectData.projectStartDate ? formatDate(projectData.projectStartDate) : '',
+    projectEndDate: projectData.projectEndDate ? formatDate(projectData.projectEndDate) : '',
+    manager: projectData.manager ? projectData.manager : [],
+    teamMembers: projectData.teamMembers ? projectData.teamMembers : [],
+    description: projectData.description ? projectData.description : '',
+    workStatus: projectData.workStatus ? projectData.workStatus : '',
+    clientNumber: projectData.clientNumber ? projectData.clientNumber : '',
+    clientEmail: projectData.clientEmail ? projectData.clientEmail : '',
+    clientAddress: projectData.clientAddress ? projectData.clientAddress : '',
   });
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const { allEmployees } = useSelector(state => state.employee)
+  const { listOfManager } = useSelector(state => state.projects)
+
+  console.log(listOfManager);
+
+  const getManagers = async () => {
+    await dispatch(getManagerList())
+  }
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      await dispatch(getAllEmployees());
+    }
+    fetchEmployees();
+    getManagers();
+  }, [])
+
+  const empList = allEmployees
+    .filter((item) => item.role !== "MANAGER" && item.role !== "HR") // Filter out non-manager and non-HR roles
+    .map((item) => ({
+      name: item.fullName,
+      empId: item.empId,
+      role: item.role,
+    }));
+
+  const managerlist = allEmployees
+    .filter((item) => item.role === "MANAGER") // Filter only manager roles
+    .map((item) => ({
+      name: item.fullName,
+      empId: item.empId,
+      role: item.role,
+    }));
 
   const notify = (message) => toast(message);
 
-  // Example employee list array
-  const employeeList = ['John Doe', 'Jane Smith', 'Mike Johnson', 'Emily Davis']; // Replace with actual data
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,85 +86,67 @@ const AddProject = () => {
   };
 
   const handleTeamMemberSelect = (selectedMember) => {
-    if (!formData.teamMembers.includes(selectedMember)) {
+    console.log(selectedMember)
+    const check = formData.teamMembers.find((member) => member.empId === selectedMember.empId);
+    if (!check) {
       setFormData((prevData) => ({
         ...prevData,
         teamMembers: [...prevData.teamMembers, selectedMember],
       }));
-      setErrors((prevErrors) => ({ ...prevErrors, teamMembers: '' }));
+    } else {
+      notify('Team member already added');
     }
   };
 
+  // Handle removing a selected team member
   const handleRemoveTeamMember = (memberToRemove) => {
     setFormData((prevData) => ({
       ...prevData,
-      teamMembers: prevData.teamMembers.filter((member) => member !== memberToRemove),
+      teamMembers: prevData.teamMembers.filter(
+        (member) => member.empId !== memberToRemove
+      ),
     }));
   };
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.projectId) newErrors.projectId = 'Project ID is required';
-    if (!formData.projectTitle) newErrors.projectTitle = 'Project Title is required';
-    if (!formData.department) newErrors.department = 'Department is required';
-    if (!formData.projectPriority) newErrors.projectPriority = 'Project Priority is required';
-    if (!formData.clientFullName) newErrors.clientFullName = 'Client Name is required';
-    if (!formData.price) {
-      newErrors.price = 'Price is required';
-    } else if (!/^\d+$/.test(formData.price)) {
-      newErrors.price = 'Price must be a valid integer';
+  const handleManagerSelect = (selectedMember) => {
+    const check = formData.manager.find((member) => member.empId === selectedMember.empId);
+    if (!check) {
+      setFormData((prevData) => ({
+        ...prevData,
+        manager: [...prevData.manager, selectedMember],
+      }));
+    } else {
+      notify('Team member already added');
     }
-    if (!formData.projectStartDate) newErrors.projectStartDate = 'Project Start Date is required';
-    if (!formData.projectEndDate) newErrors.projectEndDate = 'Project End Date is required';
-    else if (new Date(formData.projectEndDate) <= new Date(formData.projectStartDate)) {
-      newErrors.projectEndDate = 'End Date must be after the Start Date';
-    }
-    if (!formData.manager) newErrors.manager = 'Manager selection is required';
-    if (!formData.teamMembers.length) newErrors.teamMembers = 'At least one team member must be selected';
-    if (!formData.workStatus) newErrors.workStatus = 'Work Status is required';
-    if (!formData.description) newErrors.description = 'Description is required';
-
-    if (isClientProject) {
-      if (!formData.clientNumber) newErrors.clientNumber = 'Client Number is required';
-      if (!formData.clientEmail) newErrors.clientEmail = 'Client Email is required';
-      if (!formData.clientAddress) newErrors.clientAddress = 'Client Address is required';
-    }
-
-
-    return newErrors;
   };
+
+  // Handle removing a selected team member
+  const handleRemoveManager = (memberToRemove) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      manager: prevData.manager.filter(
+        (member) => member.empId !== memberToRemove
+      ),
+    }));
+  };
+
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = validate();
-
+    const newErrors = validatedata(formData, isClientProject);
     if (Object.keys(newErrors).length > 0) {
+      console.log('error', newErrors)
       setErrors(newErrors);
     } else {
       try {
         setLoading(true);
-        // Submit form data to backend
-        const res = await dispatch(setEmployee(formData));
-
+        const res = await dispatch(createProject(formData));
         if (res.code === 200) {
+          setErrors({});
+          e.target.reset();
           notify('Project Added Successfully');
-          setFormData({
-            projectId: '',
-            projectTitle: '',
-            department: '',
-            projectPriority: '',
-            clientFullName: '',
-            price: '',
-            projectStartDate: '',
-            projectEndDate: '',
-            manager: '',
-            teamMembers: [],
-            description: '',
-            workStatus: '',
-            clientNumber: '',
-            clientEmail: '',
-            clientAddress: '',
-          });
         } else {
           notify(res.message);
         }
@@ -126,9 +154,28 @@ const AddProject = () => {
         notify('Error adding project');
       } finally {
         setLoading(false);
+        setFormData((prevState) => ({
+          ...prevState, // Spread previous state (not necessary here, but for safety)
+          projectTitle: '',
+          department: '',
+          projectPriority: '',
+          clientFullName: '',
+          budget: '',
+          projectStartDate: '',
+          projectEndDate: '',
+          manager: [],
+          teamMembers: [],
+          description: '',
+          workStatus: '',
+          clientNumber: '',
+          clientEmail: '',
+          clientAddress: '',
+        }));
       }
     }
   };
+
+
 
   return (
     <div className="container mx-auto p-5">
@@ -137,28 +184,18 @@ const AddProject = () => {
       <h1 className="text-2xl font-bold mb-6 mt-3 text-gray-800">Add Project</h1>
       <div className="mb-4 flex items-center">
         <label className="block text-gray-700 text-sm font-bold">
-          Is this a client project ?
+          Is this a client project?
         </label>
         <input
           type="checkbox"
-          className=" ml-2"
+          className="ml-2"
           checked={isClientProject}
           onChange={() => setIsClientProject(!isClientProject)}
         />
         <span className="text-gray-700 ms-2">Yes</span>
       </div>
 
-
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 shadow-md rounded-lg">
-        <TextInput
-          name="projectId"
-          label="Project ID"
-          type="text"
-          placeholder="Project ID*"
-          value={formData.projectId}
-          onChange={handleChange}
-          error={errors.projectId}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 shadow-md rounded-lg">
 
         <TextInput
           name="projectTitle"
@@ -190,55 +227,57 @@ const AddProject = () => {
           error={errors.projectPriority}
         />
 
-        {isClientProject && <>
-          <TextInput
-            name="clientFullName"
-            label="Client Full Name"
-            type="text"
-            placeholder="Client Full Name*"
-            value={formData.clientFullName}
-            onChange={handleChange}
-            error={errors.clientFullName}
-          />
+        {isClientProject && (
+          <>
+            <TextInput
+              name="clientFullName"
+              label="Client Full Name"
+              type="text"
+              placeholder="Client Full Name*"
+              value={formData.clientFullName}
+              onChange={handleChange}
+              error={errors.clientFullName}
+            />
 
-          <TextInput
-            name="clientNumber"
-            label="Client Contact Number"
-            type="text"
-            placeholder="Client Contact Number*"
-            value={formData.clientNumber}
-            onChange={handleChange}
-            error={errors.clientNumber}
-          />
-          <TextInput
-            name="clientEmail"
-            label="Client Email"
-            type="text"
-            placeholder="Client Email*"
-            value={formData.clientEmail}
-            onChange={handleChange}
-            error={errors.clientEmail}
-          />
+            <TextInput
+              name="clientNumber"
+              label="Client Contact Number"
+              type="text"
+              placeholder="Client Contact Number*"
+              value={formData.clientNumber}
+              onChange={handleChange}
+              error={errors.clientNumber}
+            />
+            <TextInput
+              name="clientEmail"
+              label="Client Email"
+              type="text"
+              placeholder="Client Email*"
+              value={formData.clientEmail}
+              onChange={handleChange}
+              error={errors.clientEmail}
+            />
 
-          <TextInput
-            name="clientAddress"
-            label="Client Address"
-            type="text"
-            placeholder="Client Address*"
-            value={formData.clientAddress}
-            onChange={handleChange}
-            error={errors.clientAddress}
-          />
-        </>}
+            <TextInput
+              name="clientAddress"
+              label="Client Address"
+              type="text"
+              placeholder="Client Address*"
+              value={formData.clientAddress}
+              onChange={handleChange}
+              error={errors.clientAddress}
+            />
+          </>
+        )}
 
         <TextInput
-          name="price"
-          label="Price"
+          name="budget"
+          label="Budget"
           type="text"
-          placeholder="Price*"
-          value={formData.price}
+          placeholder="Budget*"
+          value={formData.budget}
           onChange={handleChange}
-          error={errors.price}
+          error={errors.budget}
         />
 
         <TextInput
@@ -251,7 +290,6 @@ const AddProject = () => {
           error={errors.projectStartDate}
         />
 
-
         <TextInput
           name="projectEndDate"
           label="Project End Date"
@@ -262,85 +300,104 @@ const AddProject = () => {
           error={errors.projectEndDate}
         />
 
-        <DropdownBox
-          name="manager"
-          label="Manager"
-          placeholder="Select Manager*"
-          options={['Manager 1', 'Manager 2', 'Manager 3']} // Replace with actual manager names or data
-          value={formData.manager}
-          onChange={handleChange}
-          error={errors.manager}
-        />
 
-        <div className="col-span-1 md:col-span-2">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="teamMembers">
-            Select Team Members
-          </label>
-          <div className="mb-4">
-            {formData.teamMembers.map((member, index) => (
-              <span key={index} className="inline-flex items-center bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                {member}
-                <button
-                  type="button"
-                  className="ml-2 text-red-500"
-                  onClick={() => handleRemoveTeamMember(member)}
-                >
-                  &times;
-                </button>
-              </span>
-            ))}
-          </div>
-
-          <select
-            className={`w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline ${errors.teamMembers ? 'border-red-500' : 'border-gray-300'}`}
-            value=""
-            onChange={(e) => handleTeamMemberSelect(e.target.value)}
+        < div className="col-span-1 md:col-span-2" >
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="manager"
           >
-            <option value="" disabled>Select team members</option>
-            {employeeList
-              .filter((employee) => !formData.teamMembers.includes(employee))
-              .map((employee, index) => (
-                <option key={index} value={employee}>
-                  {employee}
-                </option>
+            Manager
+          </label>
+          <DropdownBoxTeam
+            options={managerlist ? managerlist : []}
+            onSelect={handleManagerSelect}
+            error={errors.manager}
+          />
+          {formData.manager.length > 0 && (
+            <div className="mt-2 flex flex-wrap">
+              {formData.manager.map((member, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-200 text-blue-800 px-3 py-1 rounded-full mr-2 mb-2"
+                >
+                  {member.name}{' '}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveManager(member.empId)}
+                  >
+                    x
+                  </button>
+                </span>
               ))}
-          </select>
-          {errors.teamMembers && <p className="text-red-500 text-xs italic">{errors.teamMembers}</p>}
+
+            </div>
+          )}
         </div>
 
+
+
         <div className="col-span-1 md:col-span-2">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-            Description*
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="teamMembers"
+          >
+            Team Members
           </label>
-          <textarea
-            className={`w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
-            name="description"
-            placeholder="Enter project description"
-            value={formData.description}
-            onChange={handleChange}
-          ></textarea>
-          {errors.description && <p className="text-red-500 text-xs italic">{errors.description}</p>}
+          <DropdownBoxTeam
+            options={empList ? empList : []}
+            onSelect={handleTeamMemberSelect}
+            error={errors.teamMembers}
+          />
+          {formData.teamMembers.length > 0 && (
+            <div className="mt-2 flex flex-wrap">
+              {formData.teamMembers.map((member, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-200 text-blue-800 px-3 py-1 rounded-full mr-2 mb-2"
+                >
+                  {member.name}{' '}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTeamMember(member.empId)}
+                  >
+                    x
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
+
 
         <DropdownBox
           name="workStatus"
           label="Work Status"
           placeholder="Work Status*"
-          options={['New', 'In Progress', 'Completed']}
+          options={['Not Started', 'In Progress', 'Completed', 'On Hold', 'Cancelled']}
           value={formData.workStatus}
           onChange={handleChange}
           error={errors.workStatus}
         />
 
-        <div className="col-span-1 md:col-span-2">
-          <button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+        <TextInput
+          name="description"
+          label="Description"
+          type="text"
+          placeholder="Description*"
+          value={formData.description}
+          onChange={handleChange}
+          error={errors.description}
+        />
+
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          disabled={loading}
+          className="col-span-1 md:col-span-2 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
+        >
+          {loading ? "loading.." : "Add Project"}
+        </button>
+      </div>
     </div>
   );
 };

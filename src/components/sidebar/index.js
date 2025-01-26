@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../asset/logo.png';
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { capitalize } from '../../utils/utils';
 import NavItem from './NavItem';
 import { navItems } from './navdata';
 import { avatarUrl } from '../common';
-
+import "core-js/stable/atob";
 
 
 function Sidebar() {
@@ -16,11 +16,12 @@ function Sidebar() {
   const [isSubNavOpen, setSubNavOpen] = useState({});
 
   const token = localStorage.getItem('token') || "";
-  const decoded = jwtDecode(token);
-  const gravatarUrl = avatarUrl({ email: decoded?.email });
+  // const {adminInfo} = useSelector(state=> state.adminInfos)
+  const { adminInfo } = useSelector((state) => state.admininfo)
 
-  const location = useLocation();
-  const currentPath = location.pathname;
+  console.log(token, 'kkkkkkkkkkkkkkkk')
+  const decoded = jwtDecode(token ? token : "");
+  const gravatarUrl = avatarUrl({ email: decoded?.email });
 
   const toggleSubNav = (key) => {
     setSubNavOpen((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -29,10 +30,10 @@ function Sidebar() {
   const isActive = (currentPath, paths) => paths.includes(currentPath);
 
   return (
-    <div className={`h-full bg-white text-black ${isSidebarOpen ? 'w-64' : 'w-15'}`}
+    <div className={`h-screen bg-white text-black ${isSidebarOpen ? 'w-64' : 'w-15'}`}
       style={{
         transition: 'width 0.2s',
-        height: 'auto',
+        height: '100vh',
         overflowY: 'auto',
         scrollbarWidth: 'none',
       }}
@@ -68,7 +69,7 @@ function Sidebar() {
 
       <nav className='pt-5'>
         {navItems.map((item) => (
-          <NavItem
+          item.view.includes(adminInfo.role) && <NavItem
             key={item.key}
             item={item}
             isSidebarOpen={isSidebarOpen}

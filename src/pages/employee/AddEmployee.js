@@ -13,7 +13,7 @@ const AddEmployee = () => {
     role: '',
     worktype: '',
     mobile: '',
-    shift : ''
+    shift: ''
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ const AddEmployee = () => {
       ...errors,
       [e.target.name]: ''
     });
-    
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
@@ -56,6 +56,8 @@ const AddEmployee = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validate();
+
+    // console.log(formData,'kkkk')
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
@@ -81,7 +83,7 @@ const AddEmployee = () => {
           role: '',
           worktype: '',
           mobile: '',
-          shift : ''
+          shift: ''
 
         });
         setErrors({
@@ -91,7 +93,7 @@ const AddEmployee = () => {
           role: '',
           worktype: '',
           mobile: '',
-          shift : ''
+          shift: ''
 
         });
 
@@ -104,7 +106,7 @@ const AddEmployee = () => {
   return (
     <div className=" container  mx-10  p-5 ">
       <ToastContainer />
-      {loading && <Loading  />}
+      {loading && <Loading />}
       <h1 className="text-2xl font-bold mb-6 mt-3 text-gray-800">Add Employee</h1>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-5 shadow-md rounded-lg">
         <TextInput
@@ -131,14 +133,16 @@ const AddEmployee = () => {
           onChange={handleChange}
           error={errors.gender}
         />
-        <TextInput
-          label="Role"
-          name="role"
-          type="text"
+
+        <DropdownBox
+          label={"Role"}
+          name='role'
+          options={["CEO", "CO-FOUNDER", "FOUNDER", "HR", "MANAGER", "DEVELOPER"]}
           value={formData.role}
           onChange={handleChange}
           error={errors.role}
         />
+
         <DropdownBox
           label="Work Type"
           name="worktype"
@@ -150,7 +154,7 @@ const AddEmployee = () => {
         <DropdownBox
           label="Shift"
           name="shift"
-          options={['Day Shift','Evening Shift','Night Shift']}
+          options={['Day Shift', 'Evening Shift', 'Night Shift']}
           value={formData.shift}
           onChange={handleChange}
           error={errors.shift}

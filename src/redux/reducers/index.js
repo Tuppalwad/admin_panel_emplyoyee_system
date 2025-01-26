@@ -5,6 +5,7 @@ import loadingReducer from './loadingReducer';
 import employeeReducer from './employeeReducer';
 import adminInfoReducer from './adminInfoReducer';
 import leaveReducer from './leaveReducer';
+import { projectReducer } from './porjectReducer';
 
 const rootReducer = combineReducers({
   sidebar: sidebarReducer,
@@ -12,6 +13,8 @@ const rootReducer = combineReducers({
   employee: employeeReducer,
   admininfo: adminInfoReducer,
   leaves: leaveReducer,
+  projects: projectReducer
+
 });
 
 export default rootReducer;

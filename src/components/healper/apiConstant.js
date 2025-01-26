@@ -22,6 +22,14 @@ export const api = {
     leaveStatus:'/leaveStatus',
     getDashboardCount:'/getCoutData',
     getDashboardAttendancedata:'/getattendancedata',
-    getDashboardProjectData :'/getprojectdata'
+    getDashboardProjectData :'/getprojectdata',
+
+    addProject: '/addproject',
+    getProject: '/getproject',
+    getProjectById: '/getprojectbyid',
+    deleteProject: '/deleteproject',
+    getManagerList: '/getmanagerlist',
+    getProjectsbyEmpId: '/getprojectbyempid'
+
     
 };
