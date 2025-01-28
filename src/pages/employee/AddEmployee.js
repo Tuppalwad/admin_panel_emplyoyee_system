@@ -23,16 +23,26 @@ const AddEmployee = () => {
   const notify = (message) => toast(message);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "mobile") {
+      const numericValue = value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+      setFormData({
+        ...formData,
+        [name]: numericValue,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+
     setErrors({
       ...errors,
-      [e.target.name]: ''
-    });
-
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
+      [name]: "", // Clear any previous error for the field
     });
   };
+
 
   const validate = () => {
     const newErrors = {};
@@ -56,7 +66,7 @@ const AddEmployee = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validate();
-
+    let res;
     // console.log(formData,'kkkk')
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -64,8 +74,8 @@ const AddEmployee = () => {
       try {
         setLoading(true);
         // Submit form data to backend
-        const res = await dispatch(setEmployee(formData));
-        if (res.code === 200) {
+        res = await dispatch(setEmployee(formData));
+        if (res.code === 201) {
           e.target.reset();
           notify('Employee Added Successfully');
         } else {
@@ -76,26 +86,28 @@ const AddEmployee = () => {
         notify(error.message);
       } finally {
         setLoading(false);
-        setFormData({
-          fullName: '',
-          email: '',
-          gender: '',
-          role: '',
-          worktype: '',
-          mobile: '',
-          shift: ''
+        console.log(res,'kkkk')
+        if (res.code === 201) {
+          setFormData({
+            fullName: '',
+            email: '',
+            gender: '',
+            role: '',
+            worktype: '',
+            mobile: '',
+            shift: ''
+          });
+          setErrors({
+            fullName: '',
+            email: '',
+            gender: '',
+            role: '',
+            worktype: '',
+            mobile: '',
+            shift: ''
 
-        });
-        setErrors({
-          fullName: '',
-          email: '',
-          gender: '',
-          role: '',
-          worktype: '',
-          mobile: '',
-          shift: ''
-
-        });
+          });
+        }
 
       }
 
@@ -116,6 +128,7 @@ const AddEmployee = () => {
           value={formData.fullName}
           onChange={handleChange}
           error={errors.fullName}
+          placeholder={"Enter you full name"}
         />
         <TextInput
           label="Email"
@@ -124,6 +137,7 @@ const AddEmployee = () => {
           value={formData.email}
           onChange={handleChange}
           error={errors.email}
+          placeholder={"Enter you email"}
         />
         <DropdownBox
           label="Gender"
@@ -167,6 +181,7 @@ const AddEmployee = () => {
           value={formData.mobile}
           onChange={handleChange}
           error={errors.mobile}
+          placeholder={"Enter your phone number"}
         />
         <button
           type="submit"

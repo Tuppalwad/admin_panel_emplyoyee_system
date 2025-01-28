@@ -56,7 +56,7 @@ const ProjectDetail = () => {
             <h3 className="text-lg font-medium text-gray-700 mb-2">General Information</h3>
             <p><strong>Department:</strong> {projectData.department}</p>
             <p>
-              <strong>Manager:</strong> {projectData.manager.map((manager) => manager.role).join(', ')}
+              <strong>Manager:</strong> {projectData.manager.map((manager) => manager.name).join(', ')}
             </p>
             <p>
               <strong>Priority:</strong>{' '}
@@ -74,7 +74,7 @@ const ProjectDetail = () => {
           </div>
 
           {/* Client Contact Information */}
-          {projectData.clientContact && <div className="bg-gray-50 p-4 rounded-lg">
+          {projectData?.clientContact?.clientFullName && <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-gray-700 mb-2">Client Contact</h3>
             <p><strong>Full Name:</strong> {projectData.clientContact.clientFullName}</p>
             <p><strong>Email:</strong> {projectData.clientContact.email}</p>

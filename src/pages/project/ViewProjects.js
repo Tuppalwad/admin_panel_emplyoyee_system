@@ -59,7 +59,7 @@ const ViewProjects = () => {
               <strong>Department:</strong> {project.department}
             </p>
             <p className="text-gray-600 mb-4">
-              <strong>Manager:</strong> {project.manager[0]?.empId}
+              <strong>Manager:</strong> {project.manager[0]?.name}
             </p>
             <p className="text-gray-600 mb-4">
               <strong>Priority:</strong>{' '}
@@ -79,9 +79,9 @@ const ViewProjects = () => {
             <p className="text-gray-600 mb-4">
               <strong>End Date:</strong> {new Date(project.projectEndDate).toLocaleDateString()}
             </p>
-            <p className="text-gray-600 mb-4">
+            {/* <p className="text-gray-600 mb-4">
               <strong>Description:</strong> {project.description}
-            </p>
+            </p> */}
             <div className="flex items-center justify-between mt-4">
               <Link
                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200"

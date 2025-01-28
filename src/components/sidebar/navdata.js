@@ -29,7 +29,9 @@ export const navItems = [
 
     subNav: [
       { title: 'Add Project', path: '/dashboard/project/add', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "MANAGER"] },
-      { title: 'View Projects', path: '/dashboard/project/view', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "MANAGER"] }
+      { title: 'View Projects', path: '/dashboard/project/view', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "MANAGER"] },
+      { title: 'Manage Projects', path: '/dashboard/project/manage', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "MANAGER"] }
+
     ]
   },
   {

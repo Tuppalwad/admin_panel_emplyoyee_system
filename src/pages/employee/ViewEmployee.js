@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllEmployees, deleteEmployee, updateEmployee } from '../../redux/actions/employeeActions';
+import { getAllEmployees, deleteEmployee, updateEmployee, closeEmployeeAccount } from '../../redux/actions/employeeActions';
 import { EditEmployeePopup } from '../../components/popup';
+import { toast, ToastContainer } from 'react-toastify';
 
 function ViewEmployee() {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ function ViewEmployee() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [searchTerm, setSearchTerm] = useState('');
+  const notify = (message) => toast(message);
 
   const employee = useSelector((state) => state.employee);
   const { allEmployees } = employee;
@@ -39,14 +41,14 @@ function ViewEmployee() {
 
   const itemsPerPageOptions = [5, 10, 15];
 
-  const filteredData = allEmployees&& allEmployees.filter(employee =>
+  const filteredData = allEmployees && allEmployees.filter(employee =>
     employee.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || employee.empId.toString().includes(searchTerm)
   );
 
 
-  const totalPages = filteredData&& Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = filteredData && Math.ceil(filteredData.length / itemsPerPage);
   const startIdx = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredData&& filteredData?.slice(startIdx, startIdx + itemsPerPage);
+  const paginatedData = filteredData && filteredData?.slice(startIdx, startIdx + itemsPerPage);
 
 
   const handleDelete = (empId) => {
@@ -55,6 +57,19 @@ function ViewEmployee() {
     }
   };
 
+  const handleClose = async (empId, status) => {
+    if (window.confirm(`Are you sure you want to ${status ? "open" : "close"} this employee account?`)) {
+      const res = await dispatch(closeEmployeeAccount(empId));
+      console.log(res, 'kkkkdkdkdk')
+      if (res.status === 'success') {
+        notify(`Employee account ${status ? "open" : "closed"} Successfully`);
+      }
+      else {
+        notify(res.message);
+      }
+    }
+  }
+
   const handleEdit = (employee) => {
     setSelectedEmployee(employee);
     setIsEditPopupOpen(true);
@@ -62,6 +77,7 @@ function ViewEmployee() {
 
   return (
     <div className="container p-4">
+      <ToastContainer />
 
       <div className="mb-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Employee Details</h1>
@@ -77,7 +93,7 @@ function ViewEmployee() {
           />
         </div>
       </div>
-      
+
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead className='bg-gray-50'>
@@ -114,6 +130,17 @@ function ViewEmployee() {
                     >
                       <i className="fas fa-trash-alt"></i>
                     </button>
+                    <button
+                      className="text-red-500 hover:text-red-700 ms-3"
+                      onClick={() => handleClose(employee.empId, employee.status)}
+                    >
+                      {employee.status ? (
+                        <i className="fas fa-times-circle" aria-hidden="true"></i>
+                      ) : (
+                        <i className="fas fa-window-maximize" aria-hidden="true"></i>
+                      )}
+                    </button>
+
                   </td>
                 </tr>
               ))

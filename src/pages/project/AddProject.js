@@ -4,15 +4,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { getAllEmployees, } from '../../redux/actions/employeeActions';
 import { validatedata } from './validate';
-import { createProject, getManagerList } from '../../redux/actions/projectAction';
+import { createProject, editProjectData, getManagerList } from '../../redux/actions/projectAction';
 import DropdownBoxTeam from './DropdownBoxTeam';
 import { useLocation } from 'react-router-dom';
-import moment from 'moment'
+import { useNavigate } from 'react-router-dom';
 
 const AddProject = () => {
-  const [isClientProject, setIsClientProject] = useState(false);
   const location = useLocation();
-  const projectData = location.state?.info;
+  const projectData = location.state?.info || {}
+  const [isClientProject, setIsClientProject] = useState(projectData?.isClientProject ?? false);
+  const navigate = useNavigate();
+
+  console.log(projectData, 'kkkk')
 
   const formatDate = (dateString) => {
     if (!dateString) return ''; // Return empty if no date is provided
@@ -26,20 +29,21 @@ const AddProject = () => {
 
   const [formData, setFormData] = useState({
     projectTitle: projectData?.projectTitle ? projectData?.projectTitle : '',
-    department: projectData.department ? projectData.department : '',
-    projectPriority: projectData.projectPriority ? projectData.projectPriority : '',
-    clientFullName: projectData.clientFullName ? projectData.clientFullName : '',
-    budget: projectData.budget ? projectData.budget : '',
-    projectStartDate: projectData.projectStartDate ? formatDate(projectData.projectStartDate) : '',
-    projectEndDate: projectData.projectEndDate ? formatDate(projectData.projectEndDate) : '',
-    manager: projectData.manager ? projectData.manager : [],
-    teamMembers: projectData.teamMembers ? projectData.teamMembers : [],
-    description: projectData.description ? projectData.description : '',
-    workStatus: projectData.workStatus ? projectData.workStatus : '',
-    clientNumber: projectData.clientNumber ? projectData.clientNumber : '',
-    clientEmail: projectData.clientEmail ? projectData.clientEmail : '',
-    clientAddress: projectData.clientAddress ? projectData.clientAddress : '',
+    department: projectData?.department ? projectData?.department : '',
+    projectPriority: projectData?.projectPriority ? projectData?.projectPriority : '',
+    budget: projectData?.budget ? projectData?.budget : '',
+    projectStartDate: projectData?.projectStartDate ? formatDate(projectData?.projectStartDate) : '',
+    projectEndDate: projectData?.projectEndDate ? formatDate(projectData?.projectEndDate) : '',
+    manager: projectData?.manager ? projectData?.manager : [],
+    teamMembers: projectData?.teamMembers ? projectData?.teamMembers : [],
+    description: projectData?.description ? projectData?.description : '',
+    workStatus: projectData?.workStatus ? projectData?.workStatus : '',
+    clientNumber: projectData?.clientContact?.clientFullName ? projectData?.clientContact?.clientFullName : '',
+    clientEmail: projectData?.clientContact?.email ? projectData?.clientContact?.email : '',
+    clientAddress: projectData?.clientContact?.address ? projectData?.clientContact?.address : '',
+    clientFullName: projectData?.clientContact?.phone ? projectData?.clientContact?.phone : '',
   });
+
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -133,29 +137,64 @@ const AddProject = () => {
 
 
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validatedata(formData, isClientProject);
     if (Object.keys(newErrors).length > 0) {
-      console.log('error', newErrors)
+      console.log('error', newErrors);
       setErrors(newErrors);
     } else {
       try {
+        const data = {
+          projectId: projectData?._id,
+          projectTitle: formData?.projectTitle ? formData?.projectTitle : '',
+          department: formData?.department ? formData?.department : '',
+          projectPriority: formData?.projectPriority ? formData?.projectPriority : '',
+          budget: formData?.budget ? formData?.budget : '',
+          projectStartDate: formData?.projectStartDate ? formatDate(formData?.projectStartDate) : '',
+          projectEndDate: formData?.projectEndDate ? formatDate(formData?.projectEndDate) : '',
+          manager: formData?.manager ? formData?.manager : [],
+          teamMembers: formData?.teamMembers ? formData?.teamMembers : [],
+          description: formData?.description ? formData?.description : '',
+          workStatus: formData?.workStatus ? formData?.workStatus : '',
+          clientContact: {
+            clientNumber: formData?.clientNumber ? formData?.clientNumber : '',
+            clientEmail: formData?.clientEmail ? formData?.clientEmail : '',
+            clientAddress: formData?.clientAddress ? formData?.clientAddress : '',
+            clientFullName: formData?.clientFullName ? formData?.clientFullName : '',
+          },
+          isClientProject: isClientProject ? true : false,
+        };
+
         setLoading(true);
-        const res = await dispatch(createProject(formData));
+        let res;
+
+        if (projectData) {
+          res = await dispatch(editProjectData(data));
+        } else {
+          res = await dispatch(createProject(data));
+        }
+
         if (res.code === 200) {
           setErrors({});
-          e.target.reset();
-          notify('Project Added Successfully');
+          if (projectData) {
+            notify('Project Updated Successfully');
+            navigate(-1); // Navigate back to the previous page
+          } else {
+            notify('Project Added Successfully');
+            // navigate('/projects'); // Replace '/projects' with your desired route
+          }
         } else {
           notify(res.message);
         }
       } catch (error) {
         notify('Error adding project');
+        console.log(error, "ddd")
       } finally {
         setLoading(false);
-        setFormData((prevState) => ({
-          ...prevState, // Spread previous state (not necessary here, but for safety)
+        setIsClientProject(!isClientProject);
+        setFormData({
           projectTitle: '',
           department: '',
           projectPriority: '',
@@ -170,10 +209,13 @@ const AddProject = () => {
           clientNumber: '',
           clientEmail: '',
           clientAddress: '',
-        }));
+        });
       }
     }
   };
+
+  // Initialize navigate at the beginning of your component
+
 
 
 
@@ -395,7 +437,7 @@ const AddProject = () => {
           disabled={loading}
           className="col-span-1 md:col-span-2 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
         >
-          {loading ? "loading.." : "Add Project"}
+          {loading ? "loading.." : projectData ? "Update Project" : "Add Project"}
         </button>
       </div>
     </div>

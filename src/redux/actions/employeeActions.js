@@ -46,6 +46,22 @@ export const deleteEmployee = (empId) => async (dispatch) => {
   }
 };
 
+
+export const closeEmployeeAccount = (empId) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    const response = await makeApiRequest({ method: GET, url: `${api.closeEmployyeeAccount}?empId=${empId}` });
+    console.log(response.data);
+    await dispatch(getAllEmployees());
+    dispatch(setLoading(false));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    dispatch(setLoading(false));
+    throw error;
+  }
+};
+
 export const updateEmployee = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
