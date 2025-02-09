@@ -65,7 +65,7 @@ export const closeEmployeeAccount = (empId) => async (dispatch) => {
 export const updateEmployee = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
-    const response = await makeApiRequest({ method: PUT, url: api.updateEmployee, data });
+    const response = await makeApiRequest({ method: PUT, url: api.updateEmp, data });
     await dispatch(getAllEmployees());
     dispatch(setLoading(false));
     return response.data;
@@ -80,6 +80,19 @@ export const getAllEmployeeinfo = () => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     const response = await makeApiRequest({ method: GET, url: api.getAllEmployeeinfo });
+    dispatch(setLoading(false));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    dispatch(setLoading(false));
+    throw error;
+  }
+}
+
+export const searchDataOnFilter = (data) => async (dispatch) => {
+  try {
+    // dispatch(setLoading(true));
+    const response = await makeApiRequest({ method: GET, url: api.getEmpOnSearch, params: data });
     dispatch(setLoading(false));
     return response.data;
   } catch (error) {

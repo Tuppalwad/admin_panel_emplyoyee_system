@@ -80,7 +80,7 @@ function ViewEmployee() {
       <ToastContainer />
 
       <div className="mb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Employee Details</h1>
+        <h1 className="text-2xl font-bold">Employee List </h1>
         <div
           className="flex items-center  p-1 w-1/3"
         >

@@ -1,97 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllEmployees, deleteEmployee, updateEmployee, getAllEmployeeinfo, updateEmpStatus } from '../../redux/actions/employeeActions';
+import { getAllEmployees, deleteEmployee, updateEmployee, getAllEmployeeinfo, updateEmpStatus, searchDataOnFilter } from '../../redux/actions/employeeActions';
 import { EditEmployeePopup } from '../../components/popup';
 import EmployeeInfoPopup from '../../components/popup/EmployeeInfoPopup';
 import { Loading } from '../../components/common';
-
-const dummyEmployees = [
-    {
-        empId: "E001",
-        FirstName: "John",
-        MiddleName: "A.",
-        LastName: "Doe",
-        Email: "john.doe@example.com",
-        Gender: "Male",
-        DOB: "1990-01-01",
-        DateOfJoining: "2020-01-01",
-        YearOfPassing: "2012",
-        ContactNo: "1234567890",
-        education: "B.Tech",
-        workExperience: 2,
-        BloodGroup: "O+",
-        EmergencyContactNo: "0987654321",
-        PANcardNo: "ABCDE1234F",
-        AdharcardNo: "123456789012",
-        PermanetAddress: "123, Main St",
-        PresentAddress: "456, Elm St",
-        status: "Approve",
-        PhysicallyDisabled: false,
-        maritalStatus: "Single"
-    },
-    {
-        empId: "E002",
-        FirstName: "Jane",
-        MiddleName: "B.",
-        LastName: "Smith",
-        Email: "jane.smith@example.com",
-        Gender: "Female",
-        DOB: "1992-05-05",
-        DateOfJoining: "2019-06-01",
-        YearOfPassing: "2014",
-        ContactNo: "0987654321",
-        education: "M.Tech",
-        workExperience: 5,
-        BloodGroup: "A+",
-        EmergencyContactNo: "1234567890",
-        PANcardNo: "BCDEF2345G",
-        AdharcardNo: "098765432109",
-        PermanetAddress: "789, Oak St",
-        PresentAddress: "101, Pine St",
-        status: "Approve",
-        PhysicallyDisabled: false,
-        maritalStatus: "Married"
-
-    },
-    // Add 3 more dummy employee objects here
-];
+import { experienceRange, skills } from '../../utils/utils';
+import Select from "react-select";
+import { debounce } from 'lodash';
 
 function EmployeeInfo() {
     const dispatch = useDispatch();
 
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
-
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
-
+    const [filteredData, setFilterData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedSkill, setSelectedSkill] = useState(null);
+    const [selectedExperience, setSelectedExperience] = useState(null);
+    const isSidebarOpen = useSelector((state) => !state.sidebar.isSidebarOpen);
 
-    const [allEmployee, setAllEmployee] = useState(null);
-
-    //   const { allEmployees = dummyEmployees } = employee;
-    const allEmployees = allEmployee;
-
-    const getAllEmployee = async () => {
+    const fetchdataonSearch = useCallback(async () => {
         try {
-            const response = await dispatch(getAllEmployeeinfo());
-            if (response.code === 200) {
-                setAllEmployee(response.data);
+            const getSkill = selectedSkill?.map(item => item.value) || []; // Avoid error if selectedSkill is null
+            const data = { name: searchTerm, skill: getSkill, experience: selectedExperience?.value };
+
+            const res = await dispatch(searchDataOnFilter(data));
+
+            if (res.code === 200 && res.data) {
+                setFilterData(res.data);
+            } else {
+                setFilterData([]);
             }
-            console.log(response.data);
         } catch (error) {
             console.log(error);
         }
-    };
-
+    }, [searchTerm, selectedSkill, selectedExperience, dispatch]);
 
     useEffect(() => {
-        getAllEmployee();
-    }, [dispatch]);
+        const debouncedSearch = debounce(fetchdataonSearch, 500);
+        debouncedSearch();
+        return () => debouncedSearch.cancel();
+    }, [fetchdataonSearch]);
+
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
-        setCurrentPage(1); // Reset to the first page on search
+        setCurrentPage(1);
     };
 
     const handlePageChange = (newPage) => {
@@ -105,22 +61,13 @@ function EmployeeInfo() {
 
     const itemsPerPageOptions = [5, 10, 15];
 
-    const filteredData = allEmployees && allEmployees.filter(employee =>
-        employee.FirstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.MiddleName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.LastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.empId.toString().includes(searchTerm)
-    );
 
     const totalPages = filteredData && Math.ceil(filteredData.length / itemsPerPage);
     const startIdx = (currentPage - 1) * itemsPerPage;
     const paginatedData = filteredData && filteredData.slice(startIdx, startIdx + itemsPerPage);
 
-    const handleDelete = (empId) => {
-        if (window.confirm("Are you sure you want to delete this employee?")) {
-            dispatch(deleteEmployee(empId));
-        }
-    };
+
+
 
     const handleEdit = (employee) => {
         setSelectedEmployee(employee);
@@ -128,11 +75,11 @@ function EmployeeInfo() {
     };
 
 
-    if (!allEmployee) {
-        return <div>
-            <Loading />
-        </div>;
-    }
+    // if (!allEmployee) {
+    //     return <div>
+    //         <Loading />
+    //     </div>;
+    // }
 
 
     const handleReject = async (empId) => {
@@ -140,7 +87,8 @@ function EmployeeInfo() {
             const res = await dispatch(updateEmpStatus({ empId, status: 'Reject' }));
             if (res.code === 200) {
                 setIsEditPopupOpen(false);
-                getAllEmployee();
+                fetchdataonSearch();
+
 
             }
         }
@@ -151,27 +99,97 @@ function EmployeeInfo() {
             const res = await dispatch(updateEmpStatus({ empId, status: 'Approve' }));
             if (res.code === 200) {
                 setIsEditPopupOpen(false);
-                getAllEmployee();
+                fetchdataonSearch();
+
             }
         }
     }
+    const customStyles = {
+        control: (base) => ({
+            ...base,
+            borderColor: "#ccc", // Default border color
+            boxShadow: "none", // Removes focus border shadow
+            "&:hover": {
+                borderColor: "#aaa", // Slightly darker border on hover
+            },
+            border: "none",
+            outline: "none",
+        }),
+        input: (base) => ({
+            ...base,
+            border: "none", // Removes border from the input field
+            boxShadow: "none", // Removes focus effect
+            outline: "none",
 
+        })
+    };
+
+    const clearSearch = () => {
+        setSearchTerm(""); // Clears the input field
+    };
 
     return (
-        <div className="container p-4">
+        <div className={`container${!isSidebarOpen ? "-full" : ""} p-4`}>
 
-            <div className="mb-4 flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Employee All Info</h1>
-                <div className="flex items-center p-1 w-1/3">
-                    <p className="text-gray-600">Search:</p>
-                    <input
-                        type="text"
-                        placeholder="Search employee"
-                        className="p-2 border border-gray-300 rounded ml-2 w-full"
-                        onChange={handleSearchChange}
-                    />
+
+            <div className="mb-4 flex flex-wrap items-center justify-between w-full gap-x-4">
+                {/* Heading */}
+                <h1 className="text-2xl font-bold whitespace-nowrap">Employee All Info</h1>
+
+                {/* Filters Row */}
+                <div className="flex flex-wrap items-center w-full sm:w-auto gap-x-4 mt-4 ">
+                    {/* Search Input */}
+                    <div className="flex items-center space-x-2">
+                        <p className="text-gray-600 whitespace-nowrap">Search:</p>
+                        <div className="relative w-72">
+                            <input
+                                type="text"
+                                placeholder="Search employee by name and project"
+                                className="p-2 border border-gray-300 rounded w-full pr-8"
+                                value={searchTerm}
+                                onChange={handleSearchChange}
+                            />
+                            {searchTerm && (
+                                <button
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 pr-2"
+                                    onClick={clearSearch}
+                                >
+                                    X
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Searchable Skills Dropdown */}
+                    <div className="w-64">
+                        <Select
+                            options={skills}
+                            value={selectedSkill}
+                            onChange={setSelectedSkill} // Handles multiple values
+                            isMulti // Enables multiple selection
+                            isSearchable
+                            isClearable // Enables the "X" button to remove selections
+                            styles={customStyles}
+                            placeholder="Select Skills"
+                            className="border border-gray-300 rounded"
+                        />
+                    </div>
+
+                    {/* Experience Dropdown */}
+                    <div className="w-48">
+                        <Select
+                            options={experienceRange}
+                            value={selectedExperience}
+                            onChange={setSelectedExperience}
+                            isClearable // Enables the "X" button to remove selection
+                            placeholder="Select Experience"
+                            styles={customStyles}
+                            className="border border-gray-300 rounded"
+                        />
+                    </div>
                 </div>
             </div>
+
 
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white border border-gray-200">
@@ -179,48 +197,30 @@ function EmployeeInfo() {
                         <tr>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Name</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date of Join</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year of Passing</th>
+                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Skill</th>
+                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
+                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Work Experience</th>
+                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project Name</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact No</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Education</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Work Experience</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Blood Group</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emergency Contact No</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PANcard No</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Adharcard No</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PermanetAddress</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PresentAddress</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Physically Disabled</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marital Status</th>
+                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year of Passing</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {paginatedData && paginatedData.length > 0 ? (
-                            paginatedData.map((employee) => (
+                        {paginatedData && paginatedData?.length > 0 ? (
+                            paginatedData?.map((employee) => (
                                 <tr key={employee.empId} className="border-b">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.empId}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{`${employee.FirstName} ${employee.MiddleName} ${employee.LastName}`}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.Email}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.Gender}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{new Date(employee.DOB).toLocaleDateString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{new Date(employee.DateOfJoining).toLocaleDateString()}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.skillAndExperience[0]?.skill}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.skillAndExperience[0]?.experience}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.workExperience}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.currentlyWrokingProject}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.ContactNo}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.education}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{new Date(employee.YearOfPassing).toLocaleDateString().split("/")[2]}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.ContactNo}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.education}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.workExperience}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.BloodGroup}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.EmergencyContactNo}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.PANcardNo}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.AdharcardNo}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.PermanetAddress}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.PresentAddress}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.PhysicallyDisabled ? 'Yes' : 'No'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.maritalStatus}</td>
                                     <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-700
                                         ${employee.status === 'Approve' ? 'text-green-700' : 'text-red-700'}
                                         `}>{employee.status}</td>
@@ -232,6 +232,8 @@ function EmployeeInfo() {
                                 <td colSpan="7" className="text-center py-4">No data found</td>
                             </tr>
                         )}
+
+
                     </tbody>
                 </table>
             </div>
@@ -249,7 +251,7 @@ function EmployeeInfo() {
                             <option key={option} value={option}>{option}</option>
                         ))}
                     </select>
-                    <span className="text-gray-700">{startIdx + 1} - {Math.min(startIdx + itemsPerPage, allEmployees.length)} of {allEmployees.length}</span>
+                    <span className="text-gray-700">{startIdx + 1} - {Math.min(startIdx + itemsPerPage, filteredData.length)} of {filteredData.length}</span>
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
@@ -278,3 +280,6 @@ function EmployeeInfo() {
 }
 
 export default EmployeeInfo;
+
+
+

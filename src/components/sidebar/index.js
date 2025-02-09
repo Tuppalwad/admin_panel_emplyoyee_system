@@ -46,8 +46,7 @@ function Sidebar() {
           fontSize: '1.5rem',
           fontFamily: 'cursive',
           fontWeight: 'bold'
-        }}>
-          Mind <span className="text-blue-500">Nerves</span>
+        }}> MindNerves 
         </p>
       </Link>
 

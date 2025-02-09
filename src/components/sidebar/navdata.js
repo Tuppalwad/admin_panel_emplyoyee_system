@@ -16,7 +16,7 @@ export const navItems = [
 
     subNav: [
       { title: 'Add Employee', path: '/dashboard/employee/add', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] },
-      { title: 'View Employees', path: '/dashboard/employee/view', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] },
+      { title: 'Manage Employees', path: '/dashboard/employee/view', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] },
       { title: 'View Employees Info', path: '/dashboard/employee/viewinfo', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] }
     ]
   },
@@ -49,12 +49,12 @@ export const navItems = [
     key: 'leave',
     title: 'Leave Management',
     icon: 'fa-calendar-alt',
-    view: ["HR", "MANAGER",],
+    view: ["HR", "MANAGER","CEO"],
     paths: ['/dashboard/leave/leave_request', '/dashboard/leave/view'],
 
     subNav: [
-      { title: 'Leave Request', path: '/dashboard/leave/leave_request', subView: ["HR", "MANAGER"] },
-      { title: 'View Leaves', path: '/dashboard/leave/view', subView: ["HR", "MANAGER"] }
+      { title: 'Leave Request', path: '/dashboard/leave/leave_request', subView: ["HR", "MANAGER","CEO"] },
+      { title: 'View Leaves', path: '/dashboard/leave/view', subView: ["HR", "MANAGER","CEO"] }
     ]
   },
   {
