@@ -163,11 +163,29 @@ function ViewEmployee() {
       { headerName: 'First Name', field: 'firstName', filter: true, sortable: true, flex: 1, minWidth: 180 },
       { headerName: 'Last Name', field: 'lastName', filter: true, sortable: true, flex: 1, minWidth: 180 },
       { headerName: 'Email', field: 'email', filter: true, sortable: true, flex: 1, minWidth: 220 },
-      { headerName: 'Date of Joining', field: 'dateofjoining', filter: true, flex: 1, minWidth: 220  },
+      {
+        headerName: 'Date of Joining',
+        field: 'dateofjoining',
+        filter: 'agDateColumnFilter',
+        sortable: true,
+        flex: 1,
+        minWidth: 220,
+        valueFormatter: (params) => {
+          if (!params.value) return '';
+
+          const date = new Date(params.value);
+
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+
+          return `${day}-${month}-${year}`;
+        }
+      },
       { headerName: 'Designation', field: 'role', filter: true, sortable: true, flex: 1, minWidth: 140 },
       { headerName: 'Gender', field: 'gender', filter: true, sortable: true, flex: 1, minWidth: 120 },
       { headerName: 'Work Type', field: 'worktype', filter: true, sortable: true, flex: 1, minWidth: 140 },
-      { headerName: 'Employee Type', field: 'employeeType', filter: true, sortable: true, flex: 1, minWidth: 180},
+      { headerName: 'Employee Type', field: 'employeeType', filter: true, sortable: true, flex: 1, minWidth: 180 },
       {
         headerName: 'Actions', field: 'actions', minWidth: 150, cellRenderer: 'actionCellRenderer', suppressMovable: true, pinned: 'right',
         filter: false
