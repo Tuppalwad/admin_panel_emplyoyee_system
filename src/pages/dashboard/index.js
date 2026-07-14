@@ -7,12 +7,13 @@ import Dashboardbox from './dashboardbox';
 function AdminLayout() {
   const location = useLocation();
   const currentPath = location.pathname;
-  console.log(currentPath);
 
   return (
     <div className="h-screen flex flex-col">
       {/* Fixed Header */}
       <Header />
+      <Header />
+
 
       <div className="flex flex-1 overflow-hidden">
         {/* Fixed Sidebar */}
