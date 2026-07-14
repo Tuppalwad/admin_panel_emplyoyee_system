@@ -7,6 +7,7 @@ import Dashboardbox from './dashboardbox';
 function AdminLayout() {
   const location = useLocation();
   const currentPath = location.pathname;
+  console.log(currentPath);
 
   return (
     <div className="h-screen flex flex-col">
