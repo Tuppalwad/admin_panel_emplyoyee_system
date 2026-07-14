@@ -95,18 +95,18 @@ function EmployeeInfo() {
                 valueGetter: (params) => params.data?.skillAndExperience?.[0]?.experience || '',
                 minWidth: 150,
             },
-            { headerName: 'Total Work Experience', field: 'workExperience', minWidth: 170 },
-            { headerName: 'Project Name', field: 'currentlyWrokingProject', minWidth: 170 },
-            { headerName: 'Contact No', field: 'ContactNo', minWidth: 150 },
-            { headerName: 'Education', field: 'education', minWidth: 150 },
-            {
-                headerName: 'Year of Passing',
-                valueGetter: (params) => {
-                    const year = params.data?.YearOfPassing;
-                    return year ? new Date(year).getFullYear() : '';
-                },
-                minWidth: 140,
-            },
+            { headerName: 'Total Work Experience', field: 'TotalEXP', minWidth: 170 },
+            // { headerName: 'Project Name', field: 'currentlyWrokingProject', minWidth: 170 },
+            { headerName: 'Contact No', field: 'MobileNo', minWidth: 150 },
+            { headerName: 'Education', field: 'HighestQualification', minWidth: 150 },
+            // {
+            //     headerName: 'Year of Passing',
+            //     valueGetter: (params) => {
+            //         const year = params.data?.YearOfPassing;
+            //         return year ? new Date(year).getFullYear() : '';
+            //     },
+            //     minWidth: 140,
+            // },
             {
                 headerName: 'Status',
                 field: 'status',
