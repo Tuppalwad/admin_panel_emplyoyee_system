@@ -12,8 +12,6 @@ function AdminLayout() {
     <div className="h-screen flex flex-col">
       {/* Fixed Header */}
       <Header />
-      <Header />
-
 
       <div className="flex flex-1 overflow-hidden">
         {/* Fixed Sidebar */}
