@@ -1,114 +1,268 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-function EmployeeInfoPopup({ employee, approve, reject, onClose }) {
-  const [formData, setFormData] = useState({ ...employee });
+function EmployeeInfoPopup({
+  employee,
+  approve,
+  reject,
+  onClose,
+}) {
+  const [formData] = useState({ ...employee });
+
+  const InfoCard = ({ label, value }) => (
+    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+      <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">
+        {label}
+      </p>
+      <p className="font-medium text-slate-800 break-words">
+        {value || "N/A"}
+      </p>
+    </div>
+  );
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-white rounded-lg p-8 w-full max-w-5xl mx-2">
-        <h2 className="text-xl font-bold mb-4 ">Employee Information</h2>
-        <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-          <div className="mb-1  mt-3 col-span-3">
-            <label className="block  text-gray-700">Full Name</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{`${formData.FirstName} ${formData.MiddleName} ${formData.LastName}`}</p>
-          </div>
-          <div className="mb-1  mt-3 col-span-3">
-            <label className="block  text-gray-700">Email</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.Email}</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Employee ID</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.empId}</p>
-          </div>
-          
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Date of Joining</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{new Date(formData.DateOfJoining).toLocaleDateString()}</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Year of Passing</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{
-              formData.YearOfPassing ? new Date(formData.YearOfPassing).toLocaleDateString().split("/")[2] : 'N/A'
-              }</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Contact No</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.ContactNo}</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Gender</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.Gender}</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">DOB</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{new Date(formData.DOB).toLocaleDateString()}</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Education</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.education}</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Work Experience</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.workExperience}</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Blood Group</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.BloodGroup}</p>
-          </div>
-          
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">PAN Card No</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.PANcardNo}</p>
-          </div>
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Aadhar Card No</label>
-            <p className="w-full px-2 mt-1 py-2 border border-gray-300 rounded">{formData.AdharcardNo}</p>
-          </div>
-        
-          <div className="mb-1  mt-3">
-            <label className="block  text-gray-700">Marital Status</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.maritalStatus}</p>
-          </div>
-          <div className="mb-1  mt-3 col-span-2">
-            <label className="block  text-gray-700">Physically Disabled</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.PhysicallyDisabled ? 'Yes' : 'No'}</p>
-          </div>
-          <div className="mb-1  mt-3 col-span-2">
-            <label className="block  text-gray-700">Emergency Contact No</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.EmergencyContactNo}</p>
-          </div>
-          <div className="mb-1  mt-3 col-span-2">
-            <label className="block  text-gray-700">Permanent Address</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.PermanetAddress}</p>
-          </div>
-          <div className="mb-1  mt-3 col-span-2" >
-            <label className="block  text-gray-700 ">Present Address</label>
-            <p className="w-full px-3 mt-1 py-2 border border-gray-300 rounded">{formData.PresentAddress}</p>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
+    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-300 p-6 text-white">
+          <div className="flex flex-col md:flex-row items-center gap-5">
+
+            <div className="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center">
+              <i className="fas fa-user text-5xl"></i>
+            </div>
+
+            <div>
+              <h2 className="text-3xl font-bold text-white">
+                {`${formData.FirstName || ""} ${
+                  formData.MiddleName || ""
+                } ${formData.LastName || ""}`}
+              </h2>
+
+              <p className="text-blue-100 mt-2">
+                Employee ID : {formData.empId}
+              </p>
+
+              <div className="flex flex-wrap gap-2 mt-3">
+                <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                  {formData.Gender}
+                </span>
+
+                <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                  {formData.education}
+                </span>
+
+                <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                  {formData.workExperience} Experience
+                </span>
+              </div>
+            </div>
+
           </div>
         </div>
-        <div className="flex justify-end mt-4">
-          <button
-            type="button"
-            onClick={() => approve(formData)}
-            className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-          >
-            Approve
-          </button>
-          <button
-            type="button"
-            onClick={() => reject(formData)}
-            className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-          >
-            Reject
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
-          >
-            Cancel
-          </button>
+
+        {/* Body */}
+       <div className="flex-1 overflow-y-auto p-6">
+
+          {/* Personal Information */}
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-slate-800 border-b pb-2 mb-4">
+              Personal Information
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+              <InfoCard
+                label="Full Name"
+                value={`${formData.FirstName || ""} ${
+                  formData.MiddleName || ""
+                } ${formData.LastName || ""}`}
+              />
+
+              <InfoCard
+                label="Gender"
+                value={formData.Gender}
+              />
+
+              <InfoCard
+                label="Date Of Birth"
+                value={
+                  formData.DOB
+                    ? new Date(
+                        formData.DOB
+                      ).toLocaleDateString()
+                    : "N/A"
+                }
+              />
+
+              <InfoCard
+                label="Marital Status"
+                value={formData.maritalStatus}
+              />
+
+              <InfoCard
+                label="Blood Group"
+                value={formData.BloodGroup}
+              />
+
+              <InfoCard
+                label="Physically Disabled"
+                value={
+                  formData.PhysicallyDisabled
+                    ? "Yes"
+                    : "No"
+                }
+              />
+
+            </div>
+          </div>
+
+          {/* Employment Information */}
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-slate-800 border-b pb-2 mb-4">
+              Employment Information
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+              <InfoCard
+                label="Employee ID"
+                value={formData.empId}
+              />
+
+              <InfoCard
+                label="Date Of Joining"
+                value={
+                  formData.DateOfJoining
+                    ? new Date(
+                        formData.DateOfJoining
+                      ).toLocaleDateString()
+                    : "N/A"
+                }
+              />
+
+              <InfoCard
+                label="Education"
+                value={formData.education}
+              />
+
+              <InfoCard
+                label="Work Experience"
+                value={formData.workExperience}
+              />
+
+              <InfoCard
+                label="Year Of Passing"
+                value={
+                  formData.YearOfPassing
+                    ? new Date(
+                        formData.YearOfPassing
+                      ).getFullYear()
+                    : "N/A"
+                }
+              />
+
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-slate-800 border-b pb-2 mb-4">
+              Contact Information
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+              <InfoCard
+                label="Email"
+                value={formData.Email}
+              />
+
+              <InfoCard
+                label="Contact Number"
+                value={formData.ContactNo}
+              />
+
+              <InfoCard
+                label="Emergency Contact"
+                value={formData.EmergencyContactNo}
+              />
+
+            </div>
+          </div>
+
+          {/* Identity Documents */}
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-slate-800 border-b pb-2 mb-4">
+              Identity Documents
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+              <InfoCard
+                label="PAN Card"
+                value={formData.PANcardNo}
+              />
+
+              <InfoCard
+                label="Aadhar Card"
+                value={formData.AdharcardNo}
+              />
+
+            </div>
+          </div>
+
+          {/* Address Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-slate-800 border-b pb-2 mb-4">
+              Address Information
+            </h3>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+              <InfoCard
+                label="Present Address"
+                value={formData.PresentAddress}
+              />
+
+              <InfoCard
+                label="Permanent Address"
+                value={formData.PermanetAddress}
+              />
+
+            </div>
+          </div>
+
         </div>
+
+        {/* Footer */}
+       <div className="border-t border-slate-200 bg-white p-5 shrink-0">
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
+
+            <button
+              onClick={() => approve(formData)}
+              className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium transition"
+            >
+              <i className="fas fa-check mr-2"></i>
+              Approve
+            </button>
+
+            <button
+              onClick={() => reject(formData)}
+              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition"
+            >
+              <i className="fas fa-times mr-2"></i>
+              Reject
+            </button>
+
+            <button
+              onClick={onClose}
+              className="px-6 py-3 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-100 transition"
+            >
+              Close
+            </button>
+
+          </div>
+        </div>
+
       </div>
     </div>
   );

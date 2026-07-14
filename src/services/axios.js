@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const BaseURL = 'http://localhost:3030/api/' //process.env.REACT_APP_BACKEND_URL || "http://localhost:3030/api/";
-
+// const BaseURL = "https://backend-hr-management-vcxb.onrender.com/api/"//'http://localhost:3030/api/' //process.env.REACT_APP_BACKEND_URL || "http://localhost:3030/api/";
+//  const BaseURL = 'http://localhost:3030/api/'
+const BaseURL="https://backend-hr-management-vcxb.onrender.com/api/"
 const axiosInstance = axios.create({
     baseURL: BaseURL,
     headers: {
@@ -39,7 +40,7 @@ export const makeApiRequest = ({method, url, data, params}) =>
       axiosInstance(options)
         .then(response => {
           console.log(response);
-          if (response.status !== 500) {
+          if (response?.status !== 500) {
             resolve(response);
           } else {
             reject(response);

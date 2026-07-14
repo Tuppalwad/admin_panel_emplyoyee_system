@@ -24,7 +24,7 @@ import ManageProject from './pages/project/ManageProject';
 function App() {
   return (
     <div className="App">
-      <Loading />
+      {/* <Loading /> */}
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />

@@ -1,7 +1,7 @@
 import axiosInstance, { makeApiRequest } from "../../services/axios";
 import { GET_ALL_EMPLOYEES, LEAVE_REFRESH, SET_LEAVES } from "../actiontypes";
 import { setLoading } from "./helpActions";
-import { GET, POST, PUT, DELETE, api } from '../../components/healper/apiConstant';
+import { GET, POST, api } from '../../components/healper/apiConstant';
 
 
 

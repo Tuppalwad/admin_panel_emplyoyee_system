@@ -12,7 +12,7 @@ const PrivatedRoute = () => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       const res = await dispatch(isLoggedinUser());
-      if (res.code === 200) {
+      if (res && res.code === 200) {
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);

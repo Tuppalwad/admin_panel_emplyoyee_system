@@ -30,7 +30,7 @@ export const navItems = [
     subNav: [
       { title: 'Add Project', path: '/dashboard/project/add', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "MANAGER"] },
       { title: 'View Projects', path: '/dashboard/project/view', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "MANAGER"] },
-      { title: 'Manage Projects', path: '/dashboard/project/manage', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "MANAGER"] }
+      // { title: 'Manage Projects', path: '/dashboard/project/manage', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "MANAGER"] }
 
     ]
   },
@@ -54,26 +54,26 @@ export const navItems = [
 
     subNav: [
       { title: 'Leave Request', path: '/dashboard/leave/leave_request', subView: ["HR", "MANAGER","CEO"] },
-      { title: 'View Leaves', path: '/dashboard/leave/view', subView: ["HR", "MANAGER","CEO"] }
+      // { title: 'View Leaves', path: '/dashboard/leave/view', subView: ["HR", "MANAGER","CEO"] }
     ]
   },
-  {
-    key: 'client',
-    title: 'Client',
-    icon: 'fa-user-tie',
-    view: ["CEO", "FOUNDER", "CO-FOUNDER"],
-    paths: ['/dashboard/client/add', '/dashboard/client/view'],
-    subNav: [
-      { title: 'Add Client', path: '/dashboard/client/add', subView: ["CEO", "FOUNDER", "CO-FOUNDER"], },
-      { title: 'View Clients', path: '/dashboard/client/view', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "HR", "MANAGER",], }
-    ]
-  },
-  {
-    key: 'settings',
-    title: 'Settings',
-    icon: 'fa-cog',
-    paths: ['/settings'],
-    view: ["CEO", "HR", "MANAGER", "FOUNDER", "CO-FOUNDER"],
-    // subView:["CEO", "HR", "MANAGER", "FOUNDER", "CO-FOUNDER"]
-  }
+  // {
+  //   key: 'client',
+  //   title: 'Client',
+  //   icon: 'fa-user-tie',
+  //   view: ["CEO", "FOUNDER", "CO-FOUNDER"],
+  //   paths: ['/dashboard/client/add', '/dashboard/client/view'],
+  //   subNav: [
+  //     { title: 'Add Client', path: '/dashboard/client/add', subView: ["CEO", "FOUNDER", "CO-FOUNDER"], },
+  //     { title: 'View Clients', path: '/dashboard/client/view', subView: ["CEO", "FOUNDER", "CO-FOUNDER", "HR", "MANAGER",], }
+  //   ]
+  // },
+  // {
+  //   key: 'settings',
+  //   title: 'Settings',
+  //   icon: 'fa-cog',
+  //   paths: ['/settings'],
+  //   view: ["CEO", "HR", "MANAGER", "FOUNDER", "CO-FOUNDER"],
+  //   // subView:["CEO", "HR", "MANAGER", "FOUNDER", "CO-FOUNDER"]
+  // }
 ];

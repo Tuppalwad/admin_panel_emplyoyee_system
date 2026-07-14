@@ -1,201 +1,302 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllEmployees, deleteEmployee, updateEmployee, closeEmployeeAccount } from '../../redux/actions/employeeActions';
+import { getAllEmployees, deleteEmployee, updateEmployee, closeEmployeeAccount, updateEmployeeInfo } from '../../redux/actions/employeeActions';
 import { EditEmployeePopup } from '../../components/popup';
+import AgGridTable from '../../components/common/AgGridTable';
 import { toast, ToastContainer } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 function ViewEmployee() {
   const dispatch = useDispatch();
-
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-
   const [searchTerm, setSearchTerm] = useState('');
-  const notify = (message) => toast(message);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [gridApi, setGridApi] = useState(null);
 
   const employee = useSelector((state) => state.employee);
-  const { allEmployees } = employee;
+  const { allEmployees = [] } = employee || {};
 
   useEffect(() => {
     dispatch(getAllEmployees());
   }, [dispatch]);
 
+  const notify = useCallback((message) => toast(message), []);
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1); // Reset to the first page on search
+  const handleDelete = useCallback(
+    (empId) => {
+      if (window.confirm('Are you sure you want to delete this employee?')) {
+        dispatch(deleteEmployee(empId));
+      }
+    },
+    [dispatch]
+  );
+
+  const handleClose = async (empId, status) => {
+    try {
+      if (
+        window.confirm(
+          `Are you sure you want to ${status ? 'open' : 'close'
+          } this employee account?`
+        )
+      ) {
+        const res = await dispatch(closeEmployeeAccount(empId));
+
+        console.log("Response:", res);
+
+        if (res?.status === 'success') {
+          notify(
+            `Employee account ${status ? 'opened' : 'closed'
+            } successfully`
+          );
+        } else {
+          notify(
+            res?.message ||
+            'Unable to update employee account status'
+          );
+        }
+      }
+    } catch (err) {
+      console.log("Actual Error:", err);
+
+      notify(
+        err?.response?.data?.message ||
+        err?.message ||
+        'Something went wrong'
+      );
+    }
   };
 
+  const handleEdit = useCallback((employeeData) => {
+    setSelectedEmployee(employeeData);
+    setIsEditPopupOpen(true);
+  }, []);
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+  const onGridReady = useCallback((params) => {
+    setGridApi(params.api);
+    params.api.sizeColumnsToFit();
+  }, []);
+
+  useEffect(() => {
+    if (gridApi) {
+      gridApi.sizeColumnsToFit();
+    }
+  }, [gridApi, allEmployees]);
+
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    if (gridApi) {
+      gridApi.setQuickFilter(value);
+    }
   };
 
   const handleItemsPerPageChange = (event) => {
-    setItemsPerPage(Number(event.target.value));
-    setCurrentPage(1);
+    const value = Number(event.target.value);
+    setItemsPerPage(value);
+    if (gridApi) {
+      gridApi.paginationSetPageSize(value);
+    }
   };
 
-  const itemsPerPageOptions = [5, 10, 15];
+  const handlePreviousPage = () => {
+    if (gridApi) {
+      gridApi.paginationGoToPreviousPage();
+    }
+  };
 
-  const filteredData = allEmployees && allEmployees.filter(employee =>
-    employee.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || employee.empId.toString().includes(searchTerm)
+  const handleNextPage = () => {
+    if (gridApi) {
+      gridApi.paginationGoToNextPage();
+    }
+  };
+
+  const ActionCellRenderer = useCallback(
+    (props) => {
+      const employeeData = props.data;
+
+      return (
+        <div className="flex items-center gap-2 h-full">
+
+          <button
+            onClick={() => handleEdit(employeeData)}
+            className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
+          >
+            <i className="fas fa-edit"></i>
+          </button>
+
+          <button
+            onClick={() => handleDelete(employeeData.empId)}
+            className="w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition"
+          >
+            <i className="fas fa-trash"></i>
+          </button>
+
+          <button
+            onClick={() =>
+              handleClose(
+                employeeData.empId,
+                employeeData.status
+              )
+            }
+            className={`w-8 h-8 rounded-lg transition ${employeeData.status ? 'bg-green-100 text-green-600 hover:bg-green-200' : 'bg-orange-100 text-orange-600 hover:bg-orange-200'
+              }`}
+          >
+            {employeeData.status ? (
+              <i className="fas fa-lock-open"></i>
+            ) : (
+              <i className="fas fa-lock"></i>
+            )}
+          </button>
+
+        </div>
+      );
+    },
+    [handleClose, handleDelete, handleEdit]
   );
 
 
-  const totalPages = filteredData && Math.ceil(filteredData.length / itemsPerPage);
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredData && filteredData?.slice(startIdx, startIdx + itemsPerPage);
+  const columnDefs = useMemo(
+    () => [
+      { headerName: 'Employee ID', field: 'empId', filter: true, sortable: true, flex: 1, minWidth: 140 },
+      // { headerName: 'Full Name', field: 'fullName', filter: true, sortable: true, flex: 1, minWidth: 180 },
+      { headerName: 'First Name', field: 'firstName', filter: true, sortable: true, flex: 1, minWidth: 180 },
+      { headerName: 'Last Name', field: 'lastName', filter: true, sortable: true, flex: 1, minWidth: 180 },
+      { headerName: 'Email', field: 'email', filter: true, sortable: true, flex: 1, minWidth: 220 },
+      { headerName: 'Date of Joining', field: 'dateofjoining', filter: true, flex: 1, minWidth: 220  },
+      { headerName: 'Designation', field: 'role', filter: true, sortable: true, flex: 1, minWidth: 140 },
+      { headerName: 'Gender', field: 'gender', filter: true, sortable: true, flex: 1, minWidth: 120 },
+      { headerName: 'Work Type', field: 'worktype', filter: true, sortable: true, flex: 1, minWidth: 140 },
+      { headerName: 'Employee Type', field: 'employeeType', filter: true, sortable: true, flex: 1, minWidth: 180},
+      {
+        headerName: 'Actions', field: 'actions', minWidth: 150, cellRenderer: 'actionCellRenderer', suppressMovable: true, pinned: 'right',
+        filter: false
+      },
+      {
+        headerName: 'Status',
+        field: 'status',
+        minWidth: 130,
+        cellRenderer: (params) => (
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${params.data.status
+              ? 'bg-green-100 text-green-700'
+              : 'bg-red-100 text-red-700'
+              }`}
+          >
+            {params.data.status ? 'Active' : 'Inactive'}
+          </span>
+        ),
+      },
 
+    ],
+    []
+  );
 
-  const handleDelete = (empId) => {
-    if (window.confirm("Are you sure you want to delete this employee?")) {
-      dispatch(deleteEmployee(empId));
-    }
-  };
+  const defaultColDef = useMemo(
+    () => ({
+      resizable: true,
+      sortable: true,
+      filter: true,
+      floatingFilter: true,
+      minWidth: 120,
+      flex: 1,
+    }),
+    []
+  );
 
-  const handleClose = async (empId, status) => {
-    if (window.confirm(`Are you sure you want to ${status ? "open" : "close"} this employee account?`)) {
-      const res = await dispatch(closeEmployeeAccount(empId));
-      console.log(res, 'kkkkdkdkdk')
-      if (res.status === 'success') {
-        notify(`Employee account ${status ? "open" : "closed"} Successfully`);
-      }
-      else {
-        notify(res.message);
-      }
-    }
-  }
+  const components = useMemo(() => ({ actionCellRenderer: ActionCellRenderer }), [ActionCellRenderer]);
 
-  const handleEdit = (employee) => {
-    setSelectedEmployee(employee);
-    setIsEditPopupOpen(true);
-  };
+  const totalRows = allEmployees.length;
+  const currentPageNumber = gridApi ? gridApi.paginationGetCurrentPage() : 0;
+  const currentStart = totalRows === 0 ? 0 : currentPageNumber * itemsPerPage + 1;
+  const currentEnd = totalRows === 0 ? 0 : Math.min((currentPageNumber + 1) * itemsPerPage, totalRows);
+  const pageCount = gridApi ? gridApi.paginationGetTotalPages() : Math.ceil(totalRows / itemsPerPage);
 
   return (
-    <div className="container p-4">
+    <div className="p-6 bg-slate-50 min-h-screen">
       <ToastContainer />
 
-      <div className="mb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Employee List </h1>
-        <div
-          className="flex items-center  p-1 w-1/3"
-        >
-          <p className="text-gray-600 ">Search:</p>
-          <input
-            type="text"
-            placeholder="Search employee"
-            className="p-2 border border-gray-300 rounded ml-2 w-full"
-            onChange={handleSearchChange}
-          />
-        </div>
-      </div>
+      {/* Header */}
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead className='bg-gray-50'>
-            <tr>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Name</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Work Type</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className='bg-white divide-y divide-gray-200'>
-            {paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((employee) => (
-                <tr key={employee.empId} className="border-b">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.fullName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.empId}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.gender}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.role}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.worktype}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    <button
-                      className="text-blue-500 hover:text-blue-700 mr-2"
-                      onClick={() => handleEdit(employee)}
-                    >
-                      <i className="fas fa-edit"></i>
-                    </button>
-                    <button
-                      className="text-red-500 hover:text-red-700 ms-3"
-                      onClick={() => handleDelete(employee.empId)}
-                    >
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
-                    <button
-                      className="text-red-500 hover:text-red-700 ms-3"
-                      onClick={() => handleClose(employee.empId, employee.status)}
-                    >
-                      {employee.status ? (
-                        <i className="fas fa-times-circle" aria-hidden="true"></i>
-                      ) : (
-                        <i className="fas fa-window-maximize" aria-hidden="true"></i>
-                      )}
-                    </button>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
 
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="text-center py-4">No data found</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
 
-      <div className="flex justify-between items-center mt-4 bg-white p-4">
-        <div>
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800">
+              Employees
+            </h1>
+
+            <p className="text-slate-500 mt-2">
+              Manage employee records, roles and account access.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-3">
+              <p className="text-xs text-blue-600">
+                Total Employees
+              </p>
+
+              <h3 className="text-xl font-bold text-blue-700">
+                {allEmployees.length}
+              </h3>
+            </div>
+
+            <Link
+              to="/dashboard/employee/add"
+              className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition"
+            >
+              <i className="fas fa-plus mr-2"></i>
+              Add Employee
+            </Link>
+
+          </div>
 
         </div>
-        <div>
-          <span className="text-gray-700">Items per page:</span>
-          <select
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-            className="ml-2 p-1 border border-gray-300 rounded outline-none mr-2 "
-          >
-            {itemsPerPageOptions.map(option => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-          <span className="text-gray-700">{startIdx + 1} - {Math.min(startIdx + itemsPerPage, allEmployees.length)} of {allEmployees.length}</span>
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="ml-2 p-1 border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <i className="fas fa-chevron-left"></i>
-          </button>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="ml-2 p-1 border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <i className="fas fa-chevron-right"></i>
-          </button>
-        </div>
+
       </div>
 
-      {isEditPopupOpen && <EditEmployeePopup
-        employee={selectedEmployee}
-        onClose={() => setIsEditPopupOpen(false)}
-        onSave={(formData) => {
-          setIsEditPopupOpen(false);
-          dispatch(updateEmployee(formData));
-        }
-        }
-      />}
+
+      {/* Table */}
+
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+
+        <AgGridTable
+          rowData={allEmployees}
+          columnDefs={columnDefs}
+          gridOptions={{ defaultColDef }}
+          onGridReady={onGridReady}
+          components={components}
+          rowSelection={{ type: 'single' }}
+          pagination={true}
+          paginationPageSize={itemsPerPage}
+          overlayNoRowsTemplate='<span>No employees found.</span>'
+          style={{ height: 600 }}
+          className="rounded-2xl"
+        />
+
+      </div>
+
+      {isEditPopupOpen && (
+        <EditEmployeePopup
+          employee={selectedEmployee}
+          onClose={() => setIsEditPopupOpen(false)}
+          onSave={(formData) => {
+            setIsEditPopupOpen(false);
+            const result = dispatch(updateEmployeeInfo(formData));
+            if (result) {
+              toast.success('Employee updated successfully');
+            } else {
+              toast.error('Failed to update employee');
+            }
+          }}
+        />
+      )}
+
     </div>
+
   );
 }
 

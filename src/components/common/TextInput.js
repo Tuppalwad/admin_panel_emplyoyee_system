@@ -1,10 +1,10 @@
 import React from 'react';
 
-const TextInput = ({ label, name, type, value, onChange, error,style,disabled ,maxlength,placeholder}) => {
+const TextInput = ({ label, name, type, value, onChange, error,style,disabled ,maxlength,placeholder,required = false }) => {
   return (
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
-        {label}
+        {label} { required && <span className="text-red-500 text-sm">*</span>}
       </label>
       <input
         disabled={disabled}

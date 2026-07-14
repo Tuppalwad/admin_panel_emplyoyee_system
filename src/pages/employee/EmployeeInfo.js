@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllEmployees, deleteEmployee, updateEmployee, getAllEmployeeinfo, updateEmpStatus, searchDataOnFilter } from '../../redux/actions/employeeActions';
-import { EditEmployeePopup } from '../../components/popup';
+import { updateEmpStatus, searchDataOnFilter } from '../../redux/actions/employeeActions';
 import EmployeeInfoPopup from '../../components/popup/EmployeeInfoPopup';
-import { Loading } from '../../components/common';
+import AgGridTable from '../../components/common/AgGridTable';
 import { experienceRange, skills } from '../../utils/utils';
 import Select from "react-select";
 import { debounce } from 'lodash';
@@ -13,7 +12,6 @@ function EmployeeInfo() {
 
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [filteredData, setFilterData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -47,32 +45,91 @@ function EmployeeInfo() {
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
-        setCurrentPage(1);
-    };
-
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
     };
 
     const handleItemsPerPageChange = (event) => {
         setItemsPerPage(Number(event.target.value));
-        setCurrentPage(1);
     };
 
     const itemsPerPageOptions = [5, 10, 15];
 
-
-    const totalPages = filteredData && Math.ceil(filteredData.length / itemsPerPage);
-    const startIdx = (currentPage - 1) * itemsPerPage;
-    const paginatedData = filteredData && filteredData.slice(startIdx, startIdx + itemsPerPage);
-
-
-
-
-    const handleEdit = (employee) => {
+    const handleEdit = useCallback((employee) => {
         setSelectedEmployee(employee);
         setIsEditPopupOpen(true);
-    };
+    }, []);
+
+    const ActionCellRenderer = useCallback(
+        (props) => (
+            <button
+                type="button"
+                className="text-blue-700 hover:text-blue-900 text-lg cursor-pointer"
+                onClick={() => handleEdit(props.data)}
+                title="View Details"
+            >
+                <i className="fas fa-eye"></i>
+            </button>
+        ),
+        [handleEdit]
+    );
+
+    const columnDefs = useMemo(
+        () => [
+            { headerName: 'Employee ID', field: 'empId', minWidth: 130 },
+            {
+                headerName: 'Full Name',
+                valueGetter: (params) => {
+                    const first = params.data?.FirstName || '';
+                    const middle = params.data?.MiddleName || '';
+                    const last = params.data?.LastName || '';
+                    return `${first} ${middle} ${last}`.trim();
+                },
+                minWidth: 200,
+            },
+            {
+                headerName: 'Skill',
+                valueGetter: (params) => params.data?.skillAndExperience?.[0]?.skill || '',
+                minWidth: 150,
+            },
+            {
+                headerName: 'Experience',
+                valueGetter: (params) => params.data?.skillAndExperience?.[0]?.experience || '',
+                minWidth: 150,
+            },
+            { headerName: 'Total Work Experience', field: 'workExperience', minWidth: 170 },
+            { headerName: 'Project Name', field: 'currentlyWrokingProject', minWidth: 170 },
+            { headerName: 'Contact No', field: 'ContactNo', minWidth: 150 },
+            { headerName: 'Education', field: 'education', minWidth: 150 },
+            {
+                headerName: 'Year of Passing',
+                valueGetter: (params) => {
+                    const year = params.data?.YearOfPassing;
+                    return year ? new Date(year).getFullYear() : '';
+                },
+                minWidth: 140,
+            },
+            {
+                headerName: 'Status',
+                field: 'status',
+                cellClass: (params) => (params.value === 'Approve' ? 'text-green-700' : 'text-red-700'),
+                minWidth: 120,
+            },
+            {
+                headerName: 'Actions',
+                field: 'actions',
+                cellRenderer: 'actionCellRenderer',
+                sortable: false,
+                filter: false,
+                minWidth: 120,
+                pinned: 'right',
+                suppressMovable: true,
+                cellStyle: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
+            },
+
+        ],
+        [ActionCellRenderer]
+    );
+
+
 
 
     // if (!allEmployee) {
@@ -129,153 +186,106 @@ function EmployeeInfo() {
     };
 
     return (
-        <div className={`container${!isSidebarOpen ? "-full" : ""} p-4`}>
+     <div className={`p-6 bg-slate-50 min-h-screen ${!isSidebarOpen ? 'w-full' : ''}`}>
 
+  {/* Header */}
+  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
 
-            <div className="mb-4 flex flex-wrap items-center justify-between w-full gap-x-4">
-                {/* Heading */}
-                <h1 className="text-2xl font-bold whitespace-nowrap">Employee All Info</h1>
+    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
 
-                {/* Filters Row */}
-                <div className="flex flex-wrap items-center w-full sm:w-auto gap-x-4 mt-4 ">
-                    {/* Search Input */}
-                    <div className="flex items-center space-x-2">
-                        <p className="text-gray-600 whitespace-nowrap">Search:</p>
-                        <div className="relative w-72">
-                            <input
-                                type="text"
-                                placeholder="Search employee by name and project"
-                                className="p-2 border border-gray-300 rounded w-full pr-8"
-                                value={searchTerm}
-                                onChange={handleSearchChange}
-                            />
-                            {searchTerm && (
-                                <button
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 pr-2"
-                                    onClick={clearSearch}
-                                >
-                                    X
-                                </button>
-                            )}
-                        </div>
-                    </div>
+      <div>
+        <h1 className="text-3xl font-bold text-slate-800">
+          Employee Information
+        </h1>
 
-                    {/* Searchable Skills Dropdown */}
-                    <div className="w-64">
-                        <Select
-                            options={skills}
-                            value={selectedSkill}
-                            onChange={setSelectedSkill} // Handles multiple values
-                            isMulti // Enables multiple selection
-                            isSearchable
-                            isClearable // Enables the "X" button to remove selections
-                            styles={customStyles}
-                            placeholder="Select Skills"
-                            className="border border-gray-300 rounded"
-                        />
-                    </div>
+        <p className="text-slate-500 mt-2">
+          View and manage employee information, approvals, and account details.
+        </p>
+      </div>
 
-                    {/* Experience Dropdown */}
-                    <div className="w-48">
-                        <Select
-                            options={experienceRange}
-                            value={selectedExperience}
-                            onChange={setSelectedExperience}
-                            isClearable // Enables the "X" button to remove selection
-                            placeholder="Select Experience"
-                            styles={customStyles}
-                            className="border border-gray-300 rounded"
-                        />
-                    </div>
-                </div>
-            </div>
+      <div className="flex gap-3">
 
+        <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-3">
+          <p className="text-xs text-blue-600">
+            Total Employees
+          </p>
 
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Name</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Skill</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Work Experience</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project Name</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact No</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Education</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year of Passing</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {paginatedData && paginatedData?.length > 0 ? (
-                            paginatedData?.map((employee) => (
-                                <tr key={employee.empId} className="border-b">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.empId}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{`${employee.FirstName} ${employee.MiddleName} ${employee.LastName}`}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.skillAndExperience[0]?.skill}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.skillAndExperience[0]?.experience}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.workExperience}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.currentlyWrokingProject}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.ContactNo}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee?.education}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{new Date(employee.YearOfPassing).toLocaleDateString().split("/")[2]}</td>
-                                    <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-700
-                                        ${employee.status === 'Approve' ? 'text-green-700' : 'text-red-700'}
-                                        `}>{employee.status}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700 cursor-pointer" onClick={() => handleEdit(employee)}>view</td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="7" className="text-center py-4">No data found</td>
-                            </tr>
-                        )}
-
-
-                    </tbody>
-                </table>
-            </div>
-
-            <div className="flex justify-between items-center mt-4 bg-white p-4">
-                <div></div>
-                <div>
-                    <span className="text-gray-700">Items per page:</span>
-                    <select
-                        value={itemsPerPage}
-                        onChange={handleItemsPerPageChange}
-                        className="ml-2 p-1 border border-gray-300 rounded outline-none mr-2"
-                    >
-                        {itemsPerPageOptions.map(option => (
-                            <option key={option} value={option}>{option}</option>
-                        ))}
-                    </select>
-                    <span className="text-gray-700">{startIdx + 1} - {Math.min(startIdx + itemsPerPage, filteredData.length)} of {filteredData.length}</span>
-                    <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="ml-2 p-1 border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <i className="fas fa-chevron-left"></i>
-                    </button>
-                    <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="ml-2 p-1 border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <i className="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            {isEditPopupOpen && <EmployeeInfoPopup
-                employee={selectedEmployee}
-                onClose={() => setIsEditPopupOpen(false)}
-                reject={() => handleReject(selectedEmployee.empId)}
-                approve={() => handleApprove(selectedEmployee.empId)}
-            />}
+          <h3 className="text-xl font-bold text-blue-700">
+            {filteredData?.length || 0}
+          </h3>
         </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  {/* Table Section */}
+  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+
+    {/* Section Header */}
+    <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+
+      <div>
+        <h2 className="font-semibold text-slate-800">
+          Employee Records
+        </h2>
+
+        <p className="text-sm text-slate-500">
+          Complete employee information list
+        </p>
+      </div>
+
+      <div className="bg-slate-100 px-4 py-2 rounded-lg text-sm text-slate-600">
+        {filteredData?.length || 0} Records
+      </div>
+
+    </div>
+
+    {/* AG Grid */}
+    <AgGridTable
+      rowData={filteredData}
+      columnDefs={columnDefs}
+      gridOptions={{
+        animateRows: true,
+        rowHeight: 55,
+        headerHeight: 55,
+        defaultColDef: {
+          flex: 1,
+          minWidth: 120,
+          sortable: true,
+          filter: true,
+          resizable: true,
+          floatingFilter: true,
+        },
+      }}
+      onGridReady={(params) => params.api.sizeColumnsToFit()}
+      components={{
+        actionCellRenderer: ActionCellRenderer,
+      }}
+      pagination={true}
+      paginationPageSize={itemsPerPage}
+      overlayNoRowsTemplate="<span>No employee data found</span>"
+      style={{ height: 600 }}
+      className="rounded-2xl"
+    />
+
+  </div>
+
+   
+
+  {/* Popup */}
+  {isEditPopupOpen && (
+    <EmployeeInfoPopup
+      employee={selectedEmployee}
+      onClose={() => setIsEditPopupOpen(false)}
+      reject={() => handleReject(selectedEmployee.empId)}
+      approve={() => handleApprove(selectedEmployee.empId)}
+    />
+  )}
+
+</div>
     );
 }
 

@@ -1,10 +1,11 @@
 import React from 'react';
 
-const DropdownBox = ({ label, name, options, value, onChange, error, placeholder }) => {
+const DropdownBox = ({ label, name, options, value, onChange, error, placeholder, required = false }) => {
   return (
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
         {label}
+        {required && <span className="text-red-500">*</span>}
       </label>
       <select
         name={name}

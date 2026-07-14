@@ -26,8 +26,18 @@ function EditEmployeePopup({ employee, onSave,onClose }) {
               <label className="block text-gray-700">Full Name</label>
               <input
                 type="text"
-                name="fullName"
-                value={formData.fullName}
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded"
               />
@@ -66,13 +76,30 @@ function EditEmployeePopup({ employee, onSave,onClose }) {
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Role</label>
-              <input
+              {/* <input
                 type="text"
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded"
-              />
+              /> */}
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              >
+                <option value="CEO">CEO</option>
+                <option value="CO-FOUNDER">CO-FOUNDER</option>
+                <option value="FOUNDER">FOUNDER</option>
+                <option value="HR">HR</option>
+                <option value="MANAGER">MANAGER</option>
+                <option value="DEVELOPER">DEVELOPER</option>
+                <option value="ADMIN">Admin</option>
+                <option value="USER">User</option>
+                <option value="MANAGER">Manager</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+              </select>
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Work Type</label>
@@ -86,6 +113,19 @@ function EditEmployeePopup({ employee, onSave,onClose }) {
                     <option value="WFH">WFH</option>
                     <option value="Client Location">Client Location</option>
                   </select>
+            </div>
+            {/* status */}
+            <div className="mb-4">
+              <label className="block text-gray-700">Status</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              >
+                <option value={true}>Active</option>
+                <option value={false}>Inactive</option>
+              </select>
             </div>
           </div>
           <div className="flex justify-end mt-4">

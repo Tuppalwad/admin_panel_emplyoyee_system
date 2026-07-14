@@ -2,14 +2,19 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 const Loading = () => {
-    const loading = useSelector((state) => state.loading);
-    console.log(loading);
-    if (!loading.isLoading) return null;
-    return (
-        <div className="fixed inset-0  bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
-        </div>
-    );
+  const { isLoading } = useSelector((state) => state.loading);
+
+  if (!isLoading) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-[9999]">
+      <div className="absolute inset-0 bg-black/5 backdrop-blur-[2px]" />
+
+      <div className="relative">
+        <div className="w-14 h-14 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    </div>
+  );
 };
 
 export default Loading;

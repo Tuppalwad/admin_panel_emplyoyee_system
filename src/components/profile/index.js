@@ -33,21 +33,21 @@ const Profile = () => {
         country: '',
     });
 
+    const fetchAdmin = async () => {
+        const res = await dispatch(getAdmininfo(decode?.email));
+
+        console.log(res);
+        if (res?.code === 200) {
+            setAdmin(res?.data);
+        }
+    };
     useEffect(() => {
         // Fetch admin details from backend
-        const fetchAdmin = async () => {
-            const res = await dispatch(getAdmininfo(decode?.email));
-
-            console.log(res);
-            if (res?.code === 200) {
-                setAdmin(res?.data);
-            }
-        };
         fetchAdmin();
     }, [admin?.gender, decode?.email]);
 
 
-    console.log(formData);
+    
 
     const [errors, setErrors] = useState({});
     const [isEditing, setIsEditing] = useState(false);
@@ -70,6 +70,26 @@ const Profile = () => {
         });
     };
 
+    useEffect(() => {
+        // ifuser click on edit 
+        if (isEditing) {
+            setFormData({
+                ...formData,
+                fullname: admin?.fullname,
+                role: admin?.role,
+                email: admin?.email,
+                gender: admin?.gender,
+                mobile: admin?.mobile,
+                linkedIn: admin?.linkedIn,
+                address: admin?.address,
+                education: admin?.education,
+                experience: admin?.experience,
+                profileImage: admin?.profileImage,
+                about: admin?.about,
+                country: admin?.country,
+            });
+        }
+    }, [isEditing, admin]);
     const validate = () => {
         const newErrors = {};
         if (!formData.address) newErrors.address = 'Address is required';
@@ -112,6 +132,7 @@ const Profile = () => {
                 if (res.code === 200) {
                     e.target.reset();
                     notify('Profile Updated Successfully');
+                    fetchAdmin();
                 } else {
                     notify(res.message);
                 }
@@ -165,7 +186,7 @@ const Profile = () => {
                             className="w-24 h-24 object-cover rounded-full mr-6"
                         />
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-800">{capitalize(decode?.fullname)}</h2>
+                            <h2 className="text-2xl font-bold text-gray-800">{capitalize(admin?.fullname || decode?.fullname)}</h2>
                             <p className="text-gray-600">{decode?.email}</p>
                             <p className="text-gray-600">{decode?.role}</p>
                         </div>
@@ -174,12 +195,12 @@ const Profile = () => {
                     {/* show messget to please complete your profile */}
 
 
-                    {admin.gender && <button
+                     <button
                         onClick={() => setIsEditing(!isEditing)}
                         className=" text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                         {isEditing ? <i className="fas fa-times text-blue-500 hover:text-blue-700"></i> : <i className="fas fa-edit text-blue-500 hover:text-blue-700"></i>}
-                    </button>}
+                    </button>
                 </div>
                 {!admin.gender && (
                     <button
@@ -195,12 +216,13 @@ const Profile = () => {
                     admin?.gender ? <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <TextInput
                             label="Full Name"
-                            name="radhe"
+                            name="fullname"
                             type="text"
                             value={formData?.fullname}
                             onChange={handleChange}
                             error={errors.fullname}
                             placeholder={decode?.fullname}
+                            required={true}
                         />
                         <TextInput
                             label="Email"
@@ -212,6 +234,7 @@ const Profile = () => {
                             style={{ backgroundColor: '#f9f9f9' }}
                             disabled={true}
                             placeholder={decode?.email}
+                            required={true}
                         />
                         <DropdownBox
                             label="Gender"
@@ -230,7 +253,8 @@ const Profile = () => {
                             onChange={handleChange}
                             error={errors.role}
                             placeholder={admin?.role}
-                        />
+                            required={true}
+                            />
                         <DropdownBox
                             label="Work Type"
                             name="worktype"
@@ -239,6 +263,7 @@ const Profile = () => {
                             onChange={handleChange}
                             error={errors.worktype}
                             placeholder={admin?.worktype}
+                            required={true}
                         />
                         <TextInput
                             label="Phone Number"
@@ -258,15 +283,17 @@ const Profile = () => {
                             onChange={handleChange}
                             error={errors.education}
                             placeholder={admin?.education}
+                            required={true}
                         />
                         <DropdownBox
                             label="Experience"
                             name="experience"
-                            options={['0-1', '1-2', '2-3', '3-4', '4-5', '5+']}
+                            options={['0', '1', '2', '3', '4', '5+']}
                             value={formData?.experience}
                             onChange={handleChange}
                             error={errors.experience}
                             placeholder={admin?.experience}
+                            required={true}
                         />
 
                         <TextInput
@@ -277,6 +304,7 @@ const Profile = () => {
                             onChange={handleChange}
                             error={errors.address}
                             placeholder={admin?.address}
+                            required={true}
                         />
                         <DropdownBox
                             label="Country"
@@ -286,6 +314,7 @@ const Profile = () => {
                             onChange={handleChange}
                             error={errors.country}
                             placeholder={admin?.country}
+                            required={true}
                         />
 
                         <TextInput
@@ -296,6 +325,7 @@ const Profile = () => {
                             onChange={handleChange}
                             error={errors.about}
                             placeholder={admin?.about}
+                            required={true}
                         />
 
                         {/* show profile image */}
@@ -304,6 +334,7 @@ const Profile = () => {
                                 src={admin?.profilePicture || dummyimage}
                                 alt="Profile"
                                 className="w-24 h-24 object-cover rounded-full mr-6"
+
                             />
 
                             <TextInput
@@ -324,6 +355,7 @@ const Profile = () => {
                             onChange={handleChange}
                             error={errors.linkedIn}
                             placeholder={admin?.linkedIn}
+                            required={true}
                         />
                         <button
                             type="submit"

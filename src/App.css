@@ -5,19 +5,28 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Roboto', sans-serif; /* Primary font */
+  font-family: 'Roboto', sans-serif;
+  /* Primary font */
 }
 
 body {
-  font-family: 'Source Sans Pro', sans-serif; /* Secondary font for text */
+  font-family: 'Source Sans Pro', sans-serif;
+  /* Secondary font for text */
   line-height: 1.6;
   color: #333;
   background-color: #f8f9fa;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Roboto', sans-serif; /* Consistent header font */
-  font-weight: 700; /* Bold headers */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Roboto', sans-serif;
+  /* Consistent header font */
+  font-weight: 700;
+  /* Bold headers */
   color: #333;
 }
 
@@ -29,12 +38,13 @@ a {
 
 a:hover {
   text-decoration: none;
-  
+
 }
 
 button {
   font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 600; /* Bold for buttons */
+  font-weight: 600;
+  /* Bold for buttons */
   border: none;
   cursor: pointer;
 }
@@ -143,6 +153,35 @@ button {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
+
+
+.ag-theme-alpine .ag-floating-filter-body input,
+.ag-theme-alpine .ag-floating-filter-body select,
+.ag-theme-alpine .ag-floating-filter-body .ag-input-field-input {
+  height: 30px !important;
+  min-height: 30px !important;
+  line-height: 30px !important;
+  padding: 0 12px !important;
+}
+
+.ag-theme-alpine .ag-header-row,
+.ag-theme-alpine .ag-floating-filter-row {
+  min-height: 50px !important;
+  height: 50px !important;
+}
+
+.ag-theme-alpine .ag-header-cell,
+.ag-theme-alpine .ag-header-cell-label {
+  height: 50px !important;
+  min-height: 50px !important;
+}
+
+
