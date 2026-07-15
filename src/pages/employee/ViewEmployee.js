@@ -162,6 +162,7 @@ function ViewEmployee() {
       { headerName: 'First Name', field: 'firstName', filter: true, sortable: true, flex: 1, minWidth: 180 },
       { headerName: 'Last Name', field: 'lastName', filter: true, sortable: true, flex: 1, minWidth: 180 },
       { headerName: 'Email', field: 'email', filter: true, sortable: true, flex: 1, minWidth: 220 },
+      { headerName: 'Phone Number', field: 'mobile', filter: true, sortable: true, flex: 1, minWidth: 180 },
       {
         headerName: 'Date of Joining',
         field: 'dateofjoining',
@@ -185,6 +186,7 @@ function ViewEmployee() {
       { headerName: 'Gender', field: 'gender', filter: true, sortable: true, flex: 1, minWidth: 120 },
       { headerName: 'Work Type', field: 'worktype', filter: true, sortable: true, flex: 1, minWidth: 140 },
       { headerName: 'Employee Type', field: 'employeeType', filter: true, sortable: true, flex: 1, minWidth: 180 },
+      
       {
         headerName: 'Actions', field: 'actions', minWidth: 150, cellRenderer: 'actionCellRenderer', suppressMovable: true, pinned: 'right',
         filter: false
