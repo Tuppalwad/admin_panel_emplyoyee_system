@@ -36,7 +36,7 @@ function ViewEmployee() {
     try {
       if (
         window.confirm(
-          `Are you sure you want to ${status ? 'open' : 'close'
+          `Are you sure you want to ${status ? 'close':'open'
           } this employee account?`
         )
       ) {
@@ -46,8 +46,7 @@ function ViewEmployee() {
 
         if (res?.status === 'success') {
           notify(
-            `Employee account ${status ? 'opened' : 'closed'
-            } successfully`
+            `Employee account ${status ? 'closed' : 'opened'} successfully`
           );
         } else {
           notify(

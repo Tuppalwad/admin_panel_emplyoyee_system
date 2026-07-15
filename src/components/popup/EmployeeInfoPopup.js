@@ -37,7 +37,7 @@ function EmployeeInfoPopup({
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold">
+              <h2 className="text-3xl font-bold text-white">
                 {formData.FirstName} {formData.LastName}
               </h2>
 
