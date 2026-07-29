@@ -63,6 +63,16 @@ function EditEmployeePopup({ employee, onSave,onClose }) {
               />
             </div>
             <div className="mb-4">
+              <label className="block text-gray-700">Current Employee ID</label>
+              <input
+                type="text"
+                name="currentEmpId"
+                value={formData.currentEmpId}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mb-4">
               <label className="block text-gray-700">Gender</label>
               <select
                 name="gender"

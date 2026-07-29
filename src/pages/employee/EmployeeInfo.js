@@ -7,6 +7,75 @@ import { experienceRange, exportToExcel, skills } from '../../utils/utils';
 import Select from "react-select";
 import { debounce } from 'lodash';
 
+const formatExportDate = (date) => {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('en-GB');
+};
+
+const exportColumns = [
+    // Personal Information
+    { key: 'fullName', label: 'Full Name', section: 'Personal Information', accessor: (row) => `${row?.FirstName || ''} ${row?.LastName || ''}`.trim() },
+    { key: 'FathersName', label: "Father's Name", section: 'Personal Information', accessor: (row) => row?.FathersName || '' },
+    { key: 'Gender', label: 'Gender', section: 'Personal Information', accessor: (row) => row?.Gender || '' },
+    { key: 'DOB', label: 'Date of Birth', section: 'Personal Information', accessor: (row) => formatExportDate(row?.DOB) },
+    { key: 'MaritalStatus', label: 'Marital Status', section: 'Personal Information', accessor: (row) => row?.MaritalStatus || '' },
+    { key: 'SpouseName', label: 'Spouse Name', section: 'Personal Information', accessor: (row) => row?.SpouseName || '' },
+    { key: 'CurrentCity', label: 'Current City', section: 'Personal Information', accessor: (row) => row?.CurrentCity || '' },
+
+    // Employment Information
+    { key: 'empId', label: 'Employee ID', section: 'Employment Information', accessor: (row) => row?.empId || '' },
+    { key: 'CurrentEmpId', label: 'Current Employee ID', section: 'Employment Information', accessor: (row) => row?.CurrentEmpId || '' },
+    { key: 'DateOfJoining', label: 'Date Of Joining', section: 'Employment Information', accessor: (row) => formatExportDate(row?.DateOfJoining) },
+    { key: 'Designation', label: 'Designation', section: 'Employment Information', accessor: (row) => row?.Designation || '' },
+    { key: 'EmploymentType', label: 'Employment Type', section: 'Employment Information', accessor: (row) => row?.EmploymentType || '' },
+    { key: 'WorkMode', label: 'Work Mode', section: 'Employment Information', accessor: (row) => row?.WorkMode || '' },
+    { key: 'status', label: 'Status', section: 'Employment Information', accessor: (row) => row?.status || '' },
+
+    // Contact Information
+    { key: 'Email', label: 'Email', section: 'Contact Information', accessor: (row) => row?.Email || '' },
+    { key: 'MobileNo', label: 'Mobile Number', section: 'Contact Information', accessor: (row) => row?.MobileNo || '' },
+    { key: 'EmergencyContactNo', label: 'Emergency Contact', section: 'Contact Information', accessor: (row) => row?.EmergencyContactNo || '' },
+    { key: 'EmergencyContactPersonName', label: 'Emergency Contact Person', section: 'Contact Information', accessor: (row) => row?.EmergencyContactPersonName || '' },
+
+    // Education & Experience
+    { key: 'HighestQualification', label: 'Highest Qualification', section: 'Education & Experience', accessor: (row) => row?.HighestQualification || '' },
+    { key: 'AdditionalCourses', label: 'Additional Courses', section: 'Education & Experience', accessor: (row) => row?.AdditionalCourses || '' },
+    { key: 'TotalEXP', label: 'Total Experience', section: 'Education & Experience', accessor: (row) => row?.TotalEXP || '' },
+    {
+        key: 'skillAndExperience',
+        label: 'Skills',
+        section: 'Education & Experience',
+        accessor: (row) =>
+            row?.skillAndExperience?.length
+                ? row.skillAndExperience.map((item) => `${item.skill} (${item.experience} Year)`).join(', ')
+                : '',
+    },
+
+    // Identity Documents
+    { key: 'PANNo', label: 'PAN Number', section: 'Identity Documents', accessor: (row) => row?.PANNo || '' },
+    { key: 'AadharNo', label: 'Aadhar Number', section: 'Identity Documents', accessor: (row) => row?.AadharNo || '' },
+    { key: 'PassportNo', label: 'Passport Number', section: 'Identity Documents', accessor: (row) => row?.PassportNo || '' },
+    { key: 'NameAsPerAadhar', label: 'Name As Per Aadhar', section: 'Identity Documents', accessor: (row) => row?.NameAsPerAadhar || '' },
+
+    // Bank Information
+    { key: 'BankAccountNo', label: 'Bank Account Number', section: 'Bank Information', accessor: (row) => row?.BankAccountNo || '' },
+    { key: 'IFSCCode', label: 'IFSC Code', section: 'Bank Information', accessor: (row) => row?.IFSCCode || '' },
+    { key: 'PFMember', label: 'PF Member', section: 'Bank Information', accessor: (row) => row?.PFMember || '' },
+    { key: 'UANNo', label: 'UAN Number', section: 'Bank Information', accessor: (row) => row?.UANNo || '' },
+
+    // Laptop Information
+    { key: 'LaptopType', label: 'Laptop Type', section: 'Laptop Information', accessor: (row) => row?.LaptopType || '' },
+    { key: 'HavingOfficialInUse', label: 'Official Laptop In Use', section: 'Laptop Information', accessor: (row) => row?.HavingOfficialInUse || '' },
+    { key: 'OfficialLaptopSrNo', label: 'Official Laptop Serial No.', section: 'Laptop Information', accessor: (row) => row?.OfficialLaptopSrNo || '' },
+    { key: 'RAM', label: 'RAM', section: 'Laptop Information', accessor: (row) => row?.RAM || '' },
+    { key: 'StorageType', label: 'Storage Type', section: 'Laptop Information', accessor: (row) => row?.StorageType || '' },
+    { key: 'StorageSpace', label: 'Storage Space', section: 'Laptop Information', accessor: (row) => row?.StorageSpace || '' },
+    { key: 'OfficialUpgrades', label: 'Official Upgrades', section: 'Laptop Information', accessor: (row) => row?.OfficialUpgrades || '' },
+    { key: 'AdditionalConfigurations', label: 'Additional Configurations', section: 'Laptop Information', accessor: (row) => row?.AdditionalConfigurations || '' },
+];
+
+const exportSections = [...new Set(exportColumns.map((col) => col.section))];
+
 function EmployeeInfo() {
     const dispatch = useDispatch();
 
@@ -20,6 +89,10 @@ function EmployeeInfo() {
     const isSidebarOpen = useSelector((state) => !state.sidebar.isSidebarOpen);
     const [data, setData] = useState();
     const [loading, setLoading] = useState();
+    const [isExportPopupOpen, setIsExportPopupOpen] = useState(false);
+    const [selectedExportColumns, setSelectedExportColumns] = useState(
+        exportColumns.map((col) => col.key)
+    );
 
     const fetchdataonSearch = useCallback(async () => {
         try {
@@ -189,8 +262,35 @@ function EmployeeInfo() {
     };
 
     const downloadExcle = () => {
+        setSelectedExportColumns(exportColumns.map((col) => col.key));
+        setIsExportPopupOpen(true);
+    };
+
+    const toggleExportColumn = (key) => {
+        setSelectedExportColumns((prev) =>
+            prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+        );
+    };
+
+    const toggleSelectAllExportColumns = () => {
+        setSelectedExportColumns((prev) =>
+            prev.length === exportColumns.length ? [] : exportColumns.map((col) => col.key)
+        );
+    };
+
+    const confirmExportExcel = () => {
+        const columnsToExport = exportColumns.filter((col) => selectedExportColumns.includes(col.key));
+        const rows = (data || []).map((row) => {
+            const exportRow = {};
+            columnsToExport.forEach((col) => {
+                exportRow[col.label] = col.accessor(row);
+            });
+            return exportRow;
+        });
+
+        setIsExportPopupOpen(false);
         setLoading(true);
-        exportToExcel(data, "Employees");
+        exportToExcel(rows, "Employees");
         setTimeout(() => {
             setLoading(false);
         }, 2000);
@@ -303,6 +403,76 @@ function EmployeeInfo() {
                     reject={() => handleReject(selectedEmployee.empId)}
                     approve={() => handleApprove(selectedEmployee.empId)}
                 />
+            )}
+
+            {/* Export Columns Popup */}
+            {isExportPopupOpen && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+
+                        <div className="bg-gradient-to-r from-blue-600 to-indigo-500 px-6 py-4 flex justify-between items-center">
+                            <h3 className="text-lg font-semibold text-white">Select Columns to Export</h3>
+                            <button
+                                onClick={() => setIsExportPopupOpen(false)}
+                                className="text-white/80 hover:text-white text-xl leading-none"
+                            >
+                                &times;
+                            </button>
+                        </div>
+
+                        <div className="p-6 overflow-y-auto">
+                            <label className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-200 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedExportColumns.length === exportColumns.length}
+                                    onChange={toggleSelectAllExportColumns}
+                                    className="w-4 h-4"
+                                />
+                                <span className="font-medium text-slate-800">Select All</span>
+                            </label>
+
+                            {exportSections.map((section) => (
+                                <div key={section} className="mb-5">
+                                    <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
+                                        {section}
+                                    </h4>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {exportColumns
+                                            .filter((col) => col.section === section)
+                                            .map((col) => (
+                                                <label key={col.key} className="flex items-center gap-2 cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedExportColumns.includes(col.key)}
+                                                        onChange={() => toggleExportColumn(col.key)}
+                                                        className="w-4 h-4"
+                                                    />
+                                                    <span className="text-slate-700 text-sm">{col.label}</span>
+                                                </label>
+                                            ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+                            <button
+                                onClick={() => setIsExportPopupOpen(false)}
+                                className="px-4 py-2 rounded-lg text-sm text-slate-600 border border-slate-300 hover:bg-slate-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmExportExcel}
+                                disabled={selectedExportColumns.length === 0}
+                                className="px-4 py-2 rounded-lg text-sm text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Export
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
             )}
 
         </div>

@@ -18,6 +18,7 @@ const AddEmployee = () => {
     status: 'active',
     dateofjoining: new Date().toISOString().split('T')[0], // Default to today's date
     employeeType: 'Permanent', // Default to full-time
+    currentEmpId: '',
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -52,6 +53,7 @@ const AddEmployee = () => {
     const newErrors = {};
     if (!formData.firstName) newErrors.firstName = 'First Name is required';
     if (!formData.lastName) newErrors.lastName = 'Last Name is required';
+    if (!formData.currentEmpId) newErrors.currentEmpId = 'Current Employee ID is required';
     if (!formData.email) newErrors.email = 'Email is required';
     if (!formData.gender) newErrors.gender = 'Gender is required';
     if (!formData.role) newErrors.role = 'Role is required';
@@ -105,7 +107,8 @@ const AddEmployee = () => {
             shift: '',
             status: '',
             dateofjoining: '',
-            employeeType: ''
+            employeeType: '',
+            currentEmpId: ''
           });
           setErrors({
             firstName: '',
@@ -118,7 +121,8 @@ const AddEmployee = () => {
             shift: '',
             status: '',
             dateofjoining: '',
-            employeeType: ''
+            employeeType: '',
+            currentEmpId: ''
           });
         }
 
@@ -209,6 +213,16 @@ const AddEmployee = () => {
         onChange={handleChange}
         error={errors.lastName}
         placeholder="Enter last name"
+      />
+
+      <TextInput
+        label="Current Employee ID"
+        name="currentEmpId"
+        type="text"
+        value={formData.currentEmpId}
+        onChange={handleChange}
+        error={errors.currentEmpId}
+        placeholder="Enter current employee ID"
       />
 
       <TextInput
@@ -320,6 +334,7 @@ const AddEmployee = () => {
             mobile: '',
             shift: '',
             status: '',
+            currentEmpId: '',
           });
 
           setErrors({});

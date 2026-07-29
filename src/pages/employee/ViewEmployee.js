@@ -158,6 +158,7 @@ function ViewEmployee() {
   const columnDefs = useMemo(
     () => [
       { headerName: 'Employee ID', field: 'empId', filter: true, sortable: true, flex: 1, minWidth: 140 },
+      { headerName: 'Current Employee ID', field: 'currentEmpId', filter: true, sortable: true, flex: 1, minWidth: 170 },
       // { headerName: 'Full Name', field: 'fullName', filter: true, sortable: true, flex: 1, minWidth: 180 },
       { headerName: 'First Name', field: 'firstName', filter: true, sortable: true, flex: 1, minWidth: 180 },
       { headerName: 'Last Name', field: 'lastName', filter: true, sortable: true, flex: 1, minWidth: 180 },

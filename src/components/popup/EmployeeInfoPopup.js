@@ -126,6 +126,11 @@ function EmployeeInfoPopup({
               />
 
               <InfoCard
+                label="Current Employee ID"
+                value={formData.CurrentEmpId}
+              />
+
+              <InfoCard
                 label="Date Of Joining"
                 value={formatDate(formData.DateOfJoining)}
               />
