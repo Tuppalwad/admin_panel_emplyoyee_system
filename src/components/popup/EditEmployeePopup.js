@@ -59,7 +59,9 @@ function EditEmployeePopup({ employee, onSave,onClose }) {
                 name="empId"
                 value={formData.empId}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded"
+                // not editable 
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
               />
             </div>
             <div className="mb-4">
