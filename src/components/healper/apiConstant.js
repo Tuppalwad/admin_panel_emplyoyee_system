@@ -4,6 +4,9 @@ export const POST = 'post';
 export const PUT = 'put';
 export const DELETE = 'delete';
 
+// export const BaseURL = 'http://localhost:3030/api/'
+export const BaseURL= 'https://backend-hr-management-vcxb.onrender.com/api/' 
+
 
 export const api = {
     getAllEmployee: "/getallusers",

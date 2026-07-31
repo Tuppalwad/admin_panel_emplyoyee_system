@@ -1,8 +1,6 @@
 import axios from 'axios';
-
-const BaseURL = "https://backend-hr-management-vcxb.onrender.com/api/"//'http://localhost:3030/api/' //process.env.REACT_APP_BACKEND_URL || "http://localhost:3030/api/";
-//  const BaseURL = 'http://localhost:3030/api/'
-// const BaseURL="https://backend-hr-management-vcxb.onrender.com/api/"
+import { BaseURL } from '../components/healper/apiConstant';
+ 
 const axiosInstance = axios.create({
     baseURL: BaseURL,
     headers: {
