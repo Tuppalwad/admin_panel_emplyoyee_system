@@ -35,6 +35,22 @@ export const navItems = [
     ]
   },
   {
+    key: 'asset',
+    title: 'Asset Management',
+    icon: 'fa-laptop',
+    view: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"],
+    paths: ['/dashboard/asset/dashboard', '/dashboard/asset/add', '/dashboard/asset/view', '/dashboard/asset/employee', '/dashboard/asset/import'],
+
+    subNav: [
+      { title: 'Asset Dashboard', path: '/dashboard/asset/dashboard', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] },
+      { title: 'Add Asset', path: '/dashboard/asset/add', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] },
+      { title: 'View Assets', path: '/dashboard/asset/view', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] },
+      { title: 'Employee Assets', path: '/dashboard/asset/employee', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] },
+      // One-time legacy spreadsheet import — kept last, out of the day-to-day flow
+      { title: 'Import Register', path: '/dashboard/asset/import', subView: ["CEO", "HR", "FOUNDER", "CO-FOUNDER"] }
+    ]
+  },
+  {
     key: 'attendance',
     title: 'Attendance',
     icon: 'fa-user-clock',

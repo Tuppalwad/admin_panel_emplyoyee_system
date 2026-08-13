@@ -6,6 +6,7 @@ import employeeReducer from './employeeReducer';
 import adminInfoReducer from './adminInfoReducer';
 import leaveReducer from './leaveReducer';
 import { projectReducer } from './porjectReducer';
+import { assetReducer } from './assetReducer';
 
 const rootReducer = combineReducers({
   sidebar: sidebarReducer,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   employee: employeeReducer,
   admininfo: adminInfoReducer,
   leaves: leaveReducer,
-  projects: projectReducer
+  projects: projectReducer,
+  assets: assetReducer
 
 });
 

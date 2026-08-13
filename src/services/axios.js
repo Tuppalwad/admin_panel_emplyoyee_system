@@ -22,7 +22,7 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-export const makeApiRequest = ({method, url, data, params}) =>
+export const makeApiRequest = ({method, url, data, params, headers}) =>
     new Promise(async (resolve, reject) => {
       const options = {
         method,
@@ -30,6 +30,11 @@ export const makeApiRequest = ({method, url, data, params}) =>
         data,
         params,
       };
+
+      // Only set when a caller needs to override the JSON default (e.g. file uploads)
+      if (headers) {
+        options.headers = headers;
+      }
   
       options.validateStatus = () => {
         return true;

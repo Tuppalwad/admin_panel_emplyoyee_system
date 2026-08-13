@@ -6,6 +6,7 @@ import KeyMetricsGraph from '../../components/dashboard/KeyMetricsGraph';
 import AttendanceGraph from '../../components/dashboard/AttendanceGraph';
 import { useDispatch } from 'react-redux';
 import { getDashboardCountdata } from '../../redux/actions/dashboardAction';
+import { getAssetOverview } from '../../redux/actions/assetAction';
 
 function Dashboardbox() {
 
@@ -15,6 +16,7 @@ function Dashboardbox() {
         employeesOnLeave: 0,
         onGoingProject: 0
     })
+    const [totalAssets, setTotalAssets] = useState(0);
     const dispatch = useDispatch();
     const getCountData = async () => {
         try {
@@ -32,8 +34,20 @@ function Dashboardbox() {
         }
     }
 
+    const getAssetCount = async () => {
+        try {
+            const res = await dispatch(getAssetOverview())
+            if (res?.status === "success") {
+                setTotalAssets(res.data.totalAssets)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         getCountData();
+        getAssetCount();
     }, [])
 
     return (
@@ -64,6 +78,14 @@ function Dashboardbox() {
                         icon="fas fa-calendar-check"
                         color="from-green-500 to-emerald-500"
                         link="/dashboard/attendance/today_attendance"
+                    />
+
+                    <HeadingBox
+                        title="Assets"
+                        count={totalAssets}
+                        icon="fas fa-laptop"
+                        color="from-orange-500 to-amber-500"
+                        link="/dashboard/asset/dashboard"
                     />
 
                     {/* <HeadingBox

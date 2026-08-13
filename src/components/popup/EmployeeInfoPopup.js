@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { getAssetsByEmpId } from "../../redux/actions/assetAction";
 
 function EmployeeInfoPopup({
   employee,
@@ -6,7 +9,25 @@ function EmployeeInfoPopup({
   reject,
   onClose,
 }) {
+  const dispatch = useDispatch();
   const [formData] = useState({ ...employee });
+
+  /* Assets are not merged into the employee record server-side, so they are
+     fetched separately and shown as their own section. */
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() => {
+    const fetchAssets = async () => {
+      if (!formData.empId) return;
+
+      const res = await dispatch(getAssetsByEmpId(formData.empId));
+      if (res?.code === 200) {
+        setAssets(res.data || []);
+      }
+    };
+
+    fetchAssets();
+  }, [dispatch, formData.empId]);
 
   const formatDate = (date) => {
     if (!date) return "N/A";
@@ -342,6 +363,56 @@ function EmployeeInfoPopup({
               />
 
             </div>
+          </div>
+
+          {/* Assigned Assets */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h3 className="text-lg font-semibold">
+                Assigned Assets ({assets.length})
+              </h3>
+
+              {formData.empId && (
+                <Link
+                  to={`/dashboard/asset/employee?empId=${encodeURIComponent(formData.empId)}`}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  Manage assets
+                  <i className="fas fa-arrow-right ml-2"></i>
+                </Link>
+              )}
+            </div>
+
+            {assets.length ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                {assets.map((asset) => (
+                  <div
+                    key={asset._id}
+                    className="bg-slate-50 border border-slate-200 rounded-xl p-4"
+                  >
+                    <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">
+                      {asset.category}
+                    </p>
+
+                    <p className="font-medium text-slate-800 break-words">
+                      {asset.brand} {asset.modelName}
+                    </p>
+
+                    <p className="text-sm text-slate-500 mt-1">
+                      {asset.assetId}
+                    </p>
+
+                    <p className="text-sm text-slate-500">
+                      Since {formatDate(asset.currentAssignee?.assignedDate)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-slate-500">
+                No assets currently assigned.
+              </p>
+            )}
           </div>
 
         </div>

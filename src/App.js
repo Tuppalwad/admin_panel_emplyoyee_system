@@ -20,6 +20,7 @@ import { AddProject } from './pages/project';
 import ViewProjects from './pages/project/ViewProjects';
 import ProjectDetail from './pages/project/ProjectDetail';
 import ManageProject from './pages/project/ManageProject';
+import { AddAsset, AssetDashboard, AssetDetail, EmployeeAssets, ImportRegister, ViewAssets } from './pages/asset';
 
 function App() {
   return (
@@ -46,6 +47,12 @@ function App() {
               <Route path="project/add" element={<AddProject />} />
               <Route path="project/view" element={<ViewProjects />} />
               <Route path="project/projectDetail/:id" element={<ProjectDetail />} />
+              <Route path="asset/dashboard" element={<AssetDashboard />} />
+              <Route path="asset/add" element={<AddAsset />} />
+              <Route path="asset/view" element={<ViewAssets />} />
+              <Route path="asset/detail/:assetId" element={<AssetDetail />} />
+              <Route path="asset/employee" element={<EmployeeAssets />} />
+              <Route path="asset/import" element={<ImportRegister />} />
               <Route path="account" element={<Profile />} />
               <Route path='*' element={<NotFoundPage />} />
               {/* <Route path="settings" element={<Settings />} /> */}

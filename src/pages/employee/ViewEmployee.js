@@ -6,6 +6,14 @@ import AgGridTable from '../../components/common/AgGridTable';
 import { toast, ToastContainer } from 'react-toastify';
 import { Link } from 'react-router-dom';
 
+/* Offboarding is blocked while the employee still holds assets — the backend
+   returns them in `data` so HR can see what to reclaim. */
+const extractBlockedAssets = (data) => {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.assets)) return data.assets;
+  return [];
+};
+
 function ViewEmployee() {
   const dispatch = useDispatch();
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
@@ -13,6 +21,7 @@ function ViewEmployee() {
   const [searchTerm, setSearchTerm] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [gridApi, setGridApi] = useState(null);
+  const [blockedOffboarding, setBlockedOffboarding] = useState(null);
 
   const employee = useSelector((state) => state.employee);
   const { allEmployees = [] } = employee || {};
@@ -49,10 +58,16 @@ function ViewEmployee() {
             `Employee account ${status ? 'closed' : 'opened'} successfully`
           );
         } else {
-          notify(
-            res?.message ||
-            'Unable to update employee account status'
-          );
+          const stillAssigned = extractBlockedAssets(res?.data);
+
+          if (stillAssigned.length) {
+            setBlockedOffboarding({ empId, assets: stillAssigned });
+          } else {
+            notify(
+              res?.message ||
+              'Unable to update employee account status'
+            );
+          }
         }
       }
     } catch (err) {
@@ -298,6 +313,81 @@ function ViewEmployee() {
         />
 
       </div>
+
+      {/* Offboarding blocked by unreturned assets */}
+      {blockedOffboarding && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden">
+
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 px-6 py-4 flex justify-between items-center">
+              <div>
+                <h3 className="text-lg font-semibold text-white">
+                  Assets Still Assigned
+                </h3>
+
+                <p className="text-orange-50 text-sm mt-1">
+                  {blockedOffboarding.empId} must return these before the account can be closed
+                </p>
+              </div>
+
+              <button
+                onClick={() => setBlockedOffboarding(null)}
+                className="text-white/80 hover:text-white text-2xl leading-none"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="text-left text-slate-500 border-b">
+                    <th className="py-3 pr-4">Asset ID</th>
+                    <th className="py-3 pr-4">Category</th>
+                    <th className="py-3 pr-4">Brand / Model</th>
+                    <th className="py-3 pr-4">Serial Number</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {blockedOffboarding.assets.map((asset, index) => (
+                    <tr key={asset._id || asset.assetId || index} className="border-b last:border-0">
+                      <td className="py-3 pr-4 font-medium text-slate-800">
+                        {asset.assetId}
+                      </td>
+
+                      <td className="py-3 pr-4">{asset.category}</td>
+
+                      <td className="py-3 pr-4">
+                        {asset.brand} {asset.modelName}
+                      </td>
+
+                      <td className="py-3 pr-4">{asset.serialNumber || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <button
+                onClick={() => setBlockedOffboarding(null)}
+                className="px-4 py-2 rounded-lg text-sm text-slate-600 border border-slate-300 hover:bg-slate-50"
+              >
+                Close
+              </button>
+
+              <Link
+                to={`/dashboard/asset/employee?empId=${encodeURIComponent(blockedOffboarding.empId)}`}
+                className="px-4 py-2 rounded-lg text-sm text-white bg-blue-600 hover:bg-blue-700"
+              >
+                Reclaim Assets
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {isEditPopupOpen && (
         <EditEmployeePopup
