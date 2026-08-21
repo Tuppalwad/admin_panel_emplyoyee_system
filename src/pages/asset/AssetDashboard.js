@@ -53,27 +53,27 @@ const AssetDashboard = () => {
   }, [fetchExpiring]);
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6 w-full">
+    <div className="bg-gray-100 min-h-screen p-4 w-full">
 
       {/* Header */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
 
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">
+            <h1 className="text-xl font-bold text-slate-800">
               Asset Dashboard
             </h1>
 
-            <p className="text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 mt-0.5">
               Company equipment at a glance
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <Link
               to="/dashboard/asset/view"
-              className="px-5 py-3 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50 transition"
+              className="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition"
             >
               <i className="fas fa-list mr-2"></i>
               All Assets
@@ -81,7 +81,7 @@ const AssetDashboard = () => {
 
             <Link
               to="/dashboard/asset/add"
-              className="px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
             >
               <i className="fas fa-plus mr-2"></i>
               Add Asset
@@ -93,7 +93,7 @@ const AssetDashboard = () => {
       </div>
 
       {/* Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
 
         <HeadingBox
           title="Total Assets"
@@ -130,22 +130,22 @@ const AssetDashboard = () => {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <AssetStatusGraph />
         <AssetCategoryGraph />
       </div>
 
       {/* Warranty expiring */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
 
-        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-5">
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-3">
 
           <div>
-            <h2 className="text-xl font-bold text-gray-800">
+            <h2 className="text-base font-bold text-gray-800">
               Warranty Expiring
             </h2>
 
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-0.5">
               Assets whose warranty ends within the selected window
             </p>
           </div>
@@ -155,7 +155,7 @@ const AssetDashboard = () => {
               <button
                 key={option}
                 onClick={() => setDays(option)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition ${days === option
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${days === option
                   ? 'bg-blue-600 text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}

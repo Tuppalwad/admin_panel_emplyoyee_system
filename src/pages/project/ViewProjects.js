@@ -162,37 +162,37 @@ ActionCellRenderer,
 ]
 );
 
-return ( <div className="p-6 bg-slate-50 min-h-screen">
+return ( <div className="p-4 bg-slate-50 min-h-screen">
 
   {/* Header */}
-  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
-    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
+    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
 
       <div>
-        <h1 className="text-3xl font-bold text-slate-800">
+        <h1 className="text-xl font-bold text-slate-800">
           Projects
         </h1>
 
-        <p className="text-slate-500 mt-1">
+        <p className="text-sm text-slate-500 mt-0.5">
           Manage and monitor all company projects
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
 
-        <div className="bg-blue-50 border border-blue-100 px-5 py-3 rounded-xl">
+        <div className="bg-blue-50 border border-blue-100 px-4 py-2 rounded-lg">
           <p className="text-xs text-blue-600">
             Total Projects
           </p>
 
-          <h3 className="text-xl font-bold text-blue-700">
+          <h3 className="text-lg font-bold text-blue-700">
             {projects.length}
           </h3>
         </div>
 
         <Link
           to="/dashboard/project/add"
-          className="px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
         >
           <i className="fas fa-plus mr-2"></i>
           Add Project
@@ -203,10 +203,8 @@ return ( <div className="p-6 bg-slate-50 min-h-screen">
     </div>
   </div>
 
-   
-
   {/* Grid */}
-  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
 
     <AgGridTable
       rowData={projects}
@@ -217,8 +215,8 @@ return ( <div className="p-6 bg-slate-50 min-h-screen">
       pagination={true}
       paginationPageSize={10}
       overlayNoRowsTemplate="<span>No Projects Found</span>"
-      style={{ height: 600 }}
-      className="rounded-2xl"
+      style={{ height: 460 }}
+      className="rounded-xl"
       gridOptions={{
         animateRows: true,
         rowHeight: 55,

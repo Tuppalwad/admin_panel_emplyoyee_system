@@ -75,20 +75,20 @@ const EmployeeAssets = () => {
   const selectedEmployee = allEmployees.find((employee) => employee.empId === empId);
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen">
+    <div className="p-4 bg-slate-50 min-h-screen">
       <ToastContainer />
 
       {/* Header */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
 
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">
+            <h1 className="text-xl font-bold text-slate-800">
               Employee Assets
             </h1>
 
-            <p className="text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 mt-0.5">
               What an employee is holding right now, and everything they have ever held
             </p>
           </div>
@@ -107,7 +107,7 @@ const EmployeeAssets = () => {
       </div>
 
       {!empId ? (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-10 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8 text-center">
           <p className="text-slate-500">
             Select an employee to see their assets.
           </p>
@@ -115,15 +115,15 @@ const EmployeeAssets = () => {
       ) : (
         <>
           {/* Currently held — the offboarding checklist */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-3">
               <div>
-                <h2 className="text-xl font-bold text-gray-800">
+                <h2 className="text-base font-bold text-gray-800">
                   Currently Assigned
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mt-0.5">
                   {selectedEmployee
                     ? `${selectedEmployee.fullName || selectedEmployee.firstName || ''} (${empId})`
                     : empId}
@@ -132,7 +132,7 @@ const EmployeeAssets = () => {
               </div>
 
               <div
-                className={`px-5 py-3 rounded-xl border ${currentAssets.length
+                className={`px-3 py-2 rounded-lg border ${currentAssets.length
                   ? 'bg-orange-50 border-orange-100'
                   : 'bg-green-50 border-green-100'
                   }`}
@@ -141,7 +141,7 @@ const EmployeeAssets = () => {
                   To Reclaim
                 </p>
 
-                <h3 className={`text-xl font-bold ${currentAssets.length ? 'text-orange-700' : 'text-green-700'}`}>
+                <h3 className={`text-lg font-bold ${currentAssets.length ? 'text-orange-700' : 'text-green-700'}`}>
                   {currentAssets.length}
                 </h3>
               </div>
@@ -218,18 +218,18 @@ const EmployeeAssets = () => {
           </div>
 
           {/* Full history */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
 
-            <h2 className="text-xl font-bold text-gray-800 mb-1">
+            <h2 className="text-base font-bold text-gray-800 mb-1">
               Asset History
             </h2>
 
-            <p className="text-sm text-gray-500 mb-5">
+            <p className="text-sm text-gray-500 mb-3">
               Every asset this employee has ever held
             </p>
 
             {history.length ? (
-              <div className="space-y-5">
+              <div className="space-y-3">
                 {history.map((asset) => {
                   const records = (asset.assignmentHistory || []).filter(
                     (record) => record.empId === empId

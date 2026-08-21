@@ -25,33 +25,35 @@ const NavItem = ({
   };
 
   return (
-    <div className="px-3 mb-1">
+    <div className="px-2 mb-0.5">
       {/* Main Menu */}
       <button
         onClick={handleClick}
         className={`
           w-full flex items-center justify-between
-          px-4 py-3 rounded-xl
+          px-3 py-2.5 rounded-lg
           transition-all duration-200
           group
           ${
             isActive(currentPath, item.paths)
-              ? 'bg-blue-50 text-blue-600 shadow-sm border-l-4 border-blue-600'
-              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
           }
         `}
       >
         <div className="flex items-center">
-          <i
-            className={`fas ${item.icon} text-lg ${
-              isActive(currentPath, item.paths)
-                ? 'text-blue-600'
-                : 'text-gray-500 group-hover:text-gray-700'
-            }`}
-          />
+          <span className="w-5 inline-flex justify-center">
+            <i
+              className={`fas ${item.icon} text-sm ${
+                isActive(currentPath, item.paths)
+                  ? 'text-white'
+                  : 'text-gray-400 group-hover:text-gray-600'
+              }`}
+            />
+          </span>
 
           {isSidebarOpen && (
-            <span className="ml-3 font-medium text-sm">
+            <span className="ml-2.5 font-medium text-sm">
               {item.title}
             </span>
           )}
@@ -61,14 +63,16 @@ const NavItem = ({
           <i
             className={`fa fa-chevron-${
               isSubNavOpen[item.key] ? 'up' : 'down'
-            } text-xs transition-transform duration-200`}
+            } text-[10px] transition-transform duration-200 ${
+              isActive(currentPath, item.paths) ? 'text-white' : 'text-gray-400'
+            }`}
           />
         )}
       </button>
 
       {/* Sub Menu */}
       {isSubNavOpen[item.key] && isSidebarOpen && (
-        <div className="ml-5 mt-2 border-l-2 border-gray-200 pl-3 space-y-1">
+        <div className="ml-4 mt-1 border-l-2 border-gray-200 pl-3 space-y-0.5">
           {item.subNav.map(
             (subItem) =>
               subItem?.subView?.includes(adminInfo.role) && (
@@ -77,18 +81,18 @@ const NavItem = ({
                   to={subItem.path}
                   className={`
                     flex items-center
-                    px-3 py-2 rounded-lg
+                    px-3 py-1.5 rounded-lg
                     text-sm
                     transition-all duration-200
                     ${
                       currentPath === subItem.path
-                        ? 'bg-blue-100 text-blue-700 font-medium'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                        ? 'bg-blue-50 text-blue-700 font-medium'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }
                   `}
                 >
                   <span
-                    className={`w-2 h-2 rounded-full mr-3 ${
+                    className={`w-1.5 h-1.5 rounded-full mr-2.5 ${
                       currentPath === subItem.path
                         ? 'bg-blue-600'
                         : 'bg-gray-400'

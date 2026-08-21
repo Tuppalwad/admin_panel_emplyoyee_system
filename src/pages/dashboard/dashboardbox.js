@@ -51,9 +51,9 @@ function Dashboardbox() {
     }, [])
 
     return (
-        <div className="bg-gray-100 min-h-screen p-6 w-full">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
-            <div className="flex flex-row justify-between my-6 gap-4">
+        <div className="bg-gray-100 min-h-screen p-4 w-full">
+            <h1 className="text-xl font-bold text-gray-800 mb-4">Dashboard</h1>
+            <div className="flex flex-row justify-between gap-3 mb-4">
                  
                 {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"> */}
                     <HeadingBox
@@ -98,7 +98,7 @@ function Dashboardbox() {
                 {/* </div> */}
 
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <AttendanceGraph />
                 <ProjectStatusGraph />
                 <TeamProductivityGraph />

@@ -54,40 +54,40 @@ const MonthtyAtteData = () => {
 
   return employeeData ? (
 
-  <div className="p-6 bg-slate-50 min-h-screen">
+  <div className="p-4 bg-slate-50 min-h-screen">
 
 
 {/* Header */}
-<div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6">
-  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+<div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-4">
+  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
 
     <div>
-      <h1 className="text-2xl font-bold text-slate-800">
+      <h1 className="text-xl font-bold text-slate-800">
         Monthly Attendance
       </h1>
-      <p className="text-slate-500 text-sm mt-1">
+      <p className="text-slate-500 text-sm mt-0.5">
         Employee monthly attendance overview
       </p>
     </div>
 
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap gap-2">
 
       <div className="relative">
-        <i className="fas fa-search absolute left-3 top-3 text-slate-400"></i>
+        <i className="fas fa-search absolute left-3 top-2.5 text-slate-400"></i>
 
         <input
           type="text"
           placeholder="Search employee..."
           value={search}
           onChange={handleSearch}
-          className="pl-10 pr-4 py-2 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+          className="pl-10 pr-4 py-1.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
       <input
         type="date"
         value={startDate.toISOString().substring(0, 10)}
-        className="px-4 py-2 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+        className="px-3 py-1.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
         onChange={(e) => setStartDate(new Date(e.target.value))}
       />
     </div>
@@ -95,7 +95,7 @@ const MonthtyAtteData = () => {
 </div>
 
 {/* Table */}
-<div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+<div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
 
   <div className="overflow-x-auto">
 
@@ -105,24 +105,24 @@ const MonthtyAtteData = () => {
 
         <tr className="bg-slate-100">
 
-          <th className="sticky left-0 z-20 bg-slate-100 px-6 py-4 text-left text-sm font-semibold text-slate-700 border-r">
+          <th className="sticky left-0 z-20 bg-slate-100 px-4 py-3 text-left text-sm font-semibold text-slate-700 border-r">
             Employee
           </th>
 
           {Array.from({ length: daysInMonth }, (_, i) => (
             <th
               key={i}
-              className="px-3 py-4 text-center text-xs font-semibold text-slate-600 border-r"
+              className="px-3 py-3 text-center text-xs font-semibold text-slate-600 border-r"
             >
               {i + 1}
             </th>
           ))}
 
-          <th className="px-4 py-4 text-center text-green-600 font-semibold">
+          <th className="px-4 py-3 text-center text-green-600 font-semibold">
             P
           </th>
 
-          <th className="px-4 py-4 text-center text-red-600 font-semibold">
+          <th className="px-4 py-3 text-center text-red-600 font-semibold">
             A
           </th>
 
@@ -155,7 +155,7 @@ const MonthtyAtteData = () => {
                 className="hover:bg-slate-50 transition"
               >
 
-                <td className="sticky left-0 bg-white z-10 px-6 py-4 border-r font-medium text-slate-700 whitespace-nowrap">
+                <td className="sticky left-0 bg-white z-10 px-4 py-2.5 border-r font-medium text-slate-700 whitespace-nowrap">
                   {employee.fullName}
                 </td>
 
@@ -213,7 +213,7 @@ const MonthtyAtteData = () => {
 </div>
 
 {/* Pagination */}
-<div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mt-4 flex flex-wrap justify-between items-center">
+<div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 mt-3 flex flex-wrap justify-between items-center">
 
   <div className="text-sm text-slate-500">
     Showing {(currentPage - 1) * itemsPerPage + 1} -

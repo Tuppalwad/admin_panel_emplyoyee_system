@@ -89,54 +89,54 @@ const KeyMetricsGraph = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300 p-6">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 p-4">
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-3">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">
+          <h2 className="text-base font-bold text-gray-800">
             Key Metrics Overview
           </h2>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 mt-0.5">
             Monthly performance summary
           </p>
         </div>
 
-        <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
-          <i className="fas fa-chart-line text-purple-600 text-xl"></i>
+        <div className="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center">
+          <i className="fas fa-chart-line text-purple-600 text-sm"></i>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
 
-        <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-          <p className="text-sm font-medium text-green-600">
+        <div className="bg-green-50 border border-green-100 rounded-lg p-3">
+          <p className="text-xs font-medium text-green-600">
             Avg Attendance
           </p>
 
-          <h3 className="text-3xl font-bold text-green-700 mt-2">
+          <h3 className="text-xl font-bold text-green-700 mt-1">
             {avgAttendance}%
           </h3>
         </div>
 
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-          <p className="text-sm font-medium text-blue-600">
+        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
+          <p className="text-xs font-medium text-blue-600">
             Total Hours
           </p>
 
-          <h3 className="text-3xl font-bold text-blue-700 mt-2">
+          <h3 className="text-xl font-bold text-blue-700 mt-1">
             {totalHours}
           </h3>
         </div>
 
-        <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4">
-          <p className="text-sm font-medium text-yellow-600">
+        <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-3">
+          <p className="text-xs font-medium text-yellow-600">
             Projects Completed
           </p>
 
-          <h3 className="text-3xl font-bold text-yellow-700 mt-2">
+          <h3 className="text-xl font-bold text-yellow-700 mt-1">
             {totalProjects}
           </h3>
         </div>
@@ -144,39 +144,39 @@ const KeyMetricsGraph = () => {
       </div>
 
       {/* Chart */}
-      <div className="h-[400px]">
+      <div className="h-[190px]">
         <Bar data={data} options={options} />
       </div>
 
       {/* Footer Summary */}
-      <div className="grid grid-cols-3 gap-3 mt-6">
+      <div className="grid grid-cols-3 gap-2 mt-3">
 
-        <div className="text-center bg-gray-50 rounded-xl p-3">
+        <div className="text-center bg-gray-50 rounded-lg p-2">
           <p className="text-xs text-gray-500">
             Best Attendance
           </p>
 
-          <h4 className="font-bold text-green-600">
+          <h4 className="text-sm font-bold text-green-600">
             {Math.max(...attendance)}%
           </h4>
         </div>
 
-        <div className="text-center bg-gray-50 rounded-xl p-3">
+        <div className="text-center bg-gray-50 rounded-lg p-2">
           <p className="text-xs text-gray-500">
             Max Hours
           </p>
 
-          <h4 className="font-bold text-blue-600">
+          <h4 className="text-sm font-bold text-blue-600">
             {Math.max(...hoursWorked)}
           </h4>
         </div>
 
-        <div className="text-center bg-gray-50 rounded-xl p-3">
+        <div className="text-center bg-gray-50 rounded-lg p-2">
           <p className="text-xs text-gray-500">
             Best Month
           </p>
 
-          <h4 className="font-bold text-orange-600">
+          <h4 className="text-sm font-bold text-orange-600">
             February
           </h4>
         </div>

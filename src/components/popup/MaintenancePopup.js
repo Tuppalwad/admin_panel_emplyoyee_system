@@ -51,16 +51,16 @@ function MaintenancePopup({ asset, record, onClose, onSubmit }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-4 flex justify-between items-center">
+        <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 flex justify-between items-center">
           <div>
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-base font-semibold text-white">
               {isUpdate ? "Update Maintenance" : "Log Maintenance Issue"}
             </h3>
 
-            <p className="text-amber-50 text-sm mt-1">
+            <p className="text-amber-50 text-sm mt-0.5">
               {asset?.assetId} — {asset?.brand} {asset?.modelName}
             </p>
           </div>
@@ -74,7 +74,7 @@ function MaintenancePopup({ asset, record, onClose, onSubmit }) {
         </div>
 
         {/* Body */}
-        <div className="p-6 overflow-y-auto">
+        <div className="p-5 overflow-y-auto">
 
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="issueReported">
@@ -200,17 +200,17 @@ function MaintenancePopup({ asset, record, onClose, onSubmit }) {
         </div>
 
         {/* Footer */}
-        <div className="border-t bg-white px-6 py-4 flex justify-end gap-3">
+        <div className="border-t bg-white px-5 py-3 flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 border border-slate-300 rounded-xl hover:bg-slate-50 text-slate-600"
+            className="px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 text-slate-600"
           >
             Cancel
           </button>
 
           <button
             onClick={handleSubmit}
-            className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl"
+            className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm"
           >
             <i className="fas fa-screwdriver-wrench mr-2"></i>
             {isUpdate ? "Update" : "Log Issue"}

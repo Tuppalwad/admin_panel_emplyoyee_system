@@ -7,9 +7,9 @@ import { importLegacyRegister } from '../../redux/actions/assetAction';
 import { formatDate, getLoggedInEmail } from './assetHelpers';
 
 const StatTile = ({ label, value, color }) => (
-  <div className={`rounded-2xl border p-5 ${color}`}>
+  <div className={`rounded-xl border p-4 ${color}`}>
     <p className="text-xs uppercase tracking-wide mb-1 opacity-80">{label}</p>
-    <h3 className="text-3xl font-bold">{value ?? 0}</h3>
+    <h3 className="text-2xl font-bold">{value ?? 0}</h3>
   </div>
 );
 
@@ -65,28 +65,28 @@ const ImportRegister = () => {
   const unresolvedAssignments = result?.unresolvedAssignments || [];
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen">
+    <div className="p-4 bg-slate-50 min-h-screen">
       <ToastContainer />
       {loading && <Loading />}
 
       {/* Header */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
 
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">
+            <h1 className="text-xl font-bold text-slate-800">
               Import Laptop Register (.xlsx)
             </h1>
 
-            <p className="text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 mt-0.5">
               One-time import of HR's legacy laptop tracking spreadsheet
             </p>
           </div>
 
           <Link
             to="/dashboard/asset/view"
-            className="px-5 py-3 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50 transition"
+            className="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition"
           >
             <i className="fas fa-list mr-2"></i>
             All Assets
@@ -97,9 +97,9 @@ const ImportRegister = () => {
       </div>
 
       {/* Upload form */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6">
+        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-4">
           <p className="text-sm text-blue-800">
             <i className="fas fa-circle-info mr-2"></i>
             This reads one specific spreadsheet layout — HR's laptop register, which must
@@ -108,7 +108,7 @@ const ImportRegister = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="excelFile">
@@ -163,7 +163,7 @@ const ImportRegister = () => {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="mt-6 px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50"
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition disabled:opacity-50"
         >
           <i className="fas fa-file-import mr-2"></i>
           {loading ? 'Importing...' : 'Run Import'}
@@ -174,7 +174,7 @@ const ImportRegister = () => {
       {/* Results */}
       {result && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
             <StatTile
               label="Laptops Found"
               value={result.totalLaptopsFound}
@@ -195,18 +195,18 @@ const ImportRegister = () => {
           </div>
 
           {/* Unresolved assignments — the list HR has to reconcile by hand */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
             <button
               onClick={() => setShowUnresolved((prev) => !prev)}
               className="flex items-center justify-between w-full text-left"
             >
               <div>
-                <h2 className="text-xl font-bold text-gray-800">
+                <h2 className="text-base font-bold text-gray-800">
                   Unresolved Assignments ({unresolvedAssignments.length})
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 mt-0.5">
                   Historical handovers whose spreadsheet name matched no employee
                 </p>
               </div>
@@ -215,11 +215,11 @@ const ImportRegister = () => {
             </button>
 
             {showUnresolved && (
-              <div className="mt-5">
+              <div className="mt-3">
 
                 {unresolvedAssignments.length ? (
                   <>
-                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3">
                       <p className="text-sm text-amber-800">
                         <i className="fas fa-triangle-exclamation mr-2"></i>
                         These assets were imported, but the handover could not be linked to
@@ -266,18 +266,18 @@ const ImportRegister = () => {
           </div>
 
           {/* Skipped rows */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
 
             <button
               onClick={() => setShowSkipped((prev) => !prev)}
               className="flex items-center justify-between w-full text-left"
             >
               <div>
-                <h2 className="text-xl font-bold text-gray-800">
+                <h2 className="text-base font-bold text-gray-800">
                   Skipped Rows ({skippedRows.length})
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 mt-0.5">
                   Rows the import could not read — fix them in the source file for a second pass
                 </p>
               </div>
@@ -286,7 +286,7 @@ const ImportRegister = () => {
             </button>
 
             {showSkipped && (
-              <div className="mt-5">
+              <div className="mt-3">
 
                 {skippedRows.length ? (
                   <div className="overflow-x-auto">

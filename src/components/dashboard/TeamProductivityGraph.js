@@ -83,54 +83,54 @@ const TeamProductivityGraph = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300 p-6">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 p-4">
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-3">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">
+          <h2 className="text-base font-bold text-gray-800">
             Team Productivity
           </h2>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 mt-0.5">
             Performance overview by team
           </p>
         </div>
 
-        <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
-          <i className="fas fa-users text-indigo-600 text-xl"></i>
+        <div className="w-9 h-9 rounded-lg bg-indigo-100 flex items-center justify-center">
+          <i className="fas fa-users text-indigo-600 text-sm"></i>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-3 mb-3">
 
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-          <p className="text-sm text-blue-600 font-medium">
+        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
+          <p className="text-xs text-blue-600 font-medium">
             Teams
           </p>
 
-          <h3 className="text-3xl font-bold text-blue-700 mt-2">
+          <h3 className="text-xl font-bold text-blue-700 mt-1">
             {teams.length}
           </h3>
         </div>
 
-        <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-          <p className="text-sm text-green-600 font-medium">
+        <div className="bg-green-50 border border-green-100 rounded-lg p-3">
+          <p className="text-xs text-green-600 font-medium">
             Tasks Completed
           </p>
 
-          <h3 className="text-3xl font-bold text-green-700 mt-2">
+          <h3 className="text-xl font-bold text-green-700 mt-1">
             {totalTasks}
           </h3>
         </div>
 
-        <div className="bg-purple-50 border border-purple-100 rounded-xl p-4">
-          <p className="text-sm text-purple-600 font-medium">
+        <div className="bg-purple-50 border border-purple-100 rounded-lg p-3">
+          <p className="text-xs text-purple-600 font-medium">
             Hours Worked
           </p>
 
-          <h3 className="text-3xl font-bold text-purple-700 mt-2">
+          <h3 className="text-xl font-bold text-purple-700 mt-1">
             {totalHours}
           </h3>
         </div>
@@ -138,40 +138,40 @@ const TeamProductivityGraph = () => {
       </div>
 
       {/* Chart */}
-      <div className="h-[380px]">
+      <div className="h-[190px]">
         <Bar data={data} options={options} />
       </div>
 
       {/* Team Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
 
         {teams.map((team, index) => (
           <div
             key={team}
-            className="bg-gray-50 rounded-xl p-4 border border-gray-100"
+            className="bg-gray-50 rounded-lg p-3 border border-gray-100"
           >
-            <h4 className="font-semibold text-gray-800">
+            <h4 className="text-sm font-semibold text-gray-800">
               {team}
             </h4>
 
-            <div className="mt-3 space-y-2">
+            <div className="mt-2 space-y-1">
 
               <div className="flex justify-between">
-                <span className="text-gray-500 text-sm">
+                <span className="text-gray-500 text-xs">
                   Tasks
                 </span>
 
-                <span className="font-medium text-green-600">
+                <span className="font-medium text-green-600 text-sm">
                   {tasksCompleted[index]}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-500 text-sm">
+                <span className="text-gray-500 text-xs">
                   Hours
                 </span>
 
-                <span className="font-medium text-blue-600">
+                <span className="font-medium text-blue-600 text-sm">
                   {hoursWorked[index]}
                 </span>
               </div>

@@ -63,47 +63,47 @@ const getStatusColor = (status) => {
 
   return (
    
-  <div className="min-h-screen bg-gray-100 p-6">
+  <div className="min-h-screen bg-gray-100 p-4">
     <ToastContainer />
 
     <div className="max-w-7xl mx-auto">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">
+            <h1 className="text-xl font-bold text-gray-800">
               {projectData.projectTitle}
             </h1>
 
-            <p className="text-gray-500 mt-2 max-w-3xl">
+            <p className="text-sm text-gray-500 mt-1 max-w-3xl">
               {projectData.description}
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button
               onClick={() =>
                 navigate("/dashboard/project/add", {
                   state: { info: projectData },
                 })
               }
-              className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
             >
               Edit Project
             </button>
 
             <button
               onClick={handleDelete}
-              className="px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition"
             >
               Delete
             </button>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3 mt-5">
+        <div className="flex flex-wrap gap-2 mt-3">
           <span
-            className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(
+            className={`px-2.5 py-1 rounded-full text-xs font-medium ${getPriorityColor(
               projectData.projectPriority
             )}`}
           >
@@ -111,7 +111,7 @@ const getStatusColor = (status) => {
           </span>
 
           <span
-            className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+            className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(
               projectData.workStatus
             )}`}
           >
@@ -120,14 +120,14 @@ const getStatusColor = (status) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Project Information */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <h2 className="text-base font-semibold text-gray-800 mb-3">
             Project Information
           </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-2.5">
             <div className="flex justify-between border-b pb-2">
               <span className="text-gray-500">Department</span>
               <span className="font-medium">{projectData.department}</span>
@@ -171,12 +171,12 @@ const getStatusColor = (status) => {
 
         {/* Client Information */}
         {projectData?.clientContact?.clientFullName && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <h2 className="text-base font-semibold text-gray-800 mb-3">
               Client Information
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-2.5">
               <div className="flex justify-between border-b pb-2">
                 <span className="text-gray-500">Name</span>
                 <span className="font-medium">
@@ -209,12 +209,12 @@ const getStatusColor = (status) => {
         )}
 
         {/* Team Members */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <h2 className="text-base font-semibold text-gray-800 mb-3">
             Team Members
           </h2>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {projectData.teamMembers.map((member) => (
               <div
                 key={member._id}
@@ -236,25 +236,25 @@ const getStatusColor = (status) => {
         </div>
 
         {/* Documents */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <h2 className="text-base font-semibold text-gray-800 mb-3">
             Documents
           </h2>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {projectData.documents.map((doc) => (
               <a
                 key={doc._id}
                 href={doc.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block p-4 rounded-lg bg-gray-50 hover:bg-blue-50 border border-gray-100 transition"
+                className="block p-3 rounded-lg bg-gray-50 hover:bg-blue-50 border border-gray-100 transition"
               >
                 <p className="font-medium text-blue-600">
                   {doc.name}
                 </p>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mt-0.5">
                   Uploaded on{" "}
                   {new Date(doc.uploadedAt).toLocaleDateString()}
                 </p>

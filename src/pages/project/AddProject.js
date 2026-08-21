@@ -220,11 +220,11 @@ const AddProject = () => {
 
 
   return (
-    <div className="container mx-auto p-5">
+    <div className="container mx-auto p-4">
       <ToastContainer />
       {loading && <Loading />}
-      <h1 className="text-2xl font-bold mb-6 mt-3 text-gray-800">Add Project</h1>
-      <div className="mb-4 flex items-center">
+      <h1 className="text-xl font-bold mb-4 mt-1 text-gray-800">Add Project</h1>
+      <div className="mb-3 flex items-center">
         <label className="block text-gray-700 text-sm font-bold">
           Is this a client project?
         </label>
@@ -237,7 +237,7 @@ const AddProject = () => {
         <span className="text-gray-700 ms-2">Yes</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 shadow-md rounded-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 shadow-sm rounded-lg">
 
         <TextInput
           name="projectTitle"

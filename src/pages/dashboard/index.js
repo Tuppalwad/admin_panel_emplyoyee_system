@@ -17,8 +17,9 @@ function AdminLayout() {
         {/* Fixed Sidebar */}
         <Sidebar />
 
-        {/* Main Content */}
-        <main className="flex-1 bg-gray-100 overflow-y-auto p-4">
+        {/* Main Content — no padding here: every routed page already sets its
+            own bg/min-h-screen/padding, so this used to double up on all of them */}
+        <main className="flex-1 bg-gray-100 overflow-y-auto">
           {currentPath === '/dashboard' && <Dashboardbox />}
           <Outlet />
         </main>

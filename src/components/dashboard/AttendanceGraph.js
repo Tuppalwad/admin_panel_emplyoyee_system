@@ -135,50 +135,50 @@ const AttendanceGraph = () => {
     },
   };
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300 p-6">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 p-4">
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-3">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">
+          <h2 className="text-base font-bold text-gray-800">
             Attendance Analytics
           </h2>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 mt-0.5">
             Employee attendance for last 6 working days
           </p>
         </div>
 
-        <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
-          <i className="fas fa-chart-bar text-green-600 text-xl"></i>
+        <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
+          <i className="fas fa-chart-bar text-green-600 text-sm"></i>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-green-50 rounded-xl p-4 border border-green-100">
-          <p className="text-sm text-green-700 font-medium">
+      <div className="grid grid-cols-2 gap-3 mb-3">
+        <div className="bg-green-50 rounded-lg p-3 border border-green-100">
+          <p className="text-xs text-green-700 font-medium">
             Total Present
           </p>
 
-          <h3 className="text-3xl font-bold text-green-600 mt-2">
+          <h3 className="text-xl font-bold text-green-600 mt-1">
             {totalPresent}
           </h3>
         </div>
 
-        <div className="bg-red-50 rounded-xl p-4 border border-red-100">
-          <p className="text-sm text-red-700 font-medium">
+        <div className="bg-red-50 rounded-lg p-3 border border-red-100">
+          <p className="text-xs text-red-700 font-medium">
             Total Absent
           </p>
 
-          <h3 className="text-3xl font-bold text-red-600 mt-2">
+          <h3 className="text-xl font-bold text-red-600 mt-1">
             {totalAbsent}
           </h3>
         </div>
       </div>
 
       {/* Chart */}
-      <div className="h-[280px]">
+      <div className="h-[190px]">
         <Bar data={chartData} options={options} />
       </div>
     </div>

@@ -88,36 +88,36 @@ const options = {
   },
 };
  return (
-  <div className="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300 p-6">
+  <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 p-4">
 
     {/* Header */}
-    <div className="flex justify-between items-center mb-6">
+    <div className="flex justify-between items-center mb-3">
       <div>
-        <h2 className="text-xl font-bold text-gray-800">
+        <h2 className="text-base font-bold text-gray-800">
           Project Status
         </h2>
 
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-xs text-gray-500 mt-0.5">
           Overall project progress overview
         </p>
       </div>
 
-      <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-        <i className="fas fa-project-diagram text-blue-600 text-xl"></i>
+      <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">
+        <i className="fas fa-project-diagram text-blue-600 text-sm"></i>
       </div>
     </div>
 
     {/* Chart */}
-    <div className="relative h-[180px] flex justify-center items-center">
+    <div className="relative h-[150px] flex justify-center items-center">
 
       <Doughnut data={data} options={options} />
 
       <div className="absolute text-center">
-        <p className="text-sm text-gray-500">
+        <p className="text-xs text-gray-500">
           Total Projects
         </p>
 
-        <h3 className="text-4xl font-bold text-gray-800">
+        <h3 className="text-2xl font-bold text-gray-800">
           {totalProjects}
         </h3>
       </div>
@@ -125,7 +125,7 @@ const options = {
     </div>
 
     {/* Status Summary */}
-    <div className="grid grid-cols-2 gap-3 mt-6">
+    <div className="grid grid-cols-2 gap-2 mt-3">
 
       <div className="flex items-center justify-between bg-red-50 rounded-xl p-3">
         <div>

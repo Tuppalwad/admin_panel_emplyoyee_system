@@ -40,15 +40,14 @@ const HeadingBox = ({
       className="
         relative overflow-hidden
         bg-white
-        rounded-2xl
-        shadow-md
-        hover:shadow-xl
+        rounded-xl
+        shadow-sm
+        hover:shadow-md
         border border-gray-100
-        p-6
-        transition-all duration-300
-        hover:-translate-y-1
+        p-4
+        transition-shadow duration-200
         cursor-pointer
-        w-full 
+        w-full
       "
     >
       {/* Top Gradient Line */}
@@ -58,24 +57,20 @@ const HeadingBox = ({
 
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
             {title}
           </p>
 
-          <h2 className="text-4xl font-bold text-gray-800 mt-3">
+          <h2 className="text-2xl font-bold text-gray-800 mt-1">
             {displayCount.toLocaleString()}
           </h2>
-
-          <p className="text-xs text-gray-400 mt-2">
-            {/* Updated just now */}
-          </p>
         </div>
 
         <div
-          className={`w-16 h-12 rounded-2xl bg-gradient-to-r ${color}
-          flex items-center justify-center shadow-lg`}
+          className={`w-11 h-11 rounded-xl bg-gradient-to-r ${color}
+          flex items-center justify-center shadow-sm`}
         >
-          <i className={`${icon} text-white text-2xl`} />
+          <i className={`${icon} text-white text-base`} />
         </div>
       </div>
     </Link>

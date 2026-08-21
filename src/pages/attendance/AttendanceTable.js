@@ -124,11 +124,11 @@ const AttendanceTable = () => {
 
     return (
         <div className="p-4">
-            <div className="mb-4 flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Today's Attendance</h1>
+            <div className="mb-3 flex justify-between items-center">
+                <h1 className="text-xl font-bold">Today's Attendance</h1>
             </div>
 
-            <div className="rounded-3xl border border-gray-200 bg-white shadow-sm">
+            <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
                 <AgGridTable
                     rowData={attendanceData}
                     columnDefs={columnDefs}
@@ -149,8 +149,8 @@ const AttendanceTable = () => {
                     pagination={true}
                     paginationPageSize={itemsPerPage}
                     overlayNoRowsTemplate='<span class="text-slate-500">No attendance records found</span>'
-                    style={{ height: 540 }}
-                    className="rounded-3xl"
+                    style={{ height: 460 }}
+                    className="rounded-xl"
                     rowStyle={{ cursor: 'pointer' }}
                 />
             </div>

@@ -146,38 +146,38 @@ const ViewAssets = () => {
   }), [StatusCellRenderer, ConditionCellRenderer, ActionCellRenderer]);
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen">
+    <div className="p-4 bg-slate-50 min-h-screen">
 
       {/* Header */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
 
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">
+            <h1 className="text-xl font-bold text-slate-800">
               Assets
             </h1>
 
-            <p className="text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 mt-0.5">
               Track company equipment, assignments and condition
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
 
-            <div className="bg-blue-50 border border-blue-100 px-5 py-3 rounded-xl">
+            <div className="bg-blue-50 border border-blue-100 px-4 py-2 rounded-lg">
               <p className="text-xs text-blue-600">
                 Total Assets
               </p>
 
-              <h3 className="text-xl font-bold text-blue-700">
+              <h3 className="text-lg font-bold text-blue-700">
                 {assets.length}
               </h3>
             </div>
 
             <Link
               to="/dashboard/asset/add"
-              className="px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
             >
               <i className="fas fa-plus mr-2"></i>
               Add Asset
@@ -190,7 +190,7 @@ const ViewAssets = () => {
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
         <div className="flex flex-col md:flex-row gap-3 md:items-center">
 
@@ -201,14 +201,14 @@ const ViewAssets = () => {
             onChange={(event) => setDraftSearch(event.target.value)}
             onKeyDown={handleSearchKeyDown}
             placeholder="Search serial number, brand or model"
-            className="shadow appearance-none border-gray-300 rounded-xl w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border-gray-300 rounded-lg w-full py-2.5 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
 
-          <div className="flex gap-3 shrink-0">
+          <div className="flex gap-2 shrink-0">
 
             <button
               onClick={() => setShowFilters((prev) => !prev)}
-              className={`px-5 py-3 rounded-xl border transition whitespace-nowrap ${activeFilterCount
+              className={`px-4 py-2.5 rounded-lg text-sm border transition whitespace-nowrap ${activeFilterCount
                 ? 'bg-blue-50 border-blue-200 text-blue-700'
                 : 'border-slate-300 text-slate-600 hover:bg-slate-50'
                 }`}
@@ -220,7 +220,7 @@ const ViewAssets = () => {
 
             <button
               onClick={runSearch}
-              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition whitespace-nowrap"
+              className="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition whitespace-nowrap"
             >
               <i className="fas fa-magnifying-glass mr-2"></i>
               Search
@@ -228,7 +228,7 @@ const ViewAssets = () => {
 
             <button
               onClick={clearFilters}
-              className="px-5 py-3 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50 transition whitespace-nowrap"
+              className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition whitespace-nowrap"
             >
               <i className="fas fa-rotate-left mr-2"></i>
               Reset
@@ -239,7 +239,7 @@ const ViewAssets = () => {
         </div>
 
         {showFilters && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5 pt-5 border-t border-slate-200">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 pt-4 border-t border-slate-200">
 
             <div>
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
@@ -327,7 +327,7 @@ const ViewAssets = () => {
       </div>
 
       {/* Grid */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
 
         <AgGridTable
           rowData={assets}
@@ -341,8 +341,8 @@ const ViewAssets = () => {
           pagination={true}
           paginationPageSize={10}
           overlayNoRowsTemplate="<span>No Assets Found</span>"
-          style={{ height: 600 }}
-          className="rounded-2xl"
+          style={{ height: 460 }}
+          className="rounded-xl"
           gridOptions={{
             animateRows: true,
             rowHeight: 55,

@@ -134,34 +134,34 @@ const AddEmployee = () => {
 
   return ( 
 
-  <div className="min-h-screen bg-slate-50 p-6">
+  <div className="min-h-screen bg-slate-50 p-4">
     <ToastContainer />
 
 {loading && <Loading />}
 
 {/* Header */}
-<div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+<div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-4">
 
   <div className="flex flex-col md:flex-row md:items-center md:justify-between">
 
     <div>
-      <h1 className="text-3xl font-bold text-slate-800">
+      <h1 className="text-xl font-bold text-slate-800">
         Add Employee
       </h1>
 
-      <p className="text-slate-500 mt-2">
+      <p className="text-sm text-slate-500 mt-0.5">
         Create a new employee profile and assign role details.
       </p>
     </div>
 
-    <div className="hidden md:flex items-center gap-3 mt-4 md:mt-0">
+    <div className="hidden md:flex items-center gap-3 mt-3 md:mt-0">
 
-      <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+      <div className="bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
         <p className="text-xs text-blue-600">
           Employee Management
         </p>
 
-        <h3 className="font-bold text-blue-700">
+        <h3 className="text-sm font-bold text-blue-700">
           HR Module
         </h3>
       </div>
@@ -173,16 +173,16 @@ const AddEmployee = () => {
 </div>
 
 {/* Form */}
-<div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+<div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
 
   {/* Section Header */}
-  <div className="border-b border-slate-200 px-6 py-5">
+  <div className="border-b border-slate-200 px-4 py-3">
 
-    <h2 className="text-lg font-semibold text-slate-800">
+    <h2 className="text-base font-semibold text-slate-800">
       Employee Information
     </h2>
 
-    <p className="text-sm text-slate-500 mt-1">
+    <p className="text-sm text-slate-500 mt-0.5">
       Fill in the employee details below.
     </p>
 
@@ -190,10 +190,10 @@ const AddEmployee = () => {
 
   <form
     onSubmit={handleSubmit}
-    className="p-6"
+    className="p-4"
   >
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
       <TextInput
         label="First Name"
@@ -319,7 +319,7 @@ const AddEmployee = () => {
     </div>
 
     {/* Footer */}
-    <div className="border-t border-slate-200 mt-8 pt-6 flex flex-col sm:flex-row gap-3 justify-end">
+    <div className="border-t border-slate-200 mt-6 pt-4 flex flex-col sm:flex-row gap-3 justify-end">
 
       <button
         type="button"
@@ -339,7 +339,7 @@ const AddEmployee = () => {
 
           setErrors({});
         }}
-        className="px-6 py-3 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-100 transition"
+        className="px-5 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-700 hover:bg-slate-100 transition"
       >
         Reset
       </button>
@@ -347,7 +347,7 @@ const AddEmployee = () => {
       <button
         type="submit"
         disabled={loading}
-        className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition disabled:opacity-60"
+        className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition disabled:opacity-60"
       >
         {loading
           ? 'Adding Employee...'

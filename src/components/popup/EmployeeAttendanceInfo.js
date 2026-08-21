@@ -23,23 +23,23 @@ const EmployeeAttendanceInfo = ({ empId, onClose }) => {
     console.log(employee);
 
     return employee ? <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Employee Attendance Info</h2>
+        <div className="bg-white rounded-lg p-4 max-w-md w-full">
+            <div className="flex justify-between items-center mb-3">
+                <h2 className="text-lg font-bold">Employee Attendance Info</h2>
                 <button onClick={onClose}>
                     <i className="fas fa-times"></i>
                 </button>
             </div>
 
-            <div className="flex items-center mb-4">
-                <img src={"https://via.placeholder.com/40"} alt="profile" className="rounded-full h-16 w-16 mr-4" />
+            <div className="flex items-center mb-3">
+                <img src={"https://via.placeholder.com/40"} alt="profile" className="rounded-full h-14 w-14 mr-3" />
                 <div>
-                    <h2 className="text-xl font-semibold">{employee.fullName}</h2>
-                    <p className="text-gray-600">{employee.shift}</p>
+                    <h2 className="text-lg font-semibold">{employee.fullName}</h2>
+                    <p className="text-sm text-gray-600">{employee.shift}</p>
                 </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5 text-sm">
                 <p><strong>Total Leave:</strong> {employee.totalLeave}</p>
                 <p><strong>Present:</strong> {employee.present}</p>
                 <p><strong>Absent:</strong> {employee.absent}</p>

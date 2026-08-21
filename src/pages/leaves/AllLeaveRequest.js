@@ -158,51 +158,51 @@ const AllLeaveRequest = () => {
   );
 
   return (
-  <div className="p-6 bg-slate-50 min-h-screen">
+  <div className="p-4 bg-slate-50 min-h-screen">
 
     {/* Header */}
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
 
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">
+          <h1 className="text-xl font-bold text-slate-800">
             Leave Management
           </h1>
 
-          <p className="text-slate-500 mt-2">
+          <p className="text-sm text-slate-500 mt-1">
             Manage employee leave requests and approvals.
           </p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2">
 
-          <div className="bg-yellow-50 border border-yellow-100 rounded-xl px-5 py-3">
+          <div className="bg-yellow-50 border border-yellow-100 rounded-lg px-4 py-2">
             <p className="text-xs text-yellow-600">
               Pending
             </p>
 
-            <h3 className="text-xl font-bold text-yellow-700">
+            <h3 className="text-lg font-bold text-yellow-700">
               {leaves.filter(x => x.status === 'Pending').length}
             </h3>
           </div>
 
-          <div className="bg-green-50 border border-green-100 rounded-xl px-5 py-3">
+          <div className="bg-green-50 border border-green-100 rounded-lg px-4 py-2">
             <p className="text-xs text-green-600">
               Approved
             </p>
 
-            <h3 className="text-xl font-bold text-green-700">
+            <h3 className="text-lg font-bold text-green-700">
               {leaves.filter(x => x.status === 'Approved').length}
             </h3>
           </div>
 
-          <div className="bg-red-50 border border-red-100 rounded-xl px-5 py-3">
+          <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-2">
             <p className="text-xs text-red-600">
               Rejected
             </p>
 
-            <h3 className="text-xl font-bold text-red-700">
+            <h3 className="text-lg font-bold text-red-700">
               {leaves.filter(x => x.status === 'Rejected').length}
             </h3>
           </div>
@@ -212,12 +212,12 @@ const AllLeaveRequest = () => {
       </div>
 
     </div>
- 
+
 
     {/* Table */}
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
 
-      <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+      <div className="px-4 py-3 border-b border-slate-200 flex justify-between items-center">
 
         <div>
           <h2 className="font-semibold text-slate-800">
@@ -254,8 +254,8 @@ const AllLeaveRequest = () => {
         pagination={true}
         paginationPageSize={itemsPerPage}
         overlayNoRowsTemplate="<span>No leave requests found</span>"
-        style={{ height: 600 }}
-        className="rounded-2xl"
+        style={{ height: 460 }}
+        className="rounded-xl"
       />
 
     </div>

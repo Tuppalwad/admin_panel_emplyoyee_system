@@ -297,31 +297,31 @@ function EmployeeInfo() {
     };
 
     return (
-        <div className={`p-6 bg-slate-50 min-h-screen ${!isSidebarOpen ? 'w-full' : ''}`}>
+        <div className={`p-4 bg-slate-50 min-h-screen ${!isSidebarOpen ? 'w-full' : ''}`}>
 
             {/* Header */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
 
-                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
 
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-800">
+                        <h1 className="text-xl font-bold text-slate-800">
                             Employee Information
                         </h1>
 
-                        <p className="text-slate-500 mt-2">
+                        <p className="text-sm text-slate-500 mt-1">
                             View and manage employee information, approvals, and account details.
                         </p>
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-2">
 
-                        <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-3">
+                        <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-2">
                             <p className="text-xs text-blue-600">
                                 Total Employees
                             </p>
 
-                            <h3 className="text-xl font-bold text-blue-700">
+                            <h3 className="text-lg font-bold text-blue-700">
                                 {filteredData?.length || 0}
                             </h3>
                         </div>
@@ -333,10 +333,10 @@ function EmployeeInfo() {
             </div>
 
             {/* Table Section */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
 
                 {/* Section Header */}
-                <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                <div className="px-4 py-3 border-b border-slate-200 flex justify-between items-center">
 
                     <div>
                         <h2 className="font-semibold text-slate-800">
@@ -387,8 +387,8 @@ function EmployeeInfo() {
                     pagination={true}
                     paginationPageSize={itemsPerPage}
                     overlayNoRowsTemplate="<span>No employee data found</span>"
-                    style={{ height: 600 }}
-                    className="rounded-2xl"
+                    style={{ height: 460 }}
+                    className="rounded-xl"
                 />
 
             </div>

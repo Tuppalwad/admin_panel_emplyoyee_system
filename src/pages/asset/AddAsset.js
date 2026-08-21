@@ -204,15 +204,15 @@ const AddAsset = () => {
   };
 
   return (
-    <div className="container mx-auto p-5">
+    <div className="container mx-auto p-4">
       <ToastContainer />
       {loading && <Loading />}
 
-      <h1 className="text-2xl font-bold mb-6 mt-3 text-gray-800">
+      <h1 className="text-xl font-bold mb-4 mt-1 text-gray-800">
         {isEdit ? `Edit Asset — ${assetData.assetId}` : 'Add Asset'}
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 shadow-md rounded-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 shadow-sm rounded-lg">
 
         <DropdownBox
           name="category"

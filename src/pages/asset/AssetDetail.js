@@ -224,42 +224,42 @@ const AssetDetail = () => {
   const terminal = isTerminalStatus(asset.status);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-4">
       <ToastContainer />
 
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
             <div>
               <button
                 onClick={() => navigate('/dashboard/asset/view')}
-                className="text-sm text-blue-600 hover:text-blue-800 mb-2"
+                className="text-sm text-blue-600 hover:text-blue-800 mb-1"
               >
                 <i className="fas fa-arrow-left mr-2"></i>
                 Back to Assets
               </button>
 
-              <h1 className="text-3xl font-bold text-gray-800">
+              <h1 className="text-xl font-bold text-gray-800">
                 {asset.assetId}
               </h1>
 
-              <p className="text-gray-500 mt-2">
+              <p className="text-sm text-gray-500 mt-0.5">
                 {asset.category} — {asset.brand} {asset.modelName}
               </p>
             </div>
 
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex gap-2 flex-wrap">
 
               {actions.canEdit && (
                 <button
                   onClick={() =>
                     navigate('/dashboard/asset/add', { state: { info: asset } })
                   }
-                  className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
                 >
                   <i className="fas fa-pen mr-2"></i>
                   Edit
@@ -269,7 +269,7 @@ const AssetDetail = () => {
               {actions.canAssign && (
                 <button
                   onClick={() => setActivePopup('assign')}
-                  className="px-5 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition"
                 >
                   <i className="fas fa-user-check mr-2"></i>
                   Assign
@@ -279,7 +279,7 @@ const AssetDetail = () => {
               {actions.canReturn && (
                 <button
                   onClick={() => setActivePopup('return')}
-                  className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700 transition"
                 >
                   <i className="fas fa-rotate-left mr-2"></i>
                   Return
@@ -289,7 +289,7 @@ const AssetDetail = () => {
               {actions.canTransfer && (
                 <button
                   onClick={() => setActivePopup('transfer')}
-                  className="px-5 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition"
                 >
                   <i className="fas fa-right-left mr-2"></i>
                   Transfer
@@ -299,7 +299,7 @@ const AssetDetail = () => {
               {actions.canAddMaintenance && (
                 <button
                   onClick={() => setActivePopup('maintenance')}
-                  className="px-5 py-2.5 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition"
+                  className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm hover:bg-amber-600 transition"
                 >
                   <i className="fas fa-screwdriver-wrench mr-2"></i>
                   Log Issue
@@ -309,7 +309,7 @@ const AssetDetail = () => {
               {actions.canRetire && (
                 <button
                   onClick={handleRetire}
-                  className="px-5 py-2.5 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition"
+                  className="px-4 py-2 bg-slate-600 text-white rounded-lg text-sm hover:bg-slate-700 transition"
                 >
                   <i className="fas fa-box-archive mr-2"></i>
                   Retire
@@ -319,7 +319,7 @@ const AssetDetail = () => {
               {actions.canMarkDead && (
                 <button
                   onClick={() => setActivePopup('markdead')}
-                  className="px-5 py-2.5 bg-red-700 text-white rounded-lg hover:bg-red-800 transition"
+                  className="px-4 py-2 bg-red-700 text-white rounded-lg text-sm hover:bg-red-800 transition"
                 >
                   <i className="fas fa-skull mr-2"></i>
                   Mark as Dead
@@ -329,7 +329,7 @@ const AssetDetail = () => {
               {actions.canDelete && (
                 <button
                   onClick={handleDelete}
-                  className="px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition"
                 >
                   <i className="fas fa-trash mr-2"></i>
                   Delete
@@ -340,22 +340,22 @@ const AssetDetail = () => {
 
           </div>
 
-          <div className="flex flex-wrap gap-3 mt-5">
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor(asset.status)}`}>
+          <div className="flex flex-wrap gap-2 mt-3">
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColor(asset.status)}`}>
               {asset.status}
             </span>
 
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${conditionColor(asset.condition)}`}>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${conditionColor(asset.condition)}`}>
               {asset.condition}
             </span>
 
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700">
+            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
               {asset.locationType}
             </span>
           </div>
 
           {terminal && (
-            <div className="mt-5 bg-slate-100 border border-slate-200 rounded-xl p-4">
+            <div className="mt-3 bg-slate-100 border border-slate-200 rounded-lg p-3">
               <p className="text-sm text-slate-700">
                 <i className="fas fa-lock mr-2"></i>
                 This asset is <strong>{asset.status}</strong> — it is read-only and cannot
@@ -365,7 +365,7 @@ const AssetDetail = () => {
           )}
 
           {asset.status === 'Dead' && (
-            <div className="mt-5 bg-red-50 border border-red-200 rounded-xl p-4">
+            <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3">
               <p className="text-sm text-red-800">
                 <i className="fas fa-skull mr-2"></i>
                 Marked <strong>Dead</strong> — broken beyond use, but not formally
@@ -375,7 +375,7 @@ const AssetDetail = () => {
           )}
 
           {!terminal && asset.status === 'Assigned' && !actions.canRetire && (
-            <div className="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-4">
+            <div className="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-3">
               <p className="text-sm text-blue-800">
                 <i className="fas fa-circle-info mr-2"></i>
                 Currently assigned — it must be returned before it can be retired or sent
@@ -386,15 +386,15 @@ const AssetDetail = () => {
 
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
           {/* Asset Information */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <h2 className="text-base font-semibold text-gray-800 mb-3">
               Asset Information
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-2.5">
               <InfoRow label="Category" value={asset.category} />
               <InfoRow label="Brand" value={asset.brand} />
               <InfoRow label="Model" value={asset.modelName} />
@@ -406,12 +406,12 @@ const AssetDetail = () => {
           </div>
 
           {/* Purchase & Warranty */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <h2 className="text-base font-semibold text-gray-800 mb-3">
               Purchase & Warranty
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-2.5">
               <InfoRow label="Purchase Date" value={formatDate(asset.purchaseDate)} />
 
               <InfoRow
@@ -431,13 +431,13 @@ const AssetDetail = () => {
           </div>
 
           {/* Current Assignment */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <h2 className="text-base font-semibold text-gray-800 mb-3">
               Current Assignment
             </h2>
 
             {asset.currentAssignee?.empId ? (
-              <div className="space-y-4">
+              <div className="space-y-2.5">
                 <InfoRow label="Employee" value={asset.currentAssignee.empName} />
                 <InfoRow label="Employee ID" value={asset.currentAssignee.empId} />
                 <InfoRow
@@ -467,24 +467,24 @@ const AssetDetail = () => {
           </div>
 
           {/* Documents */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <h2 className="text-base font-semibold text-gray-800 mb-3">
               Documents
             </h2>
 
             {asset.documents?.length ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {asset.documents.map((doc, index) => (
                   <a
                     key={doc._id || index}
                     href={doc.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block p-4 rounded-lg bg-gray-50 hover:bg-blue-50 border border-gray-100 transition"
+                    className="block p-3 rounded-lg bg-gray-50 hover:bg-blue-50 border border-gray-100 transition"
                   >
                     <p className="font-medium text-blue-600">{doc.name}</p>
 
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-0.5">
                       Uploaded on {formatDate(doc.uploadedAt)}
                     </p>
                   </a>
@@ -498,12 +498,12 @@ const AssetDetail = () => {
         </div>
 
         {/* Component Checks */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-1">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-4">
+          <h2 className="text-base font-semibold text-gray-800 mb-1">
             Component Checks
           </h2>
 
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-gray-500 mb-3">
             Most recently recorded per-component state. Update it from the edit form
             or from any assign, return, transfer or maintenance action.
           </p>
@@ -512,12 +512,12 @@ const AssetDetail = () => {
         </div>
 
         {/* Assignment History */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-1">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-4">
+          <h2 className="text-base font-semibold text-gray-800 mb-1">
             Assignment History
           </h2>
 
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-gray-500 mb-3">
             Expand a row to see its component checks and shipping details.
           </p>
 
@@ -698,8 +698,8 @@ const AssetDetail = () => {
         </div>
 
         {/* Maintenance History */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-4">
+          <h2 className="text-base font-semibold text-gray-800 mb-3">
             Maintenance History
           </h2>
 
@@ -789,11 +789,11 @@ const AssetDetail = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden">
 
-            <div className="bg-gradient-to-r from-red-700 to-red-600 px-6 py-4 flex justify-between items-center">
+            <div className="bg-gradient-to-r from-red-700 to-red-600 px-5 py-3 flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-semibold text-white">Mark as Dead</h3>
+                <h3 className="text-base font-semibold text-white">Mark as Dead</h3>
 
-                <p className="text-red-100 text-sm mt-1">
+                <p className="text-red-100 text-sm mt-0.5">
                   {asset.assetId} — {asset.brand} {asset.modelName}
                 </p>
               </div>
@@ -806,8 +806,8 @@ const AssetDetail = () => {
               </button>
             </div>
 
-            <div className="p-6">
-              <p className="text-slate-700 mb-4">
+            <div className="p-5">
+              <p className="text-sm text-slate-700 mb-3">
                 This sets the status to <strong>Dead</strong> and the condition to
                 <strong> Beyond Repair</strong>. Use it for equipment that is broken
                 beyond use but not yet formally written off — it can still be retired later.
@@ -824,7 +824,7 @@ const AssetDetail = () => {
                 value={deadRemarks}
                 onChange={(event) => setDeadRemarks(event.target.value)}
                 placeholder="What failed, and when it was confirmed unusable"
-                className="shadow appearance-none border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border-gray-300 rounded w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
 
               <p className="text-xs text-slate-500 mt-2">
@@ -832,17 +832,17 @@ const AssetDetail = () => {
               </p>
             </div>
 
-            <div className="border-t bg-white px-6 py-4 flex justify-end gap-3">
+            <div className="border-t bg-white px-5 py-3 flex justify-end gap-2">
               <button
                 onClick={closePopup}
-                className="px-5 py-2.5 border border-slate-300 rounded-xl hover:bg-slate-50 text-slate-600"
+                className="px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 text-slate-600"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleMarkDead}
-                className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-xl"
+                className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg text-sm"
               >
                 <i className="fas fa-skull mr-2"></i>
                 Mark as Dead

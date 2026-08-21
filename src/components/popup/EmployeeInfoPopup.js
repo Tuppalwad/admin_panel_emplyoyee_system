@@ -35,7 +35,7 @@ function EmployeeInfoPopup({
   };
 
   const InfoCard = ({ label, value }) => (
-    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+    <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
       <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">
         {label}
       </p>
@@ -47,35 +47,35 @@ function EmployeeInfoPopup({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-500 p-6 text-white">
-          <div className="flex flex-col md:flex-row items-center gap-5">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-500 p-4 text-white">
+          <div className="flex flex-col md:flex-row items-center gap-4">
 
-            <div className="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center">
-              <i className="fas fa-user text-5xl"></i>
+            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
+              <i className="fas fa-user text-3xl"></i>
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold text-white">
+              <h2 className="text-xl font-bold text-white">
                 {formData.FirstName} {formData.LastName}
               </h2>
 
-              <p className="text-blue-100 mt-2">
+              <p className="text-sm text-blue-100 mt-1">
                 Employee ID : {formData.empId}
               </p>
 
-              <div className="flex flex-wrap gap-2 mt-3">
-                <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+              <div className="flex flex-wrap gap-2 mt-2">
+                <span className="bg-white/20 px-2.5 py-1 rounded-full text-xs">
                   {formData.Designation}
                 </span>
 
-                <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                <span className="bg-white/20 px-2.5 py-1 rounded-full text-xs">
                   {formData.WorkMode}
                 </span>
 
-                <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                <span className="bg-white/20 px-2.5 py-1 rounded-full text-xs">
                   {formData.TotalEXP} Years Experience
                 </span>
               </div>
@@ -85,15 +85,15 @@ function EmployeeInfoPopup({
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4">
 
           {/* Personal Information */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+          <div className="mb-4">
+            <h3 className="text-base font-semibold border-b pb-2 mb-2.5">
               Personal Information
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
 
               <InfoCard
                 label="Full Name"
@@ -134,12 +134,12 @@ function EmployeeInfoPopup({
           </div>
 
           {/* Employment Information */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+          <div className="mb-4">
+            <h3 className="text-base font-semibold border-b pb-2 mb-2.5">
               Employment Information
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
 
               <InfoCard
                 label="Employee ID"
@@ -180,12 +180,12 @@ function EmployeeInfoPopup({
           </div>
 
           {/* Contact Information */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+          <div className="mb-4">
+            <h3 className="text-base font-semibold border-b pb-2 mb-2.5">
               Contact Information
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
 
               <InfoCard
                 label="Email"
@@ -211,12 +211,12 @@ function EmployeeInfoPopup({
           </div>
 
           {/* Education */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+          <div className="mb-4">
+            <h3 className="text-base font-semibold border-b pb-2 mb-2.5">
               Education & Experience
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
 
               <InfoCard
                 label="Highest Qualification"
@@ -253,12 +253,12 @@ function EmployeeInfoPopup({
           </div>
 
           {/* Identity */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+          <div className="mb-4">
+            <h3 className="text-base font-semibold border-b pb-2 mb-2.5">
               Identity Documents
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
 
               <InfoCard
                 label="PAN Number"
@@ -284,12 +284,12 @@ function EmployeeInfoPopup({
           </div>
 
           {/* Bank */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+          <div className="mb-4">
+            <h3 className="text-base font-semibold border-b pb-2 mb-2.5">
               Bank Information
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
 
               <InfoCard
                 label="Bank Account Number"
@@ -315,12 +315,12 @@ function EmployeeInfoPopup({
           </div>
 
           {/* Laptop */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+          <div className="mb-4">
+            <h3 className="text-base font-semibold border-b pb-2 mb-2.5">
               Laptop Information
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
 
               <InfoCard
                 label="Laptop Type"
@@ -366,9 +366,9 @@ function EmployeeInfoPopup({
           </div>
 
           {/* Assigned Assets */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center border-b pb-2 mb-4">
-              <h3 className="text-lg font-semibold">
+          <div className="mb-4">
+            <div className="flex justify-between items-center border-b pb-2 mb-2.5">
+              <h3 className="text-base font-semibold">
                 Assigned Assets ({assets.length})
               </h3>
 
@@ -384,11 +384,11 @@ function EmployeeInfoPopup({
             </div>
 
             {assets.length ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
                 {assets.map((asset) => (
                   <div
                     key={asset._id}
-                    className="bg-slate-50 border border-slate-200 rounded-xl p-4"
+                    className="bg-slate-50 border border-slate-200 rounded-lg p-3"
                   >
                     <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">
                       {asset.category}
@@ -418,13 +418,13 @@ function EmployeeInfoPopup({
         </div>
 
         {/* Footer */}
-        <div className="border-t bg-white p-5">
+        <div className="border-t bg-white px-5 py-3">
 
-          <div className="flex justify-end gap-3 flex-wrap">
+          <div className="flex justify-end gap-2 flex-wrap">
 
             <button
               onClick={() => approve(formData)}
-              className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm"
             >
               <i className="fas fa-check mr-2"></i>
               Approve
@@ -432,7 +432,7 @@ function EmployeeInfoPopup({
 
             <button
               onClick={() => reject(formData)}
-              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl"
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm"
             >
               <i className="fas fa-times mr-2"></i>
               Reject
@@ -440,7 +440,7 @@ function EmployeeInfoPopup({
 
             <button
               onClick={onClose}
-              className="px-6 py-3 border rounded-xl hover:bg-gray-100"
+              className="px-4 py-2 border rounded-lg text-sm hover:bg-gray-100"
             >
               Close
             </button>

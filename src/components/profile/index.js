@@ -177,18 +177,18 @@ const Profile = () => {
         <div className="container mx-auto p-4">
             <ToastContainer />
             {loading && <Loading />}
-            <div className="bg-white shadow-lg rounded-lg p-6">
-                <div className="flex justify-between items-center mb-6">
+            <div className="bg-white shadow-sm rounded-xl p-4">
+                <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center">
                         <img
                             src={admin.profilePicture || dummyimage}
                             alt="Profile"
-                            className="w-24 h-24 object-cover rounded-full mr-6"
+                            className="w-16 h-16 object-cover rounded-full mr-4"
                         />
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-800">{capitalize(admin?.fullname || decode?.fullname)}</h2>
-                            <p className="text-gray-600">{decode?.email}</p>
-                            <p className="text-gray-600">{decode?.role}</p>
+                            <h2 className="text-xl font-bold text-gray-800">{capitalize(admin?.fullname || decode?.fullname)}</h2>
+                            <p className="text-sm text-gray-600">{decode?.email}</p>
+                            <p className="text-sm text-gray-600">{decode?.role}</p>
                         </div>
 
                     </div>
@@ -213,7 +213,7 @@ const Profile = () => {
                 )}
 
                 {isEditing ? (
-                    admin?.gender ? <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    admin?.gender ? <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <TextInput
                             label="Full Name"
                             name="fullname"
@@ -365,7 +365,7 @@ const Profile = () => {
                             {loading ? 'Updating Profile...' : 'Update Profile'}
                         </button>
                     </form> :
-                        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <TextInput
                                 label="Full Name"
                                 name="fullname"

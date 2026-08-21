@@ -51,26 +51,26 @@ function Sidebar() {
       }}
     >
       {isSidebarOpen && (
-        <div className="flex flex-col items-center mt-5 px-4">
+        <div className="flex flex-col items-center mt-4 px-4 pb-4 border-b border-gray-100">
           <img
             src={gravatarUrl}
             alt="Admin"
-            className="w-20 h-20 object-cover rounded-md"
+            className="w-14 h-14 object-cover rounded-md"
           />
 
-          <div className="mt-4 text-center">
-            <h1 className="text-lg font-semibold">
+          <div className="mt-3 text-center">
+            <h1 className="text-sm font-semibold">
               {capitalize(decoded?.fullname || '')}
             </h1>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-xs text-gray-500">
               {decoded?.role}
             </p>
           </div>
         </div>
       )}
 
-      <nav className="pt-5 pb-10">
+      <nav className="pt-3 pb-6">
         {navItems.map(
           (item) =>
             item.view.includes(adminInfo?.role) && (
