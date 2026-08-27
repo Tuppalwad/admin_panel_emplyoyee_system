@@ -1,5 +1,5 @@
-import axiosInstance, { makeApiRequest } from "../../services/axios";
-import { GET_ALL_EMPLOYEES, LEAVE_REFRESH, SET_LEAVES } from "../actiontypes";
+import { makeApiRequest } from "../../services/axios";
+import { LEAVE_REFRESH, SET_LEAVES } from "../actiontypes";
 import { setLoading } from "./helpActions";
 import { GET, POST, api } from '../../components/healper/apiConstant';
 

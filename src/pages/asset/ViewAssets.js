@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import AgGridTable from '../../components/common/AgGridTable';
-import { getAssetCategories, getAssets, searchAssets } from '../../redux/actions/assetAction';
-import { conditionColor, formatDate, statusColor } from './assetHelpers';
+import { AssignAssetPopup } from '../../components/popup';
+import { assignAsset, getAssetCategories, getAssets } from '../../redux/actions/assetAction';
+import { conditionColor, formatDate, getLoggedInEmail, statusColor } from './assetHelpers';
+import { exportToExcel } from '../../utils/utils';
 
 const EMPTY_FILTERS = { category: '', status: '', condition: '' };
 
@@ -13,66 +16,116 @@ const ViewAssets = () => {
 
   const { assets = [], refresh, enums } = useSelector((state) => state.assets);
 
-  /* Draft state is what the user is editing; `applied` is what was last sent to the
-     server. Nothing fires until Search is pressed, so typing costs no API calls. */
-  const [draftFilters, setDraftFilters] = useState(EMPTY_FILTERS);
-  const [draftSearch, setDraftSearch] = useState('');
-  const [applied, setApplied] = useState({ search: '', filters: EMPTY_FILTERS });
+  /* The whole asset list is already in memory (the API returns every row; the grid paginates
+     client-side), so the search box filters locally across EVERY column instead of calling the
+     server's /search — which only looked at assetId, serial, brand, model and notes. Typing is
+     now live and matches category, status, condition, assignee, location and warranty too. */
+  const [quickFilter, setQuickFilter] = useState('');
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [showFilters, setShowFilters] = useState(false);
+  const [gridApi, setGridApi] = useState(null);
+
+  /* Assigning straight from the row means HR never has to open the detail page just to
+     hand an asset over — the single most repeated action on this screen. */
+  const [assigningAsset, setAssigningAsset] = useState(null);
 
   useEffect(() => {
     dispatch(getAssetCategories());
   }, [dispatch]);
 
-  /* The search endpoint does its own regex match and ignores the dropdown filters,
-     so the two paths are kept mutually exclusive. */
-  const fetchAssets = useCallback(
-    ({ search, filters }) => {
-      if (search.trim()) {
-        dispatch(searchAssets(search.trim()));
-        return;
-      }
-
-      const activeFilters = Object.fromEntries(
-        Object.entries(filters).filter(([, value]) => value)
-      );
-      dispatch(getAssets(activeFilters));
-    },
-    [dispatch]
-  );
-
-  /* One call on mount, one per Search press, and one per mutation elsewhere
-     (`refresh` is a counter, so repeat mutations still re-fire this) */
+  /* Dropdowns stay server-side — they narrow which rows are fetched at all. The search box
+     then filters within whatever came back, so the two compose instead of excluding each other. */
   useEffect(() => {
-    fetchAssets(applied);
-  }, [fetchAssets, applied, refresh]);
+    const activeFilters = Object.fromEntries(
+      Object.entries(filters).filter(([, value]) => value)
+    );
+    dispatch(getAssets(activeFilters));
+  }, [dispatch, filters, refresh]);
 
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
-    setDraftFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const runSearch = () => {
-    setApplied({ search: draftSearch, filters: draftFilters });
-  };
-
-  const handleSearchKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      runSearch();
-    }
+    setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
   const clearFilters = () => {
-    setDraftFilters(EMPTY_FILTERS);
-    setDraftSearch('');
-    setApplied({ search: '', filters: EMPTY_FILTERS });
+    setFilters(EMPTY_FILTERS);
+    setQuickFilter('');
   };
 
-  const activeFilterCount = Object.values(applied.filters).filter(Boolean).length;
+  const handleAssign = async (formData) => {
+    try {
+      const res = await dispatch(
+        assignAsset({
+          assetId: assigningAsset.assetId,
+          empId: formData.empId,
+          conditionAtAssign: formData.conditionAtAssign,
+          remarks: formData.remarks,
+          componentChecksAtAssign: formData.componentChecksAtAssign,
+          courierName: formData.courierName || undefined,
+          trackingNumber: formData.trackingNumber || undefined,
+          shippedToAddress: formData.shippedToAddress || undefined,
+          assignedBy: getLoggedInEmail(),
+        })
+      );
 
-  const isDirty =
-    draftSearch !== applied.search ||
-    JSON.stringify(draftFilters) !== JSON.stringify(applied.filters);
+      if (res?.code === 200) {
+        const assignee = res?.data?.currentAssignee;
+        toast(
+          assignee?.empName
+            ? `${assigningAsset.assetId} assigned to ${assignee.empName}`
+            : 'Asset Assigned Successfully'
+        );
+        setAssigningAsset(null);
+        /* assignAsset already dispatches SET_REFRESH_ASSET, so the grid reloads itself. */
+      } else {
+        toast(res?.message || 'Unable to assign asset');
+      }
+    } catch (error) {
+      console.log(error);
+      toast('Something went wrong');
+    }
+  };
+
+  /* Exports exactly the rows on screen. Pulling them back out of the grid (rather than from
+     `assets`) is what makes the search box count too — otherwise a filtered view would still
+     export all 207. Falls back to the full list before the grid has registered. */
+  const handleExport = () => {
+    let visible = assets;
+
+    if (gridApi) {
+      const filtered = [];
+      gridApi.forEachNodeAfterFilterAndSort((node) => {
+        if (node.data) filtered.push(node.data);
+      });
+      visible = filtered;
+    }
+
+    const rows = visible.map((asset) => ({
+      'Asset ID': asset.assetId,
+      'Category': asset.category,
+      'Brand': asset.brand,
+      'Model': asset.modelName,
+      'Serial Number': asset.serialNumber || '-',
+      'Status': asset.status,
+      'Condition': asset.condition,
+      'Assigned To Name': asset.currentAssignee?.empName || '-',
+      'Assigned To Emp ID': asset.currentAssignee?.empId || '-',
+      'Assigned Since': formatDate(asset.currentAssignee?.assignedDate),
+      'Location Type': asset.locationType,
+      'Current Location': asset.currentLocation || '-',
+      'Purchase Date': formatDate(asset.purchaseDate),
+      'Purchase Cost': asset.purchaseCost ?? '-',
+      'Vendor': asset.vendor || '-',
+      'Warranty Expiry': formatDate(asset.warrantyExpiryDate),
+      'Specifications': asset.specifications || '-',
+      'Notes': asset.notes || '-',
+    }));
+
+    const timestamp = new Date().toISOString().slice(0, 10);
+    exportToExcel(rows, `assets-export-${timestamp}`);
+  };
+
+  const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
   const StatusCellRenderer = useCallback((props) => (
     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColor(props.value)}`}>
@@ -86,6 +139,9 @@ const ViewAssets = () => {
     </span>
   ), []);
 
+  /* Only `Available` assets can be assigned — the backend rejects anything else, so the
+     button is hidden rather than shown and then failing. setState identity is stable, so
+     the empty dep array is safe. */
   const ActionCellRenderer = useCallback((props) => (
     <div className="flex items-center gap-2">
       <Link
@@ -94,6 +150,16 @@ const ViewAssets = () => {
       >
         View
       </Link>
+
+      {props.data.status === 'Available' && (
+        <button
+          onClick={() => setAssigningAsset(props.data)}
+          className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-medium hover:bg-emerald-200 transition whitespace-nowrap"
+        >
+          <i className="fas fa-user-check mr-1"></i>
+          Assign
+        </button>
+      )}
     </div>
   ), []);
 
@@ -134,7 +200,7 @@ const ViewAssets = () => {
       cellRenderer: 'actionCellRenderer',
       sortable: false,
       filter: false,
-      minWidth: 130,
+      minWidth: 200,
       pinned: 'right',
     },
   ], []);
@@ -147,6 +213,7 @@ const ViewAssets = () => {
 
   return (
     <div className="p-4 bg-slate-50 min-h-screen">
+      <ToastContainer />
 
       {/* Header */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
@@ -175,6 +242,15 @@ const ViewAssets = () => {
               </h3>
             </div>
 
+            <button
+              onClick={handleExport}
+              disabled={!assets.length}
+              className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <i className="fas fa-file-export mr-2"></i>
+              Export
+            </button>
+
             <Link
               to="/dashboard/asset/add"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
@@ -194,15 +270,28 @@ const ViewAssets = () => {
 
         <div className="flex flex-col md:flex-row gap-3 md:items-center">
 
-          <input
-            type="text"
-            name="search"
-            value={draftSearch}
-            onChange={(event) => setDraftSearch(event.target.value)}
-            onKeyDown={handleSearchKeyDown}
-            placeholder="Search serial number, brand or model"
-            className="shadow appearance-none border-gray-300 rounded-lg w-full py-2.5 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
+          <div className="relative w-full">
+            <i className="fas fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+
+            <input
+              type="text"
+              name="search"
+              value={quickFilter}
+              onChange={(event) => setQuickFilter(event.target.value)}
+              placeholder="Search anything — ID, serial, brand, model, status, condition, employee, location"
+              className="shadow appearance-none border-gray-300 rounded-lg w-full py-2.5 pl-11 pr-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+
+            {quickFilter && (
+              <button
+                onClick={() => setQuickFilter('')}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                <i className="fas fa-circle-xmark"></i>
+              </button>
+            )}
+          </div>
 
           <div className="flex gap-2 shrink-0">
 
@@ -216,14 +305,6 @@ const ViewAssets = () => {
               <i className="fas fa-sliders mr-2"></i>
               Filters
               {activeFilterCount > 0 && ` (${activeFilterCount})`}
-            </button>
-
-            <button
-              onClick={runSearch}
-              className="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition whitespace-nowrap"
-            >
-              <i className="fas fa-magnifying-glass mr-2"></i>
-              Search
             </button>
 
             <button
@@ -248,9 +329,8 @@ const ViewAssets = () => {
 
               <select
                 name="category"
-                value={draftFilters.category}
+                value={filters.category}
                 onChange={handleFilterChange}
-                disabled={Boolean(draftSearch.trim())}
                 className="shadow appearance-none border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:bg-slate-100"
               >
                 <option value="">All Categories</option>
@@ -270,9 +350,8 @@ const ViewAssets = () => {
 
               <select
                 name="status"
-                value={draftFilters.status}
+                value={filters.status}
                 onChange={handleFilterChange}
-                disabled={Boolean(draftSearch.trim())}
                 className="shadow appearance-none border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:bg-slate-100"
               >
                 <option value="">All Statuses</option>
@@ -292,9 +371,8 @@ const ViewAssets = () => {
 
               <select
                 name="condition"
-                value={draftFilters.condition}
+                value={filters.condition}
                 onChange={handleFilterChange}
-                disabled={Boolean(draftSearch.trim())}
                 className="shadow appearance-none border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:bg-slate-100"
               >
                 <option value="">All Conditions</option>
@@ -307,20 +385,13 @@ const ViewAssets = () => {
               </select>
             </div>
 
-            {draftSearch.trim() && (
-              <p className="text-xs text-slate-500 md:col-span-3">
-                Filters are ignored while a search term is present — the search endpoint
-                matches on its own.
-              </p>
-            )}
-
           </div>
         )}
 
-        {isDirty && (
-          <p className="text-xs text-amber-700 mt-3">
+        {quickFilter && (
+          <p className="text-xs text-slate-500 mt-3">
             <i className="fas fa-circle-info mr-2"></i>
-            Press Search to apply your changes.
+            Showing matches for “{quickFilter}” across all columns.
           </p>
         )}
 
@@ -333,7 +404,11 @@ const ViewAssets = () => {
           rowData={assets}
           columnDefs={columnDefs}
           components={components}
-          onGridReady={(params) => params.api.sizeColumnsToFit()}
+          quickFilterText={quickFilter}
+          onGridReady={(params) => {
+            setGridApi(params.api);
+            params.api.sizeColumnsToFit();
+          }}
           onRowDoubleClicked={(event) =>
             navigate(`/dashboard/asset/detail/${encodeURIComponent(event.data.assetId)}`)
           }
@@ -342,17 +417,19 @@ const ViewAssets = () => {
           paginationPageSize={10}
           overlayNoRowsTemplate="<span>No Assets Found</span>"
           style={{ height: 460 }}
-          className="rounded-xl"
+          className="rounded-xl ag-centered"
           gridOptions={{
             animateRows: true,
             rowHeight: 55,
             headerHeight: 55,
-            /* No floatingFilter row — the search bar above is the one place to
-               filter, and a second always-on filter strip only duplicated it.
-               Per-column filters are still reachable from the header menu. */
+            /* floatingFilter must be set false explicitly: AgGridTable's own defaultColDef
+               turns it on, and this object is merged over that — omitting the key left the
+               per-column filter strip showing despite the search bar duplicating it.
+               Per-column filters are still reachable from each header's menu. */
             defaultColDef: {
               sortable: true,
               filter: true,
+              floatingFilter: false,
               resizable: true,
               flex: 1,
               minWidth: 120,
@@ -361,6 +438,14 @@ const ViewAssets = () => {
         />
 
       </div>
+
+      {assigningAsset && (
+        <AssignAssetPopup
+          asset={assigningAsset}
+          onClose={() => setAssigningAsset(null)}
+          onSubmit={handleAssign}
+        />
+      )}
 
     </div>
   );

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { Loading } from '../../components/common';
 import { importLegacyRegister } from '../../redux/actions/assetAction';
 import { formatDate, getLoggedInEmail } from './assetHelpers';
@@ -63,38 +62,18 @@ const ImportRegister = () => {
 
   const skippedRows = result?.skippedRows || [];
   const unresolvedAssignments = result?.unresolvedAssignments || [];
+  /* Assets the backend reached but could not write. Each one is isolated server-side so the
+     rest of the batch still imports — which means a failure here is otherwise invisible:
+     the run reports success and the asset simply never appears. */
+  const failedImports = result?.failedImports || [];
 
   return (
-    <div className="p-4 bg-slate-50 min-h-screen">
-      <ToastContainer />
+    <div>
       {loading && <Loading />}
 
-      {/* Header */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
-
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
-
-          <div>
-            <h1 className="text-xl font-bold text-slate-800">
-              Import Laptop Register (.xlsx)
-            </h1>
-
-            <p className="text-sm text-slate-500 mt-0.5">
-              One-time import of HR's legacy laptop tracking spreadsheet
-            </p>
-          </div>
-
-          <Link
-            to="/dashboard/asset/view"
-            className="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition"
-          >
-            <i className="fas fa-list mr-2"></i>
-            All Assets
-          </Link>
-
-        </div>
-
-      </div>
+      <p className="text-sm text-slate-500 mb-4">
+        One-time import of HR's legacy laptop tracking spreadsheet
+      </p>
 
       {/* Upload form */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
@@ -193,6 +172,40 @@ const ImportRegister = () => {
               color="bg-slate-50 border-slate-200 text-slate-700"
             />
           </div>
+
+          {/* Failed writes — surfaced first because these assets are simply absent */}
+          {failedImports.length > 0 && (
+            <div className="bg-white rounded-xl border border-red-200 shadow-sm p-4 mb-4">
+              <h2 className="text-base font-bold text-red-700 mb-1">
+                Failed to Import ({failedImports.length})
+              </h2>
+
+              <p className="text-sm text-gray-500 mb-3">
+                These laptops were read from the file but could not be saved — they are not in the
+                system. Everything else in the run still imported.
+              </p>
+
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-slate-500 border-b">
+                      <th className="py-3 pr-4">Serial</th>
+                      <th className="py-3 pr-4">Reason</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {failedImports.map((row, index) => (
+                      <tr key={`${row.serial}-${index}`} className="border-b last:border-0">
+                        <td className="py-3 pr-4 font-medium text-slate-800">{row.serial || '-'}</td>
+                        <td className="py-3 pr-4 text-slate-600">{row.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {/* Unresolved assignments — the list HR has to reconcile by hand */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">

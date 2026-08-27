@@ -23,6 +23,9 @@ function EmployeeSelect({
   placeholder = 'Search by name or employee ID',
   excludeEmpId,
   isClearable = false,
+  autoFocus = false,
+  hideLabel = false,
+  hideHint = false,
 }) {
   const dispatch = useDispatch();
   const { allEmployees = [] } = useSelector((state) => state.employee) || {};
@@ -58,11 +61,13 @@ function EmployeeSelect({
   };
 
   return (
-    <div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="employeeSelect">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
+    <div className={hideLabel ? '' : 'mb-4'}>
+      {!hideLabel && (
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="employeeSelect">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+      )}
 
       <Select
         inputId="employeeSelect"
@@ -72,12 +77,15 @@ function EmployeeSelect({
         placeholder={placeholder}
         styles={styles}
         isClearable={isClearable}
+        autoFocus={autoFocus}
         noOptionsMessage={() => 'No matching employee'}
       />
 
-      <p className="text-xs text-slate-500 mt-2">
-        {options.length} employees available — start typing to filter.
-      </p>
+      {!hideHint && (
+        <p className="text-xs text-slate-500 mt-2">
+          {options.length} employees available — start typing to filter.
+        </p>
+      )}
 
       {error && <p className="text-red-500 text-xs italic my-2">{error}</p>}
     </div>

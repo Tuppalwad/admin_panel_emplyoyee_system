@@ -203,6 +203,22 @@ return ( <div className="p-4 bg-slate-50 min-h-screen">
     </div>
   </div>
 
+  {/* Search — the quick-filter handler already existed but was never given an input to
+      drive it, which is why searchTerm/handleSearchChange linted as unused. */}
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
+    <div className="relative w-full">
+      <i className="fas fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        placeholder="Search anything — title, department, status, priority, client"
+        className="shadow appearance-none border-gray-300 rounded-lg w-full py-2.5 pl-11 pr-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      />
+    </div>
+  </div>
+
   {/* Grid */}
   <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
 

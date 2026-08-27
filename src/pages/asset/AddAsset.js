@@ -8,6 +8,7 @@ import { createAsset, editAsset, getAssetCategories } from '../../redux/actions/
 import { formatInputDate } from './assetHelpers';
 import { composeSpecifications, parseSpecifications, specFieldsFor } from './specFields';
 import { validateAsset } from './validate';
+import ImportRegister from './ImportRegister';
 
 /* Add/Edit posts the Excel-shaped named fields (ram, hdd, ...) rather than a raw
    componentChecks array — the backend builds the array from them using these same
@@ -84,6 +85,10 @@ const AddAsset = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  /* Import only makes sense when creating a fresh batch of assets, not while editing
+     one — the tab switcher is hidden entirely in edit mode. */
+  const [mode, setMode] = useState('single');
 
   const notify = (message) => toast(message);
 
@@ -212,6 +217,39 @@ const AddAsset = () => {
         {isEdit ? `Edit Asset — ${assetData.assetId}` : 'Add Asset'}
       </h1>
 
+      {/* Import only applies to creating fresh assets, so the tabs (and the option
+          itself) are hidden while editing an existing one. */}
+      {!isEdit && (
+        <div className="flex gap-2 mb-4">
+          <button
+            type="button"
+            onClick={() => setMode('single')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === 'single'
+              ? 'bg-blue-600 text-white'
+              : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'
+              }`}
+          >
+            <i className="fas fa-plus mr-2"></i>
+            Add Single Asset
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMode('import')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === 'import'
+              ? 'bg-blue-600 text-white'
+              : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'
+              }`}
+          >
+            <i className="fas fa-file-import mr-2"></i>
+            Import from Excel
+          </button>
+        </div>
+      )}
+
+      {!isEdit && mode === 'import' && <ImportRegister />}
+
+      {(isEdit || mode === 'single') && (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 shadow-sm rounded-lg">
 
         <DropdownBox
@@ -532,6 +570,7 @@ const AddAsset = () => {
         </button>
 
       </div>
+      )}
     </div>
   );
 };

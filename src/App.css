@@ -1,6 +1,13 @@
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Source+Sans+Pro:wght@400;600;700&display=swap');
 
+/* Global scale-down: Tailwind's sizing and spacing are all rem-based, so dropping the root
+   font size from the 16px browser default to 14px shrinks type AND padding/margins together.
+   That reads as "slightly zoomed out" rather than just smaller text on the same-size boxes. */
+html {
+  font-size: 87.5%;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -182,6 +189,34 @@ button {
 .ag-theme-alpine .ag-header-cell-label {
   height: 50px !important;
   min-height: 50px !important;
+}
+
+/* Centre header text and cell content.
+   Opt-in via the `ag-centered` class on the grid wrapper so existing tables that rely on
+   left-aligned columns are not changed underneath them. The header needs its own rule because
+   `.ag-header-cell-label` is AG Grid's internal flex row — a colDef cellStyle cannot reach it.
+   `ag-cell-wrapper` is targeted too, otherwise cells rendered through a cellRenderer (Status,
+   Condition, Actions) stay left-aligned while plain text columns centre. */
+.ag-theme-alpine.ag-centered .ag-header-cell-label {
+  justify-content: center;
+  text-align: center;
+}
+
+.ag-theme-alpine.ag-centered .ag-header-cell-label .ag-header-cell-text {
+  text-align: center;
+}
+
+.ag-theme-alpine.ag-centered .ag-cell,
+.ag-theme-alpine.ag-centered .ag-cell-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Floating-filter inputs look odd centred — keep those left-aligned. */
+.ag-theme-alpine.ag-centered .ag-floating-filter-body input {
+  text-align: left;
 }
 
 

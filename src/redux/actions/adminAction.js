@@ -1,4 +1,4 @@
-import axiosInstance, { makeApiRequest } from "../../services/axios";
+import { makeApiRequest } from "../../services/axios";
 import { SET_ADMIN_INFO } from "../actiontypes";
 import { setLoading } from "./helpActions";
 import { POST,api } from '../../components/healper/apiConstant';
