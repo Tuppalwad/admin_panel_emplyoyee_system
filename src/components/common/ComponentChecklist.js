@@ -92,9 +92,7 @@ function ComponentChecklist({
     onChange([...value, ...defaultComponentChecks('Laptop')]);
   };
 
-  /* The common case by far: everything checked out fine. Filling eight fields by hand to say
-     so was the slowest part of a handover. Only blanks are touched, so anything already
-     recorded (a spec value, a fault) is left alone. */
+  /* Only blanks are touched, so anything already recorded (a spec value, a fault) survives. */
   const markRemainingOk = () => {
     onChange(
       value.map((row) =>

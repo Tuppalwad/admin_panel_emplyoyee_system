@@ -8,14 +8,11 @@ import ComponentChecklist, {
 import EmployeeSelect from "../common/EmployeeSelect";
 import { getAssetsByEmpId } from "../../redux/actions/assetAction";
 
-/* Handover is a two-decision job — who gets it, and (rarely) in what state. Everything else
-   on this form is optional, so the layout keeps those two on screen and folds the rest away:
-   an untouched component-checks table used to occupy more space than the employee picker and
-   pushed the Assign button below the fold.
+/* Only two decisions matter here — who gets it, and in what state — so those stay on screen and
+   everything optional folds away.
 
-   The employee card is not decoration. This company has two people called "Manish Sharma" on
-   different empIds, and issuing a second laptop to someone who already holds one is the other
-   easy mistake — so identity and current holdings are shown before the handover is confirmed. */
+   The employee card is not decoration: there are two people called "Manish Sharma" on different
+   empIds, so identity and current holdings are shown before the handover is confirmed. */
 
 const CATEGORY_ICON = {
   Laptop: "fa-laptop",

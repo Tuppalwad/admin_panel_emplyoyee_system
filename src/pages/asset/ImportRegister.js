@@ -3,14 +3,60 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Loading } from '../../components/common';
 import { importLegacyRegister } from '../../redux/actions/assetAction';
-import { formatDate, getLoggedInEmail } from './assetHelpers';
+import { getLoggedInEmail } from './assetHelpers';
+import { downloadImportTemplate } from './assetTemplate';
 
 const StatTile = ({ label, value, color }) => (
-  <div className={`rounded-xl border p-4 ${color}`}>
+  <div className={`rounded-xl border p-3 ${color}`}>
     <p className="text-xs uppercase tracking-wide mb-1 opacity-80">{label}</p>
     <h3 className="text-2xl font-bold">{value ?? 0}</h3>
   </div>
 );
+
+/* Collapsible result table. Every rejected row carries its Excel row number so the user can go
+   straight to the cell, fix it, and re-run the same file — re-running is safe because the import
+   only ever creates, never overwrites. */
+const ResultTable = ({ title, description, rows, columns, tone, defaultOpen = false }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  if (!rows.length) return null;
+
+  return (
+    <div className={`bg-white rounded-xl border shadow-sm p-4 mb-4 ${tone}`}>
+      <button onClick={() => setOpen((v) => !v)} className="flex items-center justify-between w-full text-left">
+        <div>
+          <h2 className="text-base font-bold text-gray-800">
+            {title} ({rows.length})
+          </h2>
+          <p className="text-sm text-gray-500 mt-0.5">{description}</p>
+        </div>
+        <i className={`fas fa-chevron-${open ? 'up' : 'down'} text-slate-500`}></i>
+      </button>
+
+      {open && (
+        <div className="overflow-x-auto mt-3">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="text-left text-slate-500 border-b">
+                {columns.map((c) => (
+                  <th key={c.label} className="py-2 pr-4">{c.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, index) => (
+                <tr key={index} className="border-b last:border-0">
+                  {columns.map((c) => (
+                    <td key={c.label} className="py-2 pr-4 text-slate-700">{c.get(row) ?? '-'}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const ImportRegister = () => {
   const dispatch = useDispatch();
@@ -21,19 +67,17 @@ const ImportRegister = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
-  const [showSkipped, setShowSkipped] = useState(false);
-  const [showUnresolved, setShowUnresolved] = useState(true);
-
   const notify = (message) => toast(message);
 
   const handleFileChange = (event) => {
     setErrors((prev) => ({ ...prev, excelFile: '' }));
     setExcelFile(event.target.files?.[0] || null);
+    setResult(null);
   };
 
   const handleSubmit = async () => {
     const newErrors = {};
-    if (!excelFile) newErrors.excelFile = 'Select the .xlsx register file';
+    if (!excelFile) newErrors.excelFile = 'Select the filled-in .xlsx template';
     if (!importedBy) newErrors.importedBy = 'Imported By is required';
 
     if (Object.keys(newErrors).length > 0) {
@@ -47,7 +91,12 @@ const ImportRegister = () => {
 
       if (res?.code === 200 || res?.code === 201) {
         setResult(res.data);
-        notify('Import complete');
+        const { createdCount = 0, skippedCount = 0 } = res.data || {};
+        notify(
+          skippedCount
+            ? `${createdCount} imported, ${skippedCount} skipped — see the breakdown below`
+            : `${createdCount} laptop(s) imported`
+        );
       } else {
         setResult(null);
         notify(res?.message || 'Import failed');
@@ -60,38 +109,49 @@ const ImportRegister = () => {
     }
   };
 
-  const skippedRows = result?.skippedRows || [];
-  const unresolvedAssignments = result?.unresolvedAssignments || [];
-  /* Assets the backend reached but could not write. Each one is isolated server-side so the
-     rest of the batch still imports — which means a failure here is otherwise invisible:
-     the run reports success and the asset simply never appears. */
-  const failedImports = result?.failedImports || [];
+  const created = result?.created || [];
+  const skipped = result?.skipped || [];
+  const failed = result?.failed || [];
+  const unassigned = result?.unassigned || [];
+  const unknownHeaders = result?.unknownHeaders || [];
 
   return (
     <div>
       {loading && <Loading />}
 
-      <p className="text-sm text-slate-500 mb-4">
-        One-time import of HR's legacy laptop tracking spreadsheet
-      </p>
+      {/* Step 1 — get the template */}
+      <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <h3 className="text-sm font-bold text-blue-900">1. Start from the template</h3>
+            <p className="text-sm text-blue-800 mt-0.5">
+              Everyone imports the same format, so there is nothing to reformat by hand. The sheet
+              includes instructions and the list of accepted values.
+            </p>
+          </div>
 
-      {/* Upload form */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
-
-        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-4">
-          <p className="text-sm text-blue-800">
-            <i className="fas fa-circle-info mr-2"></i>
-            This reads one specific spreadsheet layout — HR's laptop register, which must
-            have a column header containing "code" and one containing "date". It is meant
-            to be run once, not as a recurring workflow, and it only imports laptops.
-          </p>
+          <button
+            onClick={downloadImportTemplate}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition whitespace-nowrap shrink-0"
+          >
+            <i className="fas fa-download mr-2"></i>
+            Download Template
+          </button>
         </div>
+      </div>
+
+      {/* Step 2 — upload it back */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
+        <h3 className="text-sm font-bold text-slate-800 mb-1">2. Upload the filled-in file</h3>
+        <p className="text-xs text-slate-500 mb-4">
+          Laptops only. Each row creates a new laptop — a serial number that already exists is
+          skipped, never overwritten, so re-running a corrected file is safe.
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="excelFile">
-              Register File <span className="text-red-500">*</span>
+              Filled Template <span className="text-red-500">*</span>
             </label>
 
             <input
@@ -99,8 +159,7 @@ const ImportRegister = () => {
               name="excelFile"
               accept=".xlsx"
               onChange={handleFileChange}
-              className={`shadow appearance-none border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.excelFile ? 'border-red-500' : ''
-                }`}
+              className={`shadow appearance-none border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.excelFile ? 'border-red-500' : ''}`}
             />
 
             {excelFile && (
@@ -128,15 +187,13 @@ const ImportRegister = () => {
                 setImportedBy(event.target.value);
               }}
               placeholder="admin@example.com"
-              className={`shadow appearance-none border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.importedBy ? 'border-red-500' : ''
-                }`}
+              className={`shadow appearance-none border-gray-300 rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.importedBy ? 'border-red-500' : ''}`}
             />
 
             {errors.importedBy && (
               <p className="text-red-500 text-xs italic my-2">{errors.importedBy}</p>
             )}
           </div>
-
         </div>
 
         <button
@@ -147,196 +204,76 @@ const ImportRegister = () => {
           <i className="fas fa-file-import mr-2"></i>
           {loading ? 'Importing...' : 'Run Import'}
         </button>
-
       </div>
 
-      {/* Results */}
       {result && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-            <StatTile
-              label="Laptops Found"
-              value={result.totalLaptopsFound}
-              color="bg-blue-50 border-blue-100 text-blue-700"
-            />
-
-            <StatTile
-              label="Created"
-              value={result.created}
-              color="bg-green-50 border-green-100 text-green-700"
-            />
-
-            <StatTile
-              label="Skipped (already existed)"
-              value={result.skippedExisting}
-              color="bg-slate-50 border-slate-200 text-slate-700"
-            />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            <StatTile label="Rows read" value={result.totalRows} color="bg-slate-50 border-slate-200 text-slate-700" />
+            <StatTile label="Imported" value={result.createdCount} color="bg-green-50 border-green-100 text-green-700" />
+            <StatTile label="Skipped" value={result.skippedCount} color="bg-amber-50 border-amber-200 text-amber-800" />
+            <StatTile label="Failed" value={result.failedCount} color="bg-red-50 border-red-200 text-red-700" />
           </div>
 
-          {/* Failed writes — surfaced first because these assets are simply absent */}
-          {failedImports.length > 0 && (
-            <div className="bg-white rounded-xl border border-red-200 shadow-sm p-4 mb-4">
-              <h2 className="text-base font-bold text-red-700 mb-1">
-                Failed to Import ({failedImports.length})
-              </h2>
-
-              <p className="text-sm text-gray-500 mb-3">
-                These laptops were read from the file but could not be saved — they are not in the
-                system. Everything else in the run still imported.
-              </p>
-
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm">
-                  <thead>
-                    <tr className="text-left text-slate-500 border-b">
-                      <th className="py-3 pr-4">Serial</th>
-                      <th className="py-3 pr-4">Reason</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {failedImports.map((row, index) => (
-                      <tr key={`${row.serial}-${index}`} className="border-b last:border-0">
-                        <td className="py-3 pr-4 font-medium text-slate-800">{row.serial || '-'}</td>
-                        <td className="py-3 pr-4 text-slate-600">{row.reason}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          {unknownHeaders.length > 0 && (
+            <p className="text-xs text-slate-500 mb-4">
+              <i className="fas fa-circle-info mr-2"></i>
+              Ignored unrecognised column(s): {unknownHeaders.join(', ')}
+            </p>
           )}
 
-          {/* Unresolved assignments — the list HR has to reconcile by hand */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 mb-4">
+          <ResultTable
+            title="Skipped rows"
+            description="Read successfully but not imported — fix the cell and re-run the same file"
+            rows={skipped}
+            tone="border-amber-200"
+            defaultOpen
+            columns={[
+              { label: 'Excel row', get: (r) => r.row },
+              { label: 'Serial', get: (r) => r.serial },
+              { label: 'Reason', get: (r) => r.reason },
+            ]}
+          />
 
-            <button
-              onClick={() => setShowUnresolved((prev) => !prev)}
-              className="flex items-center justify-between w-full text-left"
-            >
-              <div>
-                <h2 className="text-base font-bold text-gray-800">
-                  Unresolved Assignments ({unresolvedAssignments.length})
-                </h2>
+          <ResultTable
+            title="Failed to save"
+            description="Passed validation but the database write did not succeed"
+            rows={failed}
+            tone="border-red-200"
+            defaultOpen
+            columns={[
+              { label: 'Excel row', get: (r) => r.row },
+              { label: 'Serial', get: (r) => r.serial },
+              { label: 'Reason', get: (r) => r.reason },
+            ]}
+          />
 
-                <p className="text-sm text-gray-500 mt-0.5">
-                  Historical handovers whose spreadsheet name matched no employee
-                </p>
-              </div>
+          <ResultTable
+            title="Imported but not assigned"
+            description="The employee ID in the sheet did not match anyone — the laptop was still imported, and is unassigned"
+            rows={unassigned}
+            tone="border-amber-200"
+            columns={[
+              { label: 'Excel row', get: (r) => r.row },
+              { label: 'Serial', get: (r) => r.serial },
+              { label: 'Emp ID in sheet', get: (r) => r.empId },
+            ]}
+          />
 
-              <i className={`fas fa-chevron-${showUnresolved ? 'up' : 'down'} text-slate-500`}></i>
-            </button>
-
-            {showUnresolved && (
-              <div className="mt-3">
-
-                {unresolvedAssignments.length ? (
-                  <>
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3">
-                      <p className="text-sm text-amber-800">
-                        <i className="fas fa-triangle-exclamation mr-2"></i>
-                        These assets were imported, but the handover could not be linked to
-                        an employee record. There is no endpoint to correct a historical
-                        assignment's employee after import — treat this as a reference list
-                        to reconcile manually, and keep a copy before leaving this screen.
-                      </p>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full text-sm">
-                        <thead>
-                          <tr className="text-left text-slate-500 border-b">
-                            <th className="py-3 pr-4">Serial</th>
-                            <th className="py-3 pr-4">Date</th>
-                            <th className="py-3 pr-4">Name In Spreadsheet</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {unresolvedAssignments.map((row, index) => (
-                            <tr key={`${row.serial}-${index}`} className="border-b last:border-0">
-                              <td className="py-3 pr-4 font-medium text-slate-800">
-                                {row.serial || '-'}
-                              </td>
-
-                              <td className="py-3 pr-4">{formatDate(row.date)}</td>
-                              <td className="py-3 pr-4 text-slate-600">{row.rawName || '-'}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </>
-                ) : (
-                  <p className="text-gray-500">
-                    Every handover in the file matched an employee — nothing to reconcile.
-                  </p>
-                )}
-
-              </div>
-            )}
-
-          </div>
-
-          {/* Skipped rows */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
-
-            <button
-              onClick={() => setShowSkipped((prev) => !prev)}
-              className="flex items-center justify-between w-full text-left"
-            >
-              <div>
-                <h2 className="text-base font-bold text-gray-800">
-                  Skipped Rows ({skippedRows.length})
-                </h2>
-
-                <p className="text-sm text-gray-500 mt-0.5">
-                  Rows the import could not read — fix them in the source file for a second pass
-                </p>
-              </div>
-
-              <i className={`fas fa-chevron-${showSkipped ? 'up' : 'down'} text-slate-500`}></i>
-            </button>
-
-            {showSkipped && (
-              <div className="mt-3">
-
-                {skippedRows.length ? (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm">
-                      <thead>
-                        <tr className="text-left text-slate-500 border-b">
-                          <th className="py-3 pr-4">Row</th>
-                          <th className="py-3 pr-4">Reason</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {skippedRows.map((row, index) => (
-                          <tr key={`${row.row}-${index}`} className="border-b last:border-0">
-                            <td className="py-3 pr-4 font-medium text-slate-800">
-                              {row.row}
-                            </td>
-
-                            <td className="py-3 pr-4 text-slate-600">{row.reason}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-gray-500">
-                    No rows were skipped.
-                  </p>
-                )}
-
-              </div>
-            )}
-
-          </div>
+          <ResultTable
+            title="Imported"
+            description="Newly created laptops"
+            rows={created}
+            tone="border-slate-200"
+            columns={[
+              { label: 'Excel row', get: (r) => r.row },
+              { label: 'Asset ID', get: (r) => r.assetId },
+              { label: 'Serial', get: (r) => r.serial },
+              { label: 'Assigned to', get: (r) => r.assignedTo || '-' },
+            ]}
+          />
         </>
       )}
-
     </div>
   );
 };

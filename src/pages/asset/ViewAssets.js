@@ -6,6 +6,7 @@ import AgGridTable from '../../components/common/AgGridTable';
 import { AssignAssetPopup } from '../../components/popup';
 import { assignAsset, getAssetCategories, getAssets } from '../../redux/actions/assetAction';
 import { conditionColor, formatDate, getLoggedInEmail, statusColor } from './assetHelpers';
+import { IMPORT_COLUMNS, isoDate, blankIfMissing } from './assetImportFormat';
 import { exportToExcel } from '../../utils/utils';
 
 const EMPTY_FILTERS = { category: '', status: '', condition: '' };
@@ -100,26 +101,51 @@ const ViewAssets = () => {
       visible = filtered;
     }
 
-    const rows = visible.map((asset) => ({
-      'Asset ID': asset.assetId,
-      'Category': asset.category,
-      'Brand': asset.brand,
-      'Model': asset.modelName,
-      'Serial Number': asset.serialNumber || '-',
-      'Status': asset.status,
-      'Condition': asset.condition,
-      'Assigned To Name': asset.currentAssignee?.empName || '-',
-      'Assigned To Emp ID': asset.currentAssignee?.empId || '-',
-      'Assigned Since': formatDate(asset.currentAssignee?.assignedDate),
-      'Location Type': asset.locationType,
-      'Current Location': asset.currentLocation || '-',
-      'Purchase Date': formatDate(asset.purchaseDate),
-      'Purchase Cost': asset.purchaseCost ?? '-',
-      'Vendor': asset.vendor || '-',
-      'Warranty Expiry': formatDate(asset.warrantyExpiryDate),
-      'Specifications': asset.specifications || '-',
-      'Notes': asset.notes || '-',
-    }));
+    /* Column names and value formats deliberately match the import template, so an exported
+       sheet can be edited and imported straight back. Two rules make that work:
+       dates go out as YYYY-MM-DD (a locale date like 15/01/2026 cannot be parsed back), and
+       missing values go out blank rather than '-' (which would otherwise be stored as the
+       literal vendor/serial text, and serial numbers must be unique).
+       Asset ID / Category / Status / Assigned To Name / Assigned Since are for reading only —
+       the importer knows those headers and ignores them. */
+    const componentStatus = (asset, name) =>
+      (asset.componentChecks || []).find((c) => c.component === name)?.status || '';
+
+    const rows = visible.map((asset) => {
+      const row = {
+        'Asset ID': asset.assetId,
+        'Category': asset.category,
+        'Status': asset.status,
+        'Assigned To Name': asset.currentAssignee?.empName || '',
+        'Assigned Since': isoDate(asset.currentAssignee?.assignedDate),
+      };
+
+      IMPORT_COLUMNS.forEach((col) => {
+        if (col.component) {
+          row[col.header] = componentStatus(asset, col.header);
+          return;
+        }
+
+        switch (col.key) {
+          case 'brand': row[col.header] = asset.brand; break;
+          case 'modelName': row[col.header] = asset.modelName; break;
+          case 'serialNumber': row[col.header] = blankIfMissing(asset.serialNumber); break;
+          case 'purchaseDate': row[col.header] = isoDate(asset.purchaseDate); break;
+          case 'purchaseCost': row[col.header] = blankIfMissing(asset.purchaseCost); break;
+          case 'vendor': row[col.header] = blankIfMissing(asset.vendor); break;
+          case 'warrantyExpiryDate': row[col.header] = isoDate(asset.warrantyExpiryDate); break;
+          case 'condition': row[col.header] = blankIfMissing(asset.condition); break;
+          case 'locationType': row[col.header] = blankIfMissing(asset.locationType); break;
+          case 'currentLocation': row[col.header] = blankIfMissing(asset.currentLocation); break;
+          case 'assignedToEmpId': row[col.header] = asset.currentAssignee?.empId || ''; break;
+          case 'specifications': row[col.header] = blankIfMissing(asset.specifications); break;
+          case 'notes': row[col.header] = blankIfMissing(asset.notes); break;
+          default: row[col.header] = '';
+        }
+      });
+
+      return row;
+    });
 
     const timestamp = new Date().toISOString().slice(0, 10);
     exportToExcel(rows, `assets-export-${timestamp}`);

@@ -12,14 +12,11 @@ import {
 } from '../../redux/actions/assetAction';
 import { getLoggedInEmail, statusColor } from './assetHelpers';
 
-/* Employee-first handover screen.
-   View Assets is asset-first ("assign THIS laptop"), which suits a one-off. Onboarding runs the
-   other way round — one person needs a laptop, a mouse and a headset — and doing that asset-first
-   means three separate searches and three popups. Here the employee is chosen once and any number
-   of available assets go out together.
+/* Employee-first handover: pick the person once, send any number of assets out together.
+   (View Assets covers the asset-first case — assigning one specific laptop.)
 
-   There is no bulk endpoint on the backend, so this posts /asset/assign once per selected asset
-   and reports per-asset outcomes: a partial failure must not look like a total one. */
+   There is no bulk endpoint, so this posts /asset/assign once per selected asset and reports
+   per-asset outcomes: a partial failure must not look like a total one. */
 const AssignAsset = () => {
   const dispatch = useDispatch();
   const { enums } = useSelector((state) => state.assets);
