@@ -59,7 +59,7 @@ function EmployeeInfoPopup({
 
             <div>
               <h2 className="text-xl font-bold text-white">
-                {formData.FirstName} {formData.LastName}
+                {formData.firstName} {formData.lastName}
               </h2>
 
               <p className="text-sm text-blue-100 mt-1">
@@ -68,15 +68,15 @@ function EmployeeInfoPopup({
 
               <div className="flex flex-wrap gap-2 mt-2">
                 <span className="bg-white/20 px-2.5 py-1 rounded-full text-xs">
-                  {formData.Designation}
+                  {formData.designation}
                 </span>
 
                 <span className="bg-white/20 px-2.5 py-1 rounded-full text-xs">
-                  {formData.WorkMode}
+                  {formData.workMode}
                 </span>
 
                 <span className="bg-white/20 px-2.5 py-1 rounded-full text-xs">
-                  {formData.TotalEXP} Years Experience
+                  {formData.totalExp} Years Experience
                 </span>
               </div>
             </div>
@@ -97,37 +97,37 @@ function EmployeeInfoPopup({
 
               <InfoCard
                 label="Full Name"
-                value={`${formData.FirstName} ${formData.LastName}`}
+                value={`${formData.firstName} ${formData.lastName}`}
               />
 
               <InfoCard
                 label="Father's Name"
-                value={formData.FathersName}
+                value={formData.fathersName}
               />
 
               <InfoCard
                 label="Gender"
-                value={formData.Gender}
+                value={formData.gender}
               />
 
               <InfoCard
                 label="Date of Birth"
-                value={formatDate(formData.DOB)}
+                value={formatDate(formData.dob)}
               />
 
               <InfoCard
                 label="Marital Status"
-                value={formData.MaritalStatus}
+                value={formData.maritalStatus}
               />
 
               <InfoCard
                 label="Spouse Name"
-                value={formData.SpouseName}
+                value={formData.spouseName}
               />
 
               <InfoCard
                 label="Current City"
-                value={formData.CurrentCity}
+                value={formData.currentCity}
               />
 
             </div>
@@ -148,27 +148,27 @@ function EmployeeInfoPopup({
 
               <InfoCard
                 label="Current Employee ID"
-                value={formData.CurrentEmpId}
+                value={formData.currentEmpId}
               />
 
               <InfoCard
                 label="Date Of Joining"
-                value={formatDate(formData.DateOfJoining)}
+                value={formatDate(formData.dateOfJoining)}
               />
 
               <InfoCard
                 label="Designation"
-                value={formData.Designation}
+                value={formData.designation}
               />
 
               <InfoCard
                 label="Employment Type"
-                value={formData.EmploymentType}
+                value={formData.employmentType}
               />
 
               <InfoCard
                 label="Work Mode"
-                value={formData.WorkMode}
+                value={formData.workMode}
               />
 
               <InfoCard
@@ -189,22 +189,22 @@ function EmployeeInfoPopup({
 
               <InfoCard
                 label="Email"
-                value={formData.Email}
+                value={formData.email}
               />
 
               <InfoCard
                 label="Mobile Number"
-                value={formData.MobileNo}
+                value={formData.mobileNo}
               />
 
               <InfoCard
                 label="Emergency Contact"
-                value={formData.EmergencyContactNo}
+                value={formData.emergencyContactNo}
               />
 
               <InfoCard
                 label="Emergency Contact Person"
-                value={formData.EmergencyContactPersonName}
+                value={formData.emergencyContactPersonName}
               />
 
             </div>
@@ -220,17 +220,17 @@ function EmployeeInfoPopup({
 
               <InfoCard
                 label="Highest Qualification"
-                value={formData.HighestQualification}
+                value={formData.highestQualification}
               />
 
               <InfoCard
                 label="Additional Courses"
-                value={formData.AdditionalCourses}
+                value={formData.additionalCourses}
               />
 
               <InfoCard
                 label="Total Experience"
-                value={`${formData.TotalEXP} Years`}
+                value={`${formData.totalExp} Years`}
               />
 
             </div>
@@ -239,8 +239,8 @@ function EmployeeInfoPopup({
               <InfoCard
                 label="Skills"
                 value={
-                  formData.skillAndExperience?.length
-                    ? formData.skillAndExperience
+                  formData.skills?.length
+                    ? formData.skills
                         .map(
                           (item) =>
                             `${item.skill} (${item.experience} Year)`
@@ -262,22 +262,22 @@ function EmployeeInfoPopup({
 
               <InfoCard
                 label="PAN Number"
-                value={formData.PANNo}
+                value={formData.panNo}
               />
 
               <InfoCard
                 label="Aadhar Number"
-                value={formData.AadharNo}
+                value={formData.aadharNo}
               />
 
               <InfoCard
                 label="Passport Number"
-                value={formData.PassportNo}
+                value={formData.passportNo}
               />
 
               <InfoCard
                 label="Name As Per Aadhar"
-                value={formData.NameAsPerAadhar}
+                value={formData.nameAsPerAadhar}
               />
 
             </div>
@@ -293,22 +293,22 @@ function EmployeeInfoPopup({
 
               <InfoCard
                 label="Bank Account Number"
-                value={formData.BankAccountNo}
+                value={formData.bankAccountNo}
               />
 
               <InfoCard
                 label="IFSC Code"
-                value={formData.IFSCCode}
+                value={formData.ifscCode}
               />
 
               <InfoCard
                 label="PF Member"
-                value={formData.PFMember}
+                value={formData.pfMember}
               />
 
               <InfoCard
                 label="UAN Number"
-                value={formData.UANNo}
+                value={formData.uanNo}
               />
 
             </div>
@@ -324,42 +324,42 @@ function EmployeeInfoPopup({
 
               <InfoCard
                 label="Laptop Type"
-                value={formData.LaptopType}
+                value={formData.laptopType}
               />
 
               <InfoCard
                 label="Official Laptop In Use"
-                value={formData.HavingOfficialInUse}
+                value={formData.havingOfficialInUse}
               />
 
               <InfoCard
                 label="Official Laptop Serial No."
-                value={formData.OfficialLaptopSrNo}
+                value={formData.officialLaptopSrNo}
               />
 
               <InfoCard
                 label="RAM"
-                value={`${formData.RAM} GB`}
+                value={`${formData.ram} GB`}
               />
 
               <InfoCard
                 label="Storage Type"
-                value={formData.StorageType}
+                value={formData.storageType}
               />
 
               <InfoCard
                 label="Storage Space"
-                value={`${formData.StorageSpace} GB`}
+                value={`${formData.storageSpace} GB`}
               />
 
               <InfoCard
                 label="Official Upgrades"
-                value={formData.OfficialUpgrades}
+                value={formData.officialUpgrades}
               />
 
               <InfoCard
                 label="Additional Configurations"
-                value={formData.AdditionalConfigurations}
+                value={formData.additionalConfigurations}
               />
 
             </div>

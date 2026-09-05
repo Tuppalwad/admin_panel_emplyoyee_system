@@ -14,64 +14,64 @@ const formatExportDate = (date) => {
 
 const exportColumns = [
     // Personal Information
-    { key: 'fullName', label: 'Full Name', section: 'Personal Information', accessor: (row) => `${row?.FirstName || ''} ${row?.LastName || ''}`.trim() },
-    { key: 'FathersName', label: "Father's Name", section: 'Personal Information', accessor: (row) => row?.FathersName || '' },
-    { key: 'Gender', label: 'Gender', section: 'Personal Information', accessor: (row) => row?.Gender || '' },
-    { key: 'DOB', label: 'Date of Birth', section: 'Personal Information', accessor: (row) => formatExportDate(row?.DOB) },
-    { key: 'MaritalStatus', label: 'Marital Status', section: 'Personal Information', accessor: (row) => row?.MaritalStatus || '' },
-    { key: 'SpouseName', label: 'Spouse Name', section: 'Personal Information', accessor: (row) => row?.SpouseName || '' },
-    { key: 'CurrentCity', label: 'Current City', section: 'Personal Information', accessor: (row) => row?.CurrentCity || '' },
+    { key: 'fullName', label: 'Full Name', section: 'Personal Information', accessor: (row) => `${row?.firstName || ''} ${row?.lastName || ''}`.trim() },
+    { key: 'fathersName', label: "Father's Name", section: 'Personal Information', accessor: (row) => row?.fathersName || '' },
+    { key: 'gender', label: 'Gender', section: 'Personal Information', accessor: (row) => row?.gender || '' },
+    { key: 'dob', label: 'Date of Birth', section: 'Personal Information', accessor: (row) => formatExportDate(row?.dob) },
+    { key: 'maritalStatus', label: 'Marital Status', section: 'Personal Information', accessor: (row) => row?.maritalStatus || '' },
+    { key: 'spouseName', label: 'Spouse Name', section: 'Personal Information', accessor: (row) => row?.spouseName || '' },
+    { key: 'currentCity', label: 'Current City', section: 'Personal Information', accessor: (row) => row?.currentCity || '' },
 
     // Employment Information
     { key: 'empId', label: 'Employee ID', section: 'Employment Information', accessor: (row) => row?.empId || '' },
-    { key: 'CurrentEmpId', label: 'Current Employee ID', section: 'Employment Information', accessor: (row) => row?.CurrentEmpId || '' },
-    { key: 'DateOfJoining', label: 'Date Of Joining', section: 'Employment Information', accessor: (row) => formatExportDate(row?.DateOfJoining) },
-    { key: 'Designation', label: 'Designation', section: 'Employment Information', accessor: (row) => row?.Designation || '' },
-    { key: 'EmploymentType', label: 'Employment Type', section: 'Employment Information', accessor: (row) => row?.EmploymentType || '' },
-    { key: 'WorkMode', label: 'Work Mode', section: 'Employment Information', accessor: (row) => row?.WorkMode || '' },
+    { key: 'currentEmpId', label: 'Current Employee ID', section: 'Employment Information', accessor: (row) => row?.currentEmpId || '' },
+    { key: 'dateOfJoining', label: 'Date Of Joining', section: 'Employment Information', accessor: (row) => formatExportDate(row?.dateOfJoining) },
+    { key: 'designation', label: 'Designation', section: 'Employment Information', accessor: (row) => row?.designation || '' },
+    { key: 'employmentType', label: 'Employment Type', section: 'Employment Information', accessor: (row) => row?.employmentType || '' },
+    { key: 'workMode', label: 'Work Mode', section: 'Employment Information', accessor: (row) => row?.workMode || '' },
     { key: 'status', label: 'Status', section: 'Employment Information', accessor: (row) => row?.status || '' },
 
     // Contact Information
-    { key: 'Email', label: 'Email', section: 'Contact Information', accessor: (row) => row?.Email || '' },
-    { key: 'MobileNo', label: 'Mobile Number', section: 'Contact Information', accessor: (row) => row?.MobileNo || '' },
-    { key: 'EmergencyContactNo', label: 'Emergency Contact', section: 'Contact Information', accessor: (row) => row?.EmergencyContactNo || '' },
-    { key: 'EmergencyContactPersonName', label: 'Emergency Contact Person', section: 'Contact Information', accessor: (row) => row?.EmergencyContactPersonName || '' },
+    { key: 'email', label: 'Email', section: 'Contact Information', accessor: (row) => row?.email || '' },
+    { key: 'mobileNo', label: 'Mobile Number', section: 'Contact Information', accessor: (row) => row?.mobileNo || '' },
+    { key: 'emergencyContactNo', label: 'Emergency Contact', section: 'Contact Information', accessor: (row) => row?.emergencyContactNo || '' },
+    { key: 'emergencyContactPersonName', label: 'Emergency Contact Person', section: 'Contact Information', accessor: (row) => row?.emergencyContactPersonName || '' },
 
     // Education & Experience
-    { key: 'HighestQualification', label: 'Highest Qualification', section: 'Education & Experience', accessor: (row) => row?.HighestQualification || '' },
-    { key: 'AdditionalCourses', label: 'Additional Courses', section: 'Education & Experience', accessor: (row) => row?.AdditionalCourses || '' },
-    { key: 'TotalEXP', label: 'Total Experience', section: 'Education & Experience', accessor: (row) => row?.TotalEXP || '' },
+    { key: 'highestQualification', label: 'Highest Qualification', section: 'Education & Experience', accessor: (row) => row?.highestQualification || '' },
+    { key: 'additionalCourses', label: 'Additional Courses', section: 'Education & Experience', accessor: (row) => row?.additionalCourses || '' },
+    { key: 'totalExp', label: 'Total Experience', section: 'Education & Experience', accessor: (row) => row?.totalExp || '' },
     {
-        key: 'skillAndExperience',
+        key: 'skills',
         label: 'Skills',
         section: 'Education & Experience',
         accessor: (row) =>
-            row?.skillAndExperience?.length
-                ? row.skillAndExperience.map((item) => `${item.skill} (${item.experience} Year)`).join(', ')
+            row?.skills?.length
+                ? row.skills.map((item) => `${item.skill} (${item.experience} Year)`).join(', ')
                 : '',
     },
 
     // Identity Documents
-    { key: 'PANNo', label: 'PAN Number', section: 'Identity Documents', accessor: (row) => row?.PANNo || '' },
-    { key: 'AadharNo', label: 'Aadhar Number', section: 'Identity Documents', accessor: (row) => row?.AadharNo || '' },
-    { key: 'PassportNo', label: 'Passport Number', section: 'Identity Documents', accessor: (row) => row?.PassportNo || '' },
-    { key: 'NameAsPerAadhar', label: 'Name As Per Aadhar', section: 'Identity Documents', accessor: (row) => row?.NameAsPerAadhar || '' },
+    { key: 'panNo', label: 'PAN Number', section: 'Identity Documents', accessor: (row) => row?.panNo || '' },
+    { key: 'aadharNo', label: 'Aadhar Number', section: 'Identity Documents', accessor: (row) => row?.aadharNo || '' },
+    { key: 'passportNo', label: 'Passport Number', section: 'Identity Documents', accessor: (row) => row?.passportNo || '' },
+    { key: 'nameAsPerAadhar', label: 'Name As Per Aadhar', section: 'Identity Documents', accessor: (row) => row?.nameAsPerAadhar || '' },
 
     // Bank Information
-    { key: 'BankAccountNo', label: 'Bank Account Number', section: 'Bank Information', accessor: (row) => row?.BankAccountNo || '' },
-    { key: 'IFSCCode', label: 'IFSC Code', section: 'Bank Information', accessor: (row) => row?.IFSCCode || '' },
-    { key: 'PFMember', label: 'PF Member', section: 'Bank Information', accessor: (row) => row?.PFMember || '' },
-    { key: 'UANNo', label: 'UAN Number', section: 'Bank Information', accessor: (row) => row?.UANNo || '' },
+    { key: 'bankAccountNo', label: 'Bank Account Number', section: 'Bank Information', accessor: (row) => row?.bankAccountNo || '' },
+    { key: 'ifscCode', label: 'IFSC Code', section: 'Bank Information', accessor: (row) => row?.ifscCode || '' },
+    { key: 'pfMember', label: 'PF Member', section: 'Bank Information', accessor: (row) => row?.pfMember || '' },
+    { key: 'uanNo', label: 'UAN Number', section: 'Bank Information', accessor: (row) => row?.uanNo || '' },
 
     // Laptop Information
-    { key: 'LaptopType', label: 'Laptop Type', section: 'Laptop Information', accessor: (row) => row?.LaptopType || '' },
-    { key: 'HavingOfficialInUse', label: 'Official Laptop In Use', section: 'Laptop Information', accessor: (row) => row?.HavingOfficialInUse || '' },
-    { key: 'OfficialLaptopSrNo', label: 'Official Laptop Serial No.', section: 'Laptop Information', accessor: (row) => row?.OfficialLaptopSrNo || '' },
-    { key: 'RAM', label: 'RAM', section: 'Laptop Information', accessor: (row) => row?.RAM || '' },
-    { key: 'StorageType', label: 'Storage Type', section: 'Laptop Information', accessor: (row) => row?.StorageType || '' },
-    { key: 'StorageSpace', label: 'Storage Space', section: 'Laptop Information', accessor: (row) => row?.StorageSpace || '' },
-    { key: 'OfficialUpgrades', label: 'Official Upgrades', section: 'Laptop Information', accessor: (row) => row?.OfficialUpgrades || '' },
-    { key: 'AdditionalConfigurations', label: 'Additional Configurations', section: 'Laptop Information', accessor: (row) => row?.AdditionalConfigurations || '' },
+    { key: 'laptopType', label: 'Laptop Type', section: 'Laptop Information', accessor: (row) => row?.laptopType || '' },
+    { key: 'havingOfficialInUse', label: 'Official Laptop In Use', section: 'Laptop Information', accessor: (row) => row?.havingOfficialInUse || '' },
+    { key: 'officialLaptopSrNo', label: 'Official Laptop Serial No.', section: 'Laptop Information', accessor: (row) => row?.officialLaptopSrNo || '' },
+    { key: 'ram', label: 'RAM', section: 'Laptop Information', accessor: (row) => row?.ram || '' },
+    { key: 'storageType', label: 'Storage Type', section: 'Laptop Information', accessor: (row) => row?.storageType || '' },
+    { key: 'storageSpace', label: 'Storage Space', section: 'Laptop Information', accessor: (row) => row?.storageSpace || '' },
+    { key: 'officialUpgrades', label: 'Official Upgrades', section: 'Laptop Information', accessor: (row) => row?.officialUpgrades || '' },
+    { key: 'additionalConfigurations', label: 'Additional Configurations', section: 'Laptop Information', accessor: (row) => row?.additionalConfigurations || '' },
 ];
 
 const exportSections = [...new Set(exportColumns.map((col) => col.section))];
@@ -154,27 +154,27 @@ function EmployeeInfo() {
             {
                 headerName: 'Full Name',
                 valueGetter: (params) => {
-                    const first = params.data?.FirstName || '';
-                    const middle = params.data?.MiddleName || '';
-                    const last = params.data?.LastName || '';
+                    const first = params.data?.firstName || '';
+                    const middle = params.data?.middleName || '';
+                    const last = params.data?.lastName || '';
                     return `${first} ${middle} ${last}`.trim();
                 },
                 minWidth: 200,
             },
             {
                 headerName: 'Skill',
-                valueGetter: (params) => params.data?.skillAndExperience?.[0]?.skill || '',
+                valueGetter: (params) => params.data?.skills?.[0]?.skill || '',
                 minWidth: 150,
             },
             {
                 headerName: 'Experience',
-                valueGetter: (params) => params.data?.skillAndExperience?.[0]?.experience || '',
+                valueGetter: (params) => params.data?.skills?.[0]?.experience || '',
                 minWidth: 150,
             },
-            { headerName: 'Total Work Experience', field: 'TotalEXP', minWidth: 170 },
+            { headerName: 'Total Work Experience', field: 'totalExp', minWidth: 170 },
             // { headerName: 'Project Name', field: 'currentlyWrokingProject', minWidth: 170 },
-            { headerName: 'Contact No', field: 'MobileNo', minWidth: 150 },
-            { headerName: 'Education', field: 'HighestQualification', minWidth: 150 },
+            { headerName: 'Contact No', field: 'mobileNo', minWidth: 150 },
+            { headerName: 'Education', field: 'highestQualification', minWidth: 150 },
             // {
             //     headerName: 'Year of Passing',
             //     valueGetter: (params) => {
